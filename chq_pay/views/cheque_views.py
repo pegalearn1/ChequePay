@@ -2,46 +2,61 @@
 in 2024-2025.'''
 
 from .imp_libs import *
-from chq_pay.models import ChequeTemplate, ChequeText
+from chq_pay.models import ChequeTemplate, ChequeText, Banks, Currencies, Payee
 
 def upload_template(request):
     if request.method == 'POST':
         name = request.POST.get('name')
         width = request.POST.get('width')
         height = request.POST.get('height')
+        bank = request.POST.get('bank')
+        currency = request.POST.get('currency')
         background_image = request.FILES.get('background_image')
+
+        print("POST - ", request.POST)
 
 
         # Save the data to the database
         if name and width and height and background_image:
-            cheque_template = ChequeTemplate(
-                name=name,
-                width=width,
-                height=height,
-                background_image=background_image,
-                created_by = request.user.id,
-                created_date = datetime.now(),
-                modified_by = request.user.id,
-                modified_date = datetime.now()
+            try:
+                cheque_template = ChequeTemplate(
+                    name=name,
+                    width=width,
+                    height=height,
+                    bank = get_object_or_404(Banks, id = bank),
+                    currency = get_object_or_404(Currencies, id = currency),
+                    background_image=background_image,
+                    created_by = request.user.id,
+                    created_date = datetime.now(),
+                    modified_by = request.user.id,
+                    modified_date = datetime.now()
 
-            )
+                )
 
-            template_exist = ChequeTemplate.objects.filter(name=name)
+                template_exist = ChequeTemplate.objects.filter(name=name)
 
-            if template_exist:
-                messages.error(request,('Template Already Exits!!'))
-            else:
-                cheque_template.save()
-                messages.success(request,('Template Created Successfully!!!'))
-                
-                response = ({"success": True})
-                print("responseee = ",response)
-                return JsonResponse(response)
+                if template_exist:
+                    messages.error(request,('Template Already Exits!!'))
+                else:
+                    cheque_template.save()
+                    messages.success(request,('Template Created Successfully!!!'))
+                    
+                    response = ({"success": True})
+                    print("responseee = ",response)
+                    return JsonResponse(response)
+            except Exception as e:
+                print("error : ",str(e))
     return JsonResponse({"success": False})
 
 def template_list(request):
     templates = ChequeTemplate.objects.all()
-    return render(request, 'Cheque_templates/template_list.html', {'templates': templates})
+    banks = Banks.objects.all()
+    currencies = Currencies.objects.all()
+
+    context = {'templates': templates,
+               'banks':banks,
+               'currencies':currencies}
+    return render(request, 'Cheque_templates/template_list.html', context )
 
 def delete_template(request, template_id):
     template = get_object_or_404(ChequeTemplate, id=template_id)
@@ -56,6 +71,8 @@ def edit_template(request):
         name = request.POST.get('name')
         width = request.POST.get('width')
         height = request.POST.get('height')
+        bank = request.POST.get('bank')
+        currency = request.POST.get('currency')
         background_image = request.FILES.get('background_image')
 
         print("currency_id - ",template_id)
@@ -66,6 +83,8 @@ def edit_template(request):
             template.name = name
             template.width = width
             template.height = height
+            template.bank = get_object_or_404(Banks, id=bank)
+            template.currency = get_object_or_404(Currencies, id=currency)
             template.background_image = background_image
             template.modified_by = request.user.id
             template.modified_date = datetime.now()

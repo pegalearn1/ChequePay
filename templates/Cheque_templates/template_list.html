@@ -48,8 +48,8 @@
             <tr>
               <th scope="col" class="sort" data-sort="name">Template</th>
               <th scope="col" class="sort" data-sort="budget">Size</th>
-              <th scope="col" class="sort" data-sort="status">Created On</th>
-              <th scope="col">Created By</th>
+              <th scope="col" class="sort" data-sort="status">Bank</th>
+              <th scope="col">Currency</th>
               <th scope="col"></th>
             </tr>
           </thead>
@@ -72,15 +72,12 @@
               </td>
               <td>
                 <span class="budget">
-                  {{template.created_date}}
+                  {{template.bank}}
               </td>
               <td>
-                <div class="avatar-group">
-                  <a href="#" class="avatar avatar-sm rounded-circle" data-toggle="tooltip" data-original-title="Ryan Tompson">
-                    <img alt="Image placeholder" src="/static/assets/img/theme/team-1.jpg">
-                  </a>
-                  
-                </div>
+                <span class="budget">
+                  {{template.currency}}
+              </td>
               </td>
               <td class="text-right">
                 <div class="dropdown">
@@ -88,7 +85,7 @@
                     <i class="fas fa-ellipsis-v"></i>
                   </a>
                   <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#editTemplateModal" data-id="{{ template.id }}" data-name="{{ template.name }}" data-width="{{ template.width }}" data-height="{{ template.height }}" data-background_image="{{ template.background_image.url}}">
+                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#editTemplateModal" data-id="{{ template.id }}" data-name="{{ template.name }}" data-width="{{ template.width }}" data-height="{{ template.height }} " data-bank="{{ template.bank }}" data-currency="{{ template.currency }}" data-background_image="{{ template.background_image.url}}">
                     <i class="fas fa-edit text-primary"></i> Edit Template</a>
 
                     <a class="dropdown-item text-danger" onclick="if (confirm('Are You sure? Want to delete {{template.name}} ?')){return true;}else{event.stopPropagation(); event.preventDefault();};" href="{% url 'delete_template' template.id %}"><i class="fas fa-trash-alt text-danger"></i> Delete Template</a>
@@ -140,6 +137,24 @@
           <div class="form-group">
             <label for="height">Cheque Height (mm)</label>
             <input type="text" class="form-control" id="height" name="height" required>
+          </div>
+          <div class="form-group">
+            <label for="bank">Bank</label>
+            <select class="form-control" name="bank" id="bank" required>
+              <option value="" disabled>Select Bank</option>
+              {% for bank in banks %}
+              <option value="{{bank.id}}">{{bank.bank_name_e}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="currency">Currency</label>
+            <select class="form-control" name="currency" id="currency" required>
+              <option value="" disabled>Select Currency</option>
+              {% for curr in currencies  %}
+              <option value="{{curr.id}}">{{curr.currency_name}}</option>
+              {% endfor %}
+            </select>
           </div>
           <div class="form-group">
             <label for="background_image">Cheque Background Image</label>
@@ -211,6 +226,25 @@
           </div>
 
           <div class="form-group">
+            <label for="edit_bank">Bank</label>
+            <select class="form-control" name="bank" id="edit_bank" required>
+              <option value="" disabled>Select Bank</option>
+              {% for bank in banks %}
+              <option value="{{bank.id}}">{{bank.bank_name_e}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="edit_currency">Currency</label>
+            <select class="form-control" name="currency" id="edit_currency" required>
+              <option value="" disabled>Select Currency</option>
+              {% for curr in currencies  %}
+              <option value="{{curr.id}}">{{curr.currency_name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-group">
             <label for="edit_background_image">Cheque Background Image</label>
             <input 
               type="file" 
@@ -266,6 +300,8 @@ $(document).ready(function () {
     var templateName = button.data('name');
     var templateWidth = button.data('width');
     var templateHeight = button.data('height');
+    var templateBank = button.data('bank');
+    var templateCurrency = button.data('currency');
     var templateBackgroundImage = button.data('background_image');
 
     // Populate modal fields
@@ -274,6 +310,8 @@ $(document).ready(function () {
     modal.find('#edit_name').val(templateName);
     modal.find('#edit_width').val(templateWidth);
     modal.find('#edit_height').val(templateHeight);
+    modal.find('#edit_bank').val(templateBank);
+    modal.find('#edit_currency').val(templateCurrency);
     
     if (templateBackgroundImage) {
       const imagePreview = modal.find('#selected-image');

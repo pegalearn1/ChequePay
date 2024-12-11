@@ -93,6 +93,8 @@ class Payee(models.Model):
 #to add and save the cheque template
 class ChequeTemplate(models.Model):
     name = models.CharField(max_length=100, help_text="*Name of the cheque template")
+    bank = models.ForeignKey(Banks, on_delete=models.CASCADE)
+    currency = models.ForeignKey(Currencies, on_delete=models.CASCADE)
     width = models.FloatField(help_text="*Width of the cheque in mm")
     height = models.FloatField(help_text="*Height of the cheque in mm")
     background_image = models.ImageField(upload_to='cheque_templates/', help_text="*Upload the cheque background image")
