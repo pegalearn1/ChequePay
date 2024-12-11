@@ -1,0 +1,227 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Currency List{% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+<!-- Header -->
+<div class="header bg-primary">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0">Currencies</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Currencies</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="container-fluid mt-4">
+    <!-- Card for Payee List -->
+    <div class="card mt-3">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="text-primary">Currency List</h1>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addCurrencyModal">New</button>
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive mt-4">
+                <table class="table align-items-center table-flush">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Currency Char</th>
+                            <th>Currency Name</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody class="list">
+                        {% if currencies %}
+                            {% for currency in currencies %}
+                                <tr>
+                                    <td>{{ currency.currency_char }}</td>
+                                    <td>{{ currency.currency_name }}</td>
+                                    <td class="text-right">
+                                        <div class="dropdown">
+                                            <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                                <a class="dropdown-item" href="#" 
+                                                   data-toggle="modal" 
+                                                   data-target="#editCurrencyModal" 
+                                                   data-id="{{ currency.id }}" 
+                                                   data-currency-char="{{ currency.currency_char }}" 
+                                                   data-currency-name="{{ currency.currency_name }}">
+                                                   <i class="fas fa-edit text-primary"></i> Edit Currency
+                                                </a>
+                                                <a class="dropdown-item text-danger" 
+                                                   onclick="return confirm('Are you sure you want to delete {{ currency.currency_name }}?')" 
+                                                   href="{% url 'delete_currency' currency.id %}">
+                                                    <i class="fas fa-trash-alt text-danger"></i> Delete Currency
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center">No Currencies found.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Currency Modal -->
+    <div class="modal fade" id="addCurrencyModal" tabindex="-1" role="dialog" aria-labelledby="addCurrencyLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCurrencyModalLabel">Add New Currency</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="addCurrencyForm" method="POST" action="{% url 'add_currency' %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="currency_char">Currency Char</label>
+                            <input type="text" class="form-control" id="currency_char" name="currency_char" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="currency_name">Currency Name</label>
+                            <input type="text" class="form-control" id="currency_name" name="currency_name" required>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Currency Modal -->
+    <div class="modal fade" id="editCurrencyModal" tabindex="-1" role="dialog" aria-labelledby="editCurrencyModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editCurrencyModalLabel">Edit Currency</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editCurrencyForm" method="POST" action="{% url 'edit_currency' %}">
+                        {% csrf_token %}
+                        <input type="hidden" id="edit_currency_id" name="currency_id">
+                        <div class="form-group">
+                            <label for="edit_currency_char">Currency Char</label>
+                            <input type="text" class="form-control" id="edit_currency_char" name="currency_char" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_currency_name">Currency Name</label>
+                            <input type="text" class="form-control" id="edit_currency_name" name="currency_name" required>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<div class="container-fluid mt-6">
+    {% include "includes/footer.html" %}
+</div>
+{% endblock content %}
+
+
+
+<!-- JavaScript -->
+{% block javascripts %}
+<script>
+    // Populate Edit Modal
+    $('#editCurrencyModal').on('show.bs.modal', function (event) {
+        const button = $(event.relatedTarget);
+        const id = button.data('id');
+        const currencyChar = button.data('currency-char');
+        const currencyName = button.data('currency-name');
+        
+        const modal = $(this);
+        modal.find('#edit_currency_id').val(id);
+        modal.find('#edit_currency_char').val(currencyChar);
+        modal.find('#edit_currency_name').val(currencyName);
+        
+    });
+
+    // Handle Edit Payee Form Submission
+    document.getElementById('editCurrencyForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+
+        fetch("{% url 'edit_currency' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Hide the modal on success
+                $('#editCurrencyModal').modal('hide');
+                
+                // Reload the page to reflect changes
+                location.reload();
+            } else {
+                 // Reload the page to reflect changes
+                 location.reload();
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    });
+
+    // Handle Add Payee Form Submission
+    document.getElementById('addCurrencyForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+
+        fetch("{% url 'add_currency' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                $('#addCurrencyModal').modal('hide');
+                location.reload();
+            } else {
+                location.reload();
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    });
+</script>
+{% endblock javascripts %}

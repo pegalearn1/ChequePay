@@ -1,0 +1,236 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Payee List{% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+<!-- Header -->
+<div class="header bg-primary">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0">Payees</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Payees</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="container-fluid mt-4">
+    <!-- Card for Payee List -->
+    <div class="card mt-3">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="text-primary">Payee List</h1>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addPayeeModal">New</button>
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive mt-4">
+                <table class="table align-items-center table-flush">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Payee Name</th>
+                            <th>Mobile Number</th>
+                            <th>Email</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody class="list">
+                        {% if payees %}
+                            {% for payee in payees %}
+                                <tr>
+                                    <td>{{ payee.payee_name }}</td>
+                                    <td>{{ payee.mobile_no }}</td>
+                                    <td>{{ payee.email }}</td>
+                                    <td class="text-right">
+                                        <div class="dropdown">
+                                            <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                                <a class="dropdown-item" href="#" 
+                                                   data-toggle="modal" 
+                                                   data-target="#editPayeeModal" 
+                                                   data-id="{{ payee.id }}" 
+                                                   data-payee-name="{{ payee.payee_name }}" 
+                                                   data-mobile-no="{{ payee.mobile_no }}" 
+                                                   data-email="{{ payee.email }}">
+                                                    <i class="fas fa-edit text-primary"></i> Edit Payee
+                                                </a>
+                                                <a class="dropdown-item text-danger" 
+                                                   onclick="return confirm('Are you sure you want to delete {{ payee.payee_name }}?')" 
+                                                   href="{% url 'delete_payee' payee.id %}">
+                                                    <i class="fas fa-trash-alt text-danger"></i> Delete Payee
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center">No payees found.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Payee Modal -->
+    <div class="modal fade" id="addPayeeModal" tabindex="-1" role="dialog" aria-labelledby="addPayeeModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addPayeeModalLabel">Add New Payee</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="addPayeeForm" method="POST" action="{% url 'add_payee' %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="payee_name">Payee Name</label>
+                            <input type="text" class="form-control" id="payee_name" name="payee_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="payee_mobile_no">Mobile Number</label>
+                            <input type="text" class="form-control" id="payee_mobile_no" name="payee_mobile_no" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="payee_email">Email</label>
+                            <input type="email" class="form-control" id="payee_email" name="payee_email">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Payee Modal -->
+    <div class="modal fade" id="editPayeeModal" tabindex="-1" role="dialog" aria-labelledby="editPayeeModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editPayeeModalLabel">Edit Payee</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editPayeeForm" method="POST" action="{% url 'edit_payee' %}">
+                        {% csrf_token %}
+                        <input type="hidden" id="edit_payee_id" name="payee_id">
+                        <div class="form-group">
+                            <label for="edit_payee_name">Payee Name</label>
+                            <input type="text" class="form-control" id="edit_payee_name" name="payee_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_payee_mobile_no">Mobile Number</label>
+                            <input type="text" class="form-control" id="edit_payee_mobile_no" name="payee_mobile_no" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_payee_email">Email</label>
+                            <input type="email" class="form-control" id="edit_payee_email" name="payee_email" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<div class="container-fluid mt-6">
+    {% include "includes/footer.html" %}
+</div>
+{% endblock content %}
+
+
+
+<!-- JavaScript -->
+{% block javascripts %}
+<script>
+    // Populate Edit Modal
+    $('#editPayeeModal').on('show.bs.modal', function (event) {
+        const button = $(event.relatedTarget);
+        const id = button.data('id');
+        const payeeName = button.data('payee-name');
+        const mobileNo = button.data('mobile-no');
+        const email = button.data('email');
+
+        const modal = $(this);
+        modal.find('#edit_payee_id').val(id);
+        modal.find('#edit_payee_name').val(payeeName);
+        modal.find('#edit_payee_mobile_no').val(mobileNo);
+        modal.find('#edit_payee_email').val(email);
+    });
+
+    // Handle Edit Payee Form Submission
+    document.getElementById('editPayeeForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+
+        fetch("{% url 'edit_payee' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Hide the modal on success
+                $('#editPayeeModal').modal('hide');
+                
+                // Reload the page to reflect changes
+                location.reload();
+            } else {
+                 // Reload the page to reflect changes
+                 location.reload();
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    });
+
+    // Handle Add Payee Form Submission
+    document.getElementById('addPayeeForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+
+        fetch("{% url 'add_payee' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                $('#addPayeeModal').modal('hide');
+                location.reload();
+            } else {
+                location.reload();
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    });
+</script>
+{% endblock javascripts %}

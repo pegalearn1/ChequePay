@@ -1,0 +1,288 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Bank List{% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <!-- Header -->
+    <div class="header bg-primary">
+        <div class="container-fluid">
+            <div class="header-body">
+                <div class="row align-items-center py-4">
+                    <div class="col-lg-6 col-7">
+                        <h6 class="h2 text-white d-inline-block mb-0">Banks</h6>
+                        <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                            <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                                <li class="breadcrumb-item">
+                                    <a href="/"><i class="fas fa-home"></i></a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">Banks</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   <!-- Main Content -->
+<div class="container-fluid mt-4">
+  
+  <!-- Card for the Form -->
+  <div class="card mt-3">
+    <div class="card-body">
+      
+      <div class="d-flex justify-content-between align-items-center">
+        <h1 class="text-primary">Bank List</h1>
+        <div>
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addBankModal">New</button>
+        </div>
+      </div>
+      <!-- Light table -->
+      <div class="table-responsive mt-4">
+        <table class="table align-items-center table-flush">
+          <thead class="thead-light">
+            <tr>
+              <th scope="col" class="sort" >Bank Char</th>
+              <th scope="col" class="sort" >Bank Name E</th>
+              <th scope="col" class="sort" >Bank Name L</th>
+              <th scope="col" class="sort" >Telephone</th>
+              <th scope="col" class="sort" >Address</th>
+             <th scope="col"></th>
+            </tr>
+          </thead>
+          {% if banks %}
+          {% for bank in banks %}
+          <tbody class="list">
+            <tr>
+             <td class="budget">
+                {{bank.bank_char}}
+              </td>
+              <td class="budget">
+                {{bank.bank_name_e}}
+              </td>
+              <td class="budget">
+                {{bank.bank_name_l}}
+              </td>
+              <td class="budget">
+                {{bank.tel_no}}
+              </td>
+              <td class="budget">
+                {{bank.address}}
+              </td>
+              
+              <td class="text-right">
+                <div class="dropdown">
+                  <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v"></i>
+                  </a>
+                  <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#editBankModal" data-id="{{ bank.id }}" data-bank_char="{{ bank.bank_char }}" data-bank_name_e="{{ bank.bank_name_e }}" data-bank_name_l="{{ bank.bank_name_l }}" data-tel_no="{{ bank.tel_no }}" data-address="{{ bank.address }}">
+                      <i class="fas fa-edit text-primary"></i> Edit Bank</a>
+                    <a class="dropdown-item text-danger" onclick="if (confirm('Are You sure? Want to delete {{bank.bank_name_e}} ?')){return true;}else{event.stopPropagation(); event.preventDefault();};" href="{% url 'delete_bank' bank.id %}"><i class="fas fa-trash-alt text-danger"></i> Delete Bank</a>
+                    
+                  </div>
+                </div>
+              </td>
+            </tr>
+            
+          </tbody>
+          {% endfor %}
+          {% else %}
+          <tr>
+              <td colspan="4" class="text-center">No Banks found.</td>
+          </tr>
+          {% endif %}
+        </table>
+      </div>
+      <!-- table-->
+    
+      
+    </div>
+    <!-- card-body -->
+  </div>
+  <!-- Card -->
+
+<!--add new bank Modal -->
+<div class="modal fade" id="addBankModal" tabindex="-1" role="dialog" aria-labelledby="addBankModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addBankModalLabel">Add New Bank</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="addBankForm" method="POST" action="{% url 'add_bank' %}">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="bank_char">Bank Char</label>
+            <input type="text" class="form-control" id="bank_char" name="bank_char" required>
+          </div>
+          <div class="form-group">
+            <label for="bank_name_e">Bank Name (English)</label>
+            <input type="text" class="form-control" id="bank_name_e" name="bank_name_e" required>
+          </div>
+          <div class="form-group">
+            <label for="bank_name_l">Bank Name (Local)</label>
+            <input type="text" class="form-control" id="bank_name_l" name="bank_name_l">
+          </div>
+          <div class="form-group">
+            <label for="tel_no">Telephone</label>
+            <input type="text" class="form-control" id="tel_no" name="tel_no" required>
+          </div>
+          <div class="form-group">
+            <label for="address">Address</label>
+            <textarea class="form-control" id="address" name="address" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!--edit bank Modal -->
+<div class="modal fade" id="editBankModal" tabindex="-1" role="dialog" aria-labelledby="editBankModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editBankModalLabel">Edit Bank</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="editBankForm" method="POST" action="{% url 'edit_bank' %}">
+          {% csrf_token %}
+          <input type="hidden" id="edit_bank_id" name="bank_id">
+          <div class="form-group">
+            <label for="edit_bank_char">Bank Char</label>
+            <input type="text" class="form-control" id="edit_bank_char" name="bank_char" required>
+          </div>
+          <div class="form-group">
+            <label for="edit_bank_name_e">Bank Name (English)</label>
+            <input type="text" class="form-control" id="edit_bank_name_e" name="bank_name_e" required>
+          </div>
+          <div class="form-group">
+            <label for="edit_bank_name_l">Bank Name (Local)</label>
+            <input type="text" class="form-control" id="edit_bank_name_l" name="bank_name_l">
+          </div>
+          <div class="form-group">
+            <label for="edit_tel_no">Telephone</label>
+            <input type="text" class="form-control" id="edit_tel_no" name="tel_no" required>
+          </div>
+          <div class="form-group">
+            <label for="edit_address">Address</label>
+            <textarea class="form-control" id="edit_address" name="address" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Update</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--edit bank Modal -->
+
+</div>
+<!-- container-fluid -->
+
+    <!-- Footer -->
+    <div class="container-fluid mt-6">
+        {% include "includes/footer.html" %}
+    </div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}
+<script>
+
+  $('#editBankModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget); // Button that triggered the modal
+  
+    // Extract data-* attributes
+    var id = button.data('id');
+    var bankChar = button.data('bank_char');
+    var bankNameE = button.data('bank_name_e');
+    var bankNameL = button.data('bank_name_l');
+    var telNo = button.data('tel_no');
+    var address = button.data('address');
+  
+   // Populate modal fields
+    var modal = $(this);
+    modal.find('#edit_bank_id').val(id);
+    modal.find('#edit_bank_char').val(bankChar);
+    modal.find('#edit_bank_name_e').val(bankNameE);
+    modal.find('#edit_bank_name_l').val(bankNameL);
+    modal.find('#edit_tel_no').val(telNo);
+    modal.find('#edit_address').val(address);
+  });
+
+
+  // Handle Edit Bank Form Submission
+  document.getElementById('editBankForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+    const formData = new FormData(this);
+
+    fetch("{% url 'edit_bank' %}", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Hide the modal on success
+            $('#editBankModal').modal('hide');
+            
+            // Reload the page to reflect changes
+            location.reload();
+        } else {
+             // Reload the page to reflect changes
+             location.reload();
+        }
+    })
+    .catch(error => console.error("Error:", error));
+});
+
+
+  
+  // Handle Add Bank Form Submission
+  document.getElementById('addBankForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent default form submission
+    const formData = new FormData(this);
+  
+    fetch("{% url 'add_bank' %}", {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": "{{ csrf_token }}"
+      },
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        // Close the modal
+        $('#addBankModal').modal('hide');
+        // Optionally reload the table or append the new row
+        location.reload();
+      } else {
+        location.reload();
+      }
+    })
+    .catch(error => console.error("Error:", error));
+  });
+
+  </script>
+{% endblock javascripts %}
