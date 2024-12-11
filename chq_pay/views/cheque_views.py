@@ -2,7 +2,6 @@
 in 2024-2025.'''
 
 from .imp_libs import *
-from chq_pay.forms import ChequeTemplateForm, ChequeTextForm
 from chq_pay.models import ChequeTemplate, ChequeText
 
 def upload_template(request):
@@ -88,47 +87,39 @@ def edit_template(request):
 
 def template_detail(request, template_id):
     template = get_object_or_404(ChequeTemplate, id=template_id)
-    texts = ChequeText.objects.filter(template=template)
-    return render(request, 'Cheque_templates/template_detail.html', {'template': template, 'texts': texts})
+    chq_txts = ChequeText.objects.filter(template=template)
+    
+    return render(request, 'Cheque_templates/template_detail.html', {'template': template, 'chq_txts': chq_txts})
 
 
 def add_text_to_template(request, template_id):
     template = get_object_or_404(ChequeTemplate, id=template_id)
-    previous_texts = ChequeText.objects.filter(template=template)
+
     if request.method == 'POST':
-        # Extract data from POST request
-        text = request.POST.get('text')
-        x_position = request.POST.get('x_position', '0')  # Default to '0' if empty
-        y_position = request.POST.get('y_position', '0')  # Default to '0' if empty
-
-        # Validate required fields
-        if not text:
-            return HttpResponseBadRequest("Text is required.")
-
-        # Convert positions to float, default to 0 if conversion fails
-        # try:
-        #     x_position = float(x_position)
-        #     y_position = float(y_position)
-        # except ValueError:
-        #     x_position = 0.0
-        #     y_position = 0.0
-
-        # Save the data to the model
-        cheque_text = ChequeText.objects.create(
+        ChequeText.objects.update_or_create(
             template=template,
-            text=text,
-            x_position=x_position,
-            y_position=y_position,
-            created_by = request.user.id,
-            created_date = datetime.now(),
-            modified_by = request.user.id,
-            modified_date = datetime.now()
-
+            defaults={
+                'date_x_position': request.POST.get('date_x_position', '0'),
+                'date_y_position': request.POST.get('date_y_position', '0'),
+                'payee_x_position': request.POST.get('payee_x_position', '0'),
+                'payee_y_position': request.POST.get('payee_y_position', '0'),
+                'amtwrds_x_position': request.POST.get('amtwrds_x_position', '0'),
+                'amtwrds_y_position': request.POST.get('amtwrds_y_position', '0'),
+                'amtnum_x_position': request.POST.get('amtnum_x_position', '0'),
+                'amtnum_y_position': request.POST.get('amtnum_y_position', '0'),
+                'sign_x_position': request.POST.get('sign_x_position', '0'),
+                'sign_y_position': request.POST.get('sign_y_position', '0'),
+                'created_by': request.user.id,
+                'created_date': datetime.now(),
+                'modified_by': request.user.id,
+                'modified_date': datetime.now(),
+                
+            }
         )
-
         return HttpResponseRedirect(request.path)
 
-    return render(request, 'Cheque_templates/add_text.html', {'template': template, 'previous_texts':previous_texts})
+    text = ChequeText.objects.filter(template=template).first()
+    return render(request, 'Cheque_templates/add_text.html', {'template': template, 'text': text})
 
 
 def delete_text(request, text_id, temp_id):
