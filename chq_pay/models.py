@@ -129,3 +129,27 @@ class ChequeText(models.Model):
         return f"{self.text} on {self.template.name}"
     
 ##########################################################################################################################################################################################################################################################
+#Cheque Issue Model
+class ChequeIssue(models.Model):
+    issue_template = models.ForeignKey(ChequeTemplate, on_delete=models.CASCADE)
+    issue_cheque_no = models.IntegerField()
+    issue_currency = models.ForeignKey(Currencies, on_delete=models.CASCADE)
+    issue_cheque_date = models.DateField()
+    issue_payee = models.ForeignKey(Payee, on_delete=models.CASCADE)
+    issue_bank = models.ForeignKey(Banks, on_delete=models.CASCADE)
+    issue_amount = models.IntegerField()
+    issue_amount_wrd = models.CharField(max_length=200)
+    issue_naration = models.CharField(max_length=200)
+    issue_issue_date = models.DateField()
+    issue_sign = models.ImageField(upload_to='Signatures/', null=True, blank= True)
+    # issue_is_approved = models.BooleanField()
+    # issue_approvedby = models.CharField(max_length=20)
+    created_by = models.IntegerField()
+    created_date = models.DateTimeField()
+    modified_by = models.IntegerField()
+    modified_date = models.DateTimeField()
+
+
+
+
+##########################################################################################################################################################################################################################################################

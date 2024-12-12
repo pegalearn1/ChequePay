@@ -1,0 +1,410 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Cheque Issue List{% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <!-- Header -->
+    <div class="header bg-primary">
+        <div class="container-fluid">
+            <div class="header-body">
+                <div class="row align-items-center py-4">
+                    <div class="col-lg-6 col-7">
+                        <h6 class="h2 text-white d-inline-block mb-0">Issue Cheque</h6>
+                        <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                            <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                                <li class="breadcrumb-item">
+                                    <a href="/"><i class="fas fa-home"></i></a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">Issue Cheque</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   <!-- Main Content -->
+<div class="container-fluid mt-4">
+  
+  <!-- Card for the Form -->
+  <div class="card mt-3">
+    <div class="card-body">
+      
+      <div class="d-flex justify-content-between align-items-center">
+        <h1 class="text-primary">Cheque Issue List</h1>
+        <div>
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addChequeModal">New</button>
+        </div>
+      </div>
+      <!-- Light table -->
+      <div class="table-responsive mt-4">
+        <table class="table align-items-center table-flush">
+          <thead class="thead-light">
+            <tr>
+              <th scope="col"></th>
+              <th scope="col" class="sort" data-sort="budget">Template</th>
+              <th scope="col" class="sort" data-sort="budget">Bank</th>
+              <th scope="col" class="sort" data-sort="budget">Payee</th>
+              <th scope="col" class="sort" data-sort="budget">Cheque Date</th>
+              <th scope="col" class="sort" data-sort="budget">Cheque Amount</th>
+              <th scope="col" class="sort" data-sort="budget">Issue Date</th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+          {% if cheques %}
+          {% for cheque in cheques %}
+          <tbody class="list">
+            <tr>
+              <td class="budget">
+                <input type="checkbox" name="" id="">
+              </td>
+
+              <td class="budget">
+                {{cheque.issue_template}}
+              </td>
+
+              <td class="budget">
+                {{cheque.issue_bank}}
+              </td>
+
+              <td class="budget">
+                {{cheque.issue_payee}}
+              </td>
+
+              <td>
+                <span class="budget">
+                  {{cheque.issue_cheque_date}}
+              </td>
+
+              <td>
+                <span class="budget">
+                  {{cheque.issue_amount}} {{cheque.issue_currency}}
+              </td>
+              <td>
+                <span class="budget">
+                  {{cheque.issue_issue_date}}
+              </td>
+
+              <td class="text-right">
+                <div class="dropdown">
+                  <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v"></i>
+                  </a>
+                  
+                  <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                    <!-- <a class="dropdown-item" href="#" data-toggle="modal" data-target="#editTemplateModal" data-id="{{cheque.id }}" data-name="{{ template.name }}" data-width="{{ template.width }}" data-height="{{ template.height }} " data-bank="{{ template.bank }}" data-currency="{{ template.currency }}" data-background_image="{{ template.background_image.url}}">
+                    <i class="fas fa-edit text-primary"></i> Edit Template</a> -->
+
+                    <a class="dropdown-item text-danger" onclick="if (confirm('Are You sure? Want to delete cheque to {{cheque.issue_payee}} on {{cheque.issue_cheque_date}} ?')){return true;}else{event.stopPropagation(); event.preventDefault();};" href="{% url 'delete_chequeissue' cheque.id %}"><i class="fas fa-trash-alt text-danger"></i> Delete Issued Cheque</a>
+                    
+                  </div>
+                </div>
+              </td>
+            </tr>
+            
+          </tbody>
+          {% endfor %}
+          {% else %}
+          <tr>
+              <td colspan="6" class="text-center">No Cheques Issued</td>
+          </tr>
+          {% endif %}
+        </table>
+      </div>
+      <!-- table-->
+    
+      
+    </div>
+    <!-- card-body -->
+  </div>
+  <!-- Card -->
+
+
+<!--add new cheque_issue Modal -->
+<div class="modal fade" id="addChequeModal" tabindex="-1" role="dialog" aria-labelledby="addChequeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addChequeModalLabel">Issue New Cheque</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="addChequeForm" method="POST" action="{% url 'cheque_issue' %}" enctype="multipart/form-data" >
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="template">Template</label>
+            <select class="form-control" name="chq_template" id="chq_template" required>
+              <option value="" disabled>Select Template</option>
+              {% for template in templates %}
+              <option value="{{template.id}}">{{template.name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="chq_no">Cheque Number</label>
+            <input type="text" class="form-control" id="chq_no" name="chq_no" required>
+          </div>
+          <div class="form-group">
+            <label for="chq_date">Cheque Date</label>
+            <input type="date" class="form-control" id="chq_date" name="chq_date" required>
+          </div>
+          <div class="form-group">
+            <label for="template">Payee</label>
+            <select class="form-control" name="chq_payee" id="chq_payee" required>
+              <option value="" disabled>Select Payee</option>
+              {% for payee in payees %}
+              <option value="{{payee.id}}">{{payee.payee_name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="chq_date">Cheque Amount</label>
+            <input type="text" class="form-control" id="chq_amt" name="chq_amt" required>
+          </div>
+          <div class="form-group">
+            <label for="chq_date">Cheque Narration</label>
+            <textarea class="form-control" id="chq_narration" name="chq_narration" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="chq_sign">Cheque Issue Sign</label>
+            <input type="file" name="chq_sign" id="chq_sign" class="form-control-file" style="max-width: 400px; width: 100%;" accept="image/*" onchange="previewImage(event)">
+            <!-- Image Preview -->
+            <div id="image-preview" class="mt-3">
+              <img id="selected-image" src="" alt="Selected Image" style="display: none; max-width: 100%; height: auto; border: 1px solid #ddd; padding: 5px;">
+            </div>
+          </div>
+          
+          <!-- image script -->
+          <script>
+            function previewImage(event) {
+                const input = event.target;
+                const preview = document.getElementById('selected-image');
+                
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function (e) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block'; // Show the image
+                    };
+                    
+                    reader.readAsDataURL(input.files[0]); // Read the image file as a data URL
+                }
+            }
+            </script>
+            <!-- image script -->
+             
+          <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- Edit Cheque Issue Modal -->
+<div class="modal fade" id="editTemplateModal" tabindex="-1" role="dialog" aria-labelledby="editTemplateModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editTemplateModalLabel">Edit Template</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="editTemplateForm" method="POST" action="{% url 'edit_template' %}" enctype="multipart/form-data">
+          {% csrf_token %}
+          <input type="hidden" id="edit_template_id" name="template_id">
+          
+          <div class="form-group">
+            <label for="edit_name">Cheque Template Name</label>
+            <input type="text" class="form-control" id="edit_name" name="name" required>
+          </div>
+
+          <div class="form-group">
+            <label for="edit_width">Cheque Width (mm)</label>
+            <input type="text" class="form-control" id="edit_width" name="width" required>
+          </div>
+
+          <div class="form-group">
+            <label for="edit_height">Cheque Height (mm)</label>
+            <input type="text" class="form-control" id="edit_height" name="height" required>
+          </div>
+
+          <div class="form-group">
+            <label for="edit_bank">Bank</label>
+            <select class="form-control" name="bank" id="edit_bank" required>
+              <option value="" disabled>Select Bank</option>
+              {% for bank in banks %}
+              <option value="{{bank.id}}">{{bank.bank_name_e}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="edit_currency">Currency</label>
+            <select class="form-control" name="currency" id="edit_currency" required>
+              <option value="" disabled>Select Currency</option>
+              {% for curr in currencies  %}
+              <option value="{{curr.id}}">{{curr.currency_name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="edit_background_image">Cheque Background Image</label>
+            <input 
+              type="file" 
+              name="background_image" 
+              id="edit_background_image" 
+              class="form-control-file" 
+              accept="image/*" 
+              onchange="previewImage(event)">
+            <!-- Image Preview -->
+            <div id="image-preview" class="mt-3">
+              <img 
+                id="selected-image" 
+                src="" 
+                alt="Selected Image" 
+                style="display: none; max-width: 100%; height: auto; border: 1px solid #ddd; padding: 5px;">
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+</div>
+<!-- container-fluid -->
+
+    <!-- Footer -->
+    <div class="container-fluid mt-6">
+        {% include "includes/footer.html" %}
+    </div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}
+
+<script>
+  // Handle Edit Template Form Submission
+$(document).ready(function () {
+  // Populate modal fields when the modal is shown
+  $('#editTemplateModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget); // Button that triggered the modal
+
+    // Extract data-* attributes
+    var id = button.data('id');
+    var templateName = button.data('name');
+    var templateWidth = button.data('width');
+    var templateHeight = button.data('height');
+    var templateBank = button.data('bank');
+    var templateCurrency = button.data('currency');
+    var templateBackgroundImage = button.data('background_image');
+
+    // Populate modal fields
+    var modal = $(this);
+    modal.find('#edit_template_id').val(id);
+    modal.find('#edit_name').val(templateName);
+    modal.find('#edit_width').val(templateWidth);
+    modal.find('#edit_height').val(templateHeight);
+    modal.find('#edit_bank').val(templateBank);
+    modal.find('#edit_currency').val(templateCurrency);
+    
+    if (templateBackgroundImage) {
+      const imagePreview = modal.find('#selected-image');
+      imagePreview.attr('src', templateBackgroundImage).show();
+    } else {
+      modal.find('#selected-image').hide();
+    }
+  });
+
+  // Handle form submission
+  $('#editTemplateForm').on('submit', function (event) {
+    event.preventDefault();
+    const formData = new FormData(this);
+
+    fetch("{% url 'edit_template' %}", {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": "{{ csrf_token }}"
+      },
+      body: formData
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          $('#editTemplateModal').modal('hide');
+          location.reload(); // Reload the page to reflect changes
+        } else {
+          location.reload();
+        }
+      })
+      .catch(error => console.error("Error:", error));
+  });
+});
+
+// Image preview function
+function previewImage(event) {
+  const input = event.target;
+  const preview = document.getElementById('selected-image');
+
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+      preview.src = e.target.result;
+      preview.style.display = 'block'; // Show the image
+    };
+
+    reader.readAsDataURL(input.files[0]); // Read the image file as a data URL
+  }
+}
+
+
+
+// Handle Add Template Form Submission
+document.getElementById('addChequeForm').addEventListener('submit', function(event) {
+  event.preventDefault(); // Prevent default form submission
+  const formData = new FormData(this);
+
+  fetch("{% url 'cheque_issue' %}", {
+    method: "POST",
+    headers: {
+      "X-CSRFToken": "{{ csrf_token }}"
+    },
+    body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      // Close the modal
+      $('#addChequeModal').modal('hide');
+      window.location.href = "{% url 'cheque_issue_list' %}";
+    } else {
+      window.location.href = "{% url 'cheque_issue_list' %}";
+    }
+  })
+  .catch(error => console.error("Error:", error));
+});
+
+</script>
+{% endblock javascripts %}

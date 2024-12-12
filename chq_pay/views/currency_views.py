@@ -4,7 +4,7 @@ in 2024-2025.'''
 from .imp_libs import *
 from chq_pay.models import Currencies
 
-
+@login_required
 def add_currency(request):
     if request.method == "POST":
         currency_char = request.POST.get("currency_char")
@@ -30,16 +30,21 @@ def add_currency(request):
     return JsonResponse({"success": False})
 
 
+@login_required
 def currency_list(request):
     currencies = Currencies.objects.all()
     return render(request,"Currency/currency_list_new.html",{'currencies':currencies})
 
+
+@login_required
 def delete_currency(request, currency_id):
     currency = get_object_or_404(Currencies, id=currency_id)
     currency.delete()
     messages.error(request,('Currency Deleted Successfully!!!'))
     return redirect('currency_list')
 
+
+@login_required
 def edit_currency(request):
     if request.method == "POST":
         currency_id = request.POST.get("currency_id")

@@ -4,7 +4,7 @@ in 2024-2025.'''
 from .imp_libs import *
 from chq_pay.models import Banks
 
-
+@login_required
 def add_bank(request):
     if request.method == "POST":
         bank_char = request.POST.get("bank_char")
@@ -35,17 +35,19 @@ def add_bank(request):
             return JsonResponse({"success": True})
     return JsonResponse({"success": False})
 
-
+@login_required
 def bank_list(request):
     banks = Banks.objects.all()
     return render(request,"Banks/bank_list_new.html",{'banks':banks})
 
+@login_required
 def delete_bank(request, bank_id):
     bank = get_object_or_404(Banks, id=bank_id)
     bank.delete()
     messages.error(request,('Bank Deleted Successfully!!!'))
     return redirect('bank_list')
 
+@login_required
 def edit_bank(request):
     if request.method == "POST":
         bank_id = request.POST.get("bank_id")

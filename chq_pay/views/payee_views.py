@@ -5,6 +5,7 @@ from .imp_libs import *
 from chq_pay.models import Payee
 
 
+@login_required
 def add_payee(request):
     if request.method == "POST":
         payee_name = request.POST.get("payee_name")
@@ -33,16 +34,21 @@ def add_payee(request):
     return JsonResponse({"success": False})
 
 
+@login_required
 def payee_list(request):
     payees = Payee.objects.all()
     return render(request,"Payees/payee_list_new.html",{'payees':payees})
 
+
+@login_required
 def delete_payee(request, payee_id):
     payee = get_object_or_404(Payee, id=payee_id)
     payee.delete()
     messages.error(request,('Payee Deleted Successfully!!!'))
     return redirect('payee_list')
 
+
+@login_required
 def edit_payee(request):
     if request.method == "POST":
         payee_id = request.POST.get("payee_id")

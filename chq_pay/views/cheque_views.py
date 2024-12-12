@@ -4,6 +4,7 @@ in 2024-2025.'''
 from .imp_libs import *
 from chq_pay.models import ChequeTemplate, ChequeText, Banks, Currencies, Payee
 
+@login_required
 def upload_template(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -48,6 +49,8 @@ def upload_template(request):
                 print("error : ",str(e))
     return JsonResponse({"success": False})
 
+
+@login_required
 def template_list(request):
     templates = ChequeTemplate.objects.all()
     banks = Banks.objects.all()
@@ -58,6 +61,8 @@ def template_list(request):
                'currencies':currencies}
     return render(request, 'Cheque_templates/template_list.html', context )
 
+
+@login_required
 def delete_template(request, template_id):
     template = get_object_or_404(ChequeTemplate, id=template_id)
     template.delete()
@@ -65,6 +70,7 @@ def delete_template(request, template_id):
     return redirect('template_list')
 
 
+@login_required
 def edit_template(request):
     if request.method == "POST":
         template_id = request.POST.get("template_id")
@@ -104,6 +110,7 @@ def edit_template(request):
     return JsonResponse({"success": False, "error": "Invalid request"})
 
 
+@login_required
 def template_detail(request, template_id):
     template = get_object_or_404(ChequeTemplate, id=template_id)
     chq_txts = ChequeText.objects.filter(template=template)
@@ -111,6 +118,8 @@ def template_detail(request, template_id):
     return render(request, 'Cheque_templates/template_detail.html', {'template': template, 'chq_txts': chq_txts})
 
 
+
+@login_required
 def add_text_to_template(request, template_id):
     template = get_object_or_404(ChequeTemplate, id=template_id)
 
@@ -135,12 +144,15 @@ def add_text_to_template(request, template_id):
                 
             }
         )
+        messages.success(request,('Text position is set.'))
         return HttpResponseRedirect(request.path)
 
     text = ChequeText.objects.filter(template=template).first()
     return render(request, 'Cheque_templates/add_text.html', {'template': template, 'text': text})
 
 
+
+@login_required
 def delete_text(request, text_id, temp_id):
     text = get_object_or_404(ChequeText, id=text_id)
     text.delete()
@@ -150,6 +162,7 @@ def delete_text(request, text_id, temp_id):
 
 
 
+@login_required
 def print_cheque(request, template_id):
     template = get_object_or_404(ChequeTemplate, id=template_id)
     texts = ChequeText.objects.filter(template=template)

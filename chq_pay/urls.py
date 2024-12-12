@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
-from chq_pay.views import base_views, authentic_views, cheque_views, bank_views, payee_views, currency_views, company_views
+from chq_pay.views import base_views, authentic_views, cheque_views, bank_views, payee_views, currency_views, company_views, cheque_issue
 from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
@@ -57,7 +57,7 @@ urlpatterns = [
     path('delete_currency/<int:currency_id>/', currency_views.delete_currency, name='delete_currency'),
     
     
-    #cheque_related urls
+    #cheque_template_related urls
     path('upload_template/', cheque_views.upload_template, name = "upload_template"),
     path('template_list/', cheque_views.template_list, name = "template_list"),
     path('edit-template/', cheque_views.edit_template, name='edit_template'),
@@ -66,6 +66,11 @@ urlpatterns = [
     path('template/<int:template_id>/add-text/', cheque_views.add_text_to_template, name='add_text_to_template'),
     path('delete_text/<int:text_id>/<int:temp_id>/', cheque_views.delete_text, name='delete_text'),
     path('template/<int:template_id>/print/', cheque_views.print_cheque, name='print_cheque'),
+
+    #cheque_issue_related urls
+    path('cheque_issue/', cheque_issue.cheque_issue, name = "cheque_issue"),
+    path('cheque_issue_list/', cheque_issue.cheque_issue_list, name = "cheque_issue_list"),
+    path('delete_chequeissue/<int:chequeissue_id>/', cheque_issue.delete_chequeissue, name='delete_chequeissue'),
 
 
 
