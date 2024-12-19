@@ -32,7 +32,7 @@ def cheque_issue(request):
                 issue_payee = get_object_or_404(Payee, id = issue_payee),
                 issue_bank=get_object_or_404(Banks, id = cheque_issue_temp.bank.id),
                 issue_amount = issue_amount,
-                issue_amount_wrd = issue_amount_wrd +''+'only',
+                issue_amount_wrd = issue_amount_wrd +' '+'only',
                 issue_issue_date=date.today(),
                 issue_naration=issue_naration,
                 issue_sign=issue_sign,
@@ -68,13 +68,15 @@ def cheque_issue_list(request):
     banks = Banks.objects.all()
     currencies = Currencies.objects.all()
     payees = Payee.objects.all()
+    chq_txts = ChequeText.objects.all()
 
 
     context = {'cheques':cheques,
                'templates': templates,
                'banks':banks,
                'currencies':currencies,
-               'payees':payees}
+               'payees':payees,
+               'chq_txts':chq_txts}
     return render(request, 'Cheque_issue/cheque_issue_list.html', context )
 
 def delete_chequeissue(request, chequeissue_id):
@@ -123,3 +125,6 @@ def edit_template(request):
     return JsonResponse({"success": False, "error": "Invalid request"})
 
 
+
+def cheque_issue_preview(request):
+    return JsonResponse({'success':True})
