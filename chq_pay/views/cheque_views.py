@@ -122,7 +122,7 @@ def template_detail(request, template_id):
 @login_required
 def add_text_to_template(request, template_id):
     template = get_object_or_404(ChequeTemplate, id=template_id)
-
+    
     if request.method == 'POST':
         ChequeText.objects.update_or_create(
             template=template,
@@ -145,7 +145,7 @@ def add_text_to_template(request, template_id):
             }
         )
         messages.success(request,('Text position is set.'))
-        return HttpResponseRedirect(request.path)
+        return redirect('template_detail',template_id)
 
     text = ChequeText.objects.filter(template=template).first()
     return render(request, 'Cheque_templates/add_text.html', {'template': template, 'text': text})

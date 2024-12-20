@@ -290,47 +290,15 @@
 
 
 
-<!--add Preview cheque_issue Modal -->
-<div class="modal fade" id="previewChequeModal" tabindex="-1" role="dialog" aria-labelledby="previewChequeModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-scrollable" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="previewChequeModalLabel">Preview Cheque</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div style="position: relative; display: inline-block;">
-          <img id="cheque-template-image" src="" alt="Cheque Template" style="display: block; max-width: 100%;">
-            
-          {% comment %} <!-- Render each text on the cheque at its specific position -->
-  
-          {% for texts in chq_txts  %}
-          
-          <div style="position: absolute; left: {{ texts.date_x_position }}mm; top: {{ texts.date_y_position }}mm;">
-            Date
-          </div>
-          <div style="position: absolute; left: {{ texts.payee_x_position }}mm; top: {{ texts.payee_y_position }}mm;">
-            Payee
-          </div>
-          <div style="position: absolute; left: {{ texts.amtwrds_x_position }}mm; top: {{ texts.amtwrds_y_position }}mm;">
-            Amount In Words
-          </div>
-          <div style="position: absolute; left: {{ texts.amtnum_x_position }}mm; top: {{ texts.amtnum_y_position }}mm;">
-            Amount
-          </div>
-          <div style="position: absolute; left: {{ texts.sign_x_position }}mm; top: {{ texts.sign_y_position }}mm;">
-            Signature
-          </div>
-  
-          {% endfor %} {% endcomment %}
-          
-      </div>
-      </div>
-    </div>
+<!-- Add Preview cheque_issue Modal -->
+<div class="modal fade" id="previewChequeModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" style="max-width: none; margin: 20; padding: 0;">
+    <img id="cheque-template-image" src="" alt="Cheque Template" style="display: block; margin: auto;">
+        
+   
   </div>
 </div>
+
 
 
 

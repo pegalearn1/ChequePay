@@ -4,7 +4,6 @@
 
 {% block content %}
 
-<div class="container-fluid mt-4">
     <!-- Header -->
     <div class="header bg-primary">
         <div class="container-fluid">
@@ -14,7 +13,8 @@
                         <h6 class="h2 text-white d-inline-block mb-0">Add Attributes</h6>
                         <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
                             <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
-                                <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i></a></li>
+                                <li class="breadcrumb-item">
+                                    <a href="/"><i class="fas fa-home"></i></a></li>
                                 <li class="breadcrumb-item">
                                     <a href="{% url 'template_list' %}">Cheque Templates</a>
                                 </li>
@@ -38,84 +38,102 @@
             <div style="position: relative; display: inline-block;">
                 <img id="chequeTemplate" src="{{ template.background_image.url }}"
                      style="width: {{ template.width }}mm; height: {{ template.height }}mm; position: relative;">
-
-                <!-- Draggable divs for each field -->
+            
+                <!-- Draggable divs for each field, aligned horizontally -->
                 <div id="dateDiv" contenteditable="true" class="draggable border border-dark"
-                     style="position: absolute; left: {{ text.date_x_position|default:"0" }}mm; top: {{ text.date_y_position|default:"0" }}mm;">
+                     style="position: absolute; left: {{ text.date_x_position|default:"0" }}mm; top: {{ text.date_y_position|default:"0" }}mm; display: inline-block;">
                     Date
                 </div>
                 <div id="payeeDiv" contenteditable="true" class="draggable border border-dark"
-                     style="position: absolute; left: {{ text.payee_x_position|default:"0" }}mm; top: {{ text.payee_y_position|default:"0" }}mm;">
+                     style="position: absolute; left: {{ text.payee_x_position|default:"20" }}mm; top: {{ text.payee_y_position|default:"0" }}mm; display: inline-block;">
                     Payee
                 </div>
                 <div id="amtWordsDiv" contenteditable="true" class="draggable border border-dark"
-                     style="position: absolute; left: {{ text.amtwrds_x_position|default:"0" }}mm; top: {{ text.amtwrds_y_position|default:"0" }}mm;">
+                     style="position: absolute; left: {{ text.amtwrds_x_position|default:"40" }}mm; top: {{ text.amtwrds_y_position|default:"0" }}mm; display: inline-block;">
                     Amount in Words
                 </div>
                 <div id="amtNumDiv" contenteditable="true" class="draggable border border-dark"
-                     style="position: absolute; left: {{ text.amtnum_x_position|default:"0" }}mm; top: {{ text.amtnum_y_position|default:"0" }}mm;">
+                     style="position: absolute; left: {{ text.amtnum_x_position|default:"80" }}mm; top: {{ text.amtnum_y_position|default:"0" }}mm; display: inline-block;">
                     Amount in Numbers
                 </div>
                 <div id="signDiv" contenteditable="true" class="draggable border border-dark"
-                     style="position: absolute; left: {{ text.sign_x_position|default:"0" }}mm; top: {{ text.sign_y_position|default:"0" }}mm;">
+                     style="position: absolute; left: {{ text.sign_x_position|default:"130" }}mm; top: {{ text.sign_y_position|default:"0" }}mm; display: inline-block;">
                     Signature
                 </div>
             </div>
+            
 
             <form method="post" id="chequeTextForm">
                 {% csrf_token %}
                 <!-- Hidden fields to store positions -->
-                <input type="hidden" name="date_x_position" id="date_x_position">
-                <input type="hidden" name="date_y_position" id="date_y_position">
-                <input type="hidden" name="payee_x_position" id="payee_x_position">
-                <input type="hidden" name="payee_y_position" id="payee_y_position">
-                <input type="hidden" name="amtwrds_x_position" id="amtwrds_x_position">
-                <input type="hidden" name="amtwrds_y_position" id="amtwrds_y_position">
-                <input type="hidden" name="amtnum_x_position" id="amtnum_x_position">
-                <input type="hidden" name="amtnum_y_position" id="amtnum_y_position">
-                <input type="hidden" name="sign_x_position" id="sign_x_position">
-                <input type="hidden" name="sign_y_position" id="sign_y_position">
+                <!-- Hidden fields to store positions -->
+                <input type="hidden" name="date_x_position" id="date_x_position" value="{{ text.date_x_position|default:"0" }}">
+                <input type="hidden" name="date_y_position" id="date_y_position" value="{{ text.date_y_position|default:"0" }}">
+                <input type="hidden" name="payee_x_position" id="payee_x_position" value="{{ text.payee_x_position|default:"0" }}">
+                <input type="hidden" name="payee_y_position" id="payee_y_position" value="{{ text.payee_y_position|default:"0" }}">
+                <input type="hidden" name="amtwrds_x_position" id="amtwrds_x_position" value="{{ text.amtwrds_x_position|default:"0" }}">
+                <input type="hidden" name="amtwrds_y_position" id="amtwrds_y_position" value="{{ text.amtwrds_y_position|default:"0" }}">
+                <input type="hidden" name="amtnum_x_position" id="amtnum_x_position" value="{{ text.amtnum_x_position|default:"0" }}">
+                <input type="hidden" name="amtnum_y_position" id="amtnum_y_position" value="{{ text.amtnum_y_position|default:"0" }}">
+                <input type="hidden" name="sign_x_position" id="sign_x_position" value="{{ text.sign_x_position|default:"0" }}">
+                <input type="hidden" name="sign_y_position" id="sign_y_position" value="{{ text.sign_y_position|default:"0" }}">
+
                 <button type="submit" class="btn btn-primary mt-2">Save Positions</button>
             </form>
         </div>
     </div>
-</div>
+
 
 <script>
     function makeDraggable(divId, xFieldId, yFieldId) {
         let element = document.getElementById(divId);
         let offsetX, offsetY;
-
+    
         element.onmousedown = function (event) {
             offsetX = event.clientX - element.offsetLeft;
             offsetY = event.clientY - element.offsetTop;
-
+    
             document.onmousemove = function (event) {
-                element.style.left = (event.clientX - offsetX) + 'px';
-                element.style.top = (event.clientY - offsetY) + 'px';
+                let newX = event.clientX - offsetX;
+                let newY = event.clientY - offsetY;
+    
+                // Get the bounding rect of the cheque template image
+                let chequeRect = chequeTemplate.getBoundingClientRect();
+    
+                // Ensure the element stays within the bounds of the cheque template
+                newX = Math.max(0, Math.min(newX, chequeRect.width - element.offsetWidth));
+                newY = Math.max(0, Math.min(newY, chequeRect.height - element.offsetHeight));
+    
+                element.style.left = newX + 'px';
+                element.style.top = newY + 'px';
             };
-
+    
             document.onmouseup = function () {
                 document.onmousemove = null;
                 document.onmouseup = null;
-
+    
+                // Get the final position of the draggable element
                 let chequeRect = chequeTemplate.getBoundingClientRect();
                 let elementRect = element.getBoundingClientRect();
-
+    
+                // Calculate the relative position within the cheque template
                 let xPosition = ((elementRect.left - chequeRect.left) / chequeRect.width) * {{ template.width }};
                 let yPosition = ((elementRect.top - chequeRect.top) / chequeRect.height) * {{ template.height }};
-
+    
+                // Update the hidden input fields with the new position
                 document.getElementById(xFieldId).value = xPosition.toFixed(2);
                 document.getElementById(yFieldId).value = yPosition.toFixed(2);
             };
         };
     }
-
+    
+    // Apply the draggable functionality to each element
     makeDraggable("dateDiv", "date_x_position", "date_y_position");
     makeDraggable("payeeDiv", "payee_x_position", "payee_y_position");
     makeDraggable("amtWordsDiv", "amtwrds_x_position", "amtwrds_y_position");
     makeDraggable("amtNumDiv", "amtnum_x_position", "amtnum_y_position");
     makeDraggable("signDiv", "sign_x_position", "sign_y_position");
+    
 </script>
 
 {% endblock content %}
