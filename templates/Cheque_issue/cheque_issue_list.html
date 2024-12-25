@@ -78,7 +78,7 @@
 
               <td>
                 <span class="budget">
-                  {{cheque.issue_cheque_date}}
+                  {{cheque.issue_cheque_date}}  
               </td>
 
               <td>
@@ -97,8 +97,22 @@
                   </a>
                   
                   <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#previewChequeModal"  data-template="{{ cheque.issue_template.background_image.url }}" data-width="{{ cheque.issue_template.width }}" data-height="{{ cheque.issue_template.height }} " data-date="{{ cheque.issue_cheque_date }}" data-payee="{{ cheque.issue_payee }}" data-amount="{{ cheque.issue_amount}}" data-amount-word="{{ cheque.issue_amount_wrd}}"  data-sign=" {% if cheque.issue_sign %}{{ cheque.issue_sign.url}}{% else %}{{ cheque.issue_sign}}{% endif %}" >
-                    <i class="fas fa-eye text-success"></i> Preview Cheque</a>
+                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#previewChequeModal" 
+                      data-template-id="{{cheque.issue_template.id}}" 
+                      data-template="{{ cheque.issue_template.background_image.url }}" 
+                      data-width="{{ cheque.issue_template.width }}" 
+                      data-height="{{ cheque.issue_template.height }}" 
+                      data-date="{{ cheque.issue_cheque_date|date:"d-m-Y" }}" 
+                      data-payee="{{ cheque.issue_payee }}" 
+                      data-amount="{{ cheque.issue_amount}}" 
+                      data-amount-word="{{ cheque.issue_amount_wrd}}"  
+                      data-sign=" {% if cheque.issue_sign %}{{ cheque.issue_sign.url}}{% endif %}">
+                        <i class="fas fa-eye text-success"></i> Preview Cheque
+                    </a>
+
+                    <a class="dropdown-item" href="{% url 'print_cheque' cheque.id %}" target="_blank">
+                      <i class="fas fa-print text-primary"></i> Print Cheque
+                  </a>
 
                     <a class="dropdown-item text-danger" onclick="if (confirm('Are You sure? Want to delete cheque to {{cheque.issue_payee}} on {{cheque.issue_cheque_date}} ?')){return true;}else{event.stopPropagation(); event.preventDefault();};" href="{% url 'delete_chequeissue' cheque.id %}"><i class="fas fa-trash-alt text-danger"></i> Delete Issued Cheque</a>
                     
@@ -211,7 +225,7 @@
 
 
 
-<!-- Edit Cheque Issue Modal -->
+{% comment %} Edit Cheque Issue Modal
 <div class="modal fade" id="editTemplateModal" tabindex="-1" role="dialog" aria-labelledby="editTemplateModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -284,18 +298,18 @@
       </div>
     </div>
   </div>
-</div>
+</div> {% endcomment %}
 
 
 
 
 
-<!-- Add Preview cheque_issue Modal -->
+<!-- Preview Cheque Issue Modal -->
 <div class="modal fade" id="previewChequeModal" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog" style="max-width: none; margin: 20; padding: 0;">
-    <img id="cheque-template-image" src="" alt="Cheque Template" style="display: block; margin: auto;">
-        
-   
+  <div class="modal-dialog" style="position: relative; max-width: none; margin: 20px; padding: 0; width: auto; height: auto;">
+    <div id="cheque-template-container" style="position: relative; display: block; margin: auto;">
+      <img id="cheque-template-image" src="" alt="Cheque Template" style="display: block; margin: auto;">
+    </div>
   </div>
 </div>
 
@@ -420,26 +434,97 @@ document.getElementById('addChequeForm').addEventListener('submit', function(eve
 
 
 
-//script to show the template accodinf to to selected cheque
+//script to show the template accoding to to selected cheque
 
 document.addEventListener('DOMContentLoaded', () => {
   const previewLinks = document.querySelectorAll('[data-target="#previewChequeModal"]');
 
   previewLinks.forEach(link => {
-    link.addEventListener('click', function () {
+    link.addEventListener('click', async function () {
       // Get the data attributes
+      const templateId = this.getAttribute('data-template-id');
       const templateUrl = this.getAttribute('data-template');
-      const templateWidth = this.getAttribute('data-width');
-      const templateHeight = this.getAttribute('data-height');
+      const templateWidth = this.getAttribute('data-width'); // in mm
+      const templateHeight = this.getAttribute('data-height'); // in mm
+      const modalImage = document.getElementById('cheque-template-image');
+      const modalContainer = document.getElementById('cheque-template-container');
       
       // Update the modal content
-      const modalImage = document.getElementById('cheque-template-image');
       modalImage.src = templateUrl;
-      modalImage.style.width = `${templateWidth}mm`;
-      modalImage.style.height = `${templateHeight}mm`;
+
+      // Set width and height of the image
+      const scaleFactor = 96 / 25.4;  // Conversion factor from mm to px
+      const imgWidthPx = templateWidth * scaleFactor;
+      const imgHeightPx = templateHeight * scaleFactor;
+
+      modalImage.style.width = `${imgWidthPx}px`;
+      modalImage.style.height = `${imgHeightPx}px`;
+
+      // Ensure the container adjusts accordingly
+      modalContainer.style.width = `${imgWidthPx}px`;
+      modalContainer.style.height = `${imgHeightPx}px`;
+
+      // Fetch the cheque text positions from the backend
+      try {
+        const response = await fetch(`/get-cheque-text?template_id=${templateId}`);
+        if (!response.ok) throw new Error('Failed to fetch cheque text data');
+        
+        const result = await response.json();
+        if (result.error) throw new Error(result.error);
+
+        const { data } = result;
+
+        // Clear any existing positioned text or sign
+        modalContainer.querySelectorAll('.cheque-text, .cheque-sign').forEach(el => el.remove());
+
+        // Add new text elements
+        const createTextElement = (text, x, y, isImage = false) => {
+          if (isImage) {
+            // Create an image element for the signature
+            const img = document.createElement('img');
+            img.classList.add('cheque-sign');
+            img.src = text; // `text` contains the image URL in this case
+            img.style.position = 'absolute';
+            img.style.left = `${x * scaleFactor}px`;
+            img.style.top = `${y * scaleFactor}px`;
+            //img.style.width = '50px'; // Adjust the size as needed
+            //img.style.height = '30px'; // Adjust the size as needed
+            modalContainer.appendChild(img);
+          } else {
+            // Create a span element for text
+            const span = document.createElement('span');
+            span.classList.add('cheque-text');
+            span.textContent = text;
+            span.style.position = 'absolute';
+            span.style.left = `${x * scaleFactor}px`;
+            span.style.top = `${y * scaleFactor}px`;
+            span.style.fontSize = '18px'; // Adjust text size as needed
+            span.style.fontFamily = 'Times New Roman'; // Adjust font family as needed
+            modalContainer.appendChild(span);
+          }
+        };
+
+        // Add text elements for date, payee, amount, etc.
+        createTextElement(this.getAttribute('data-date'), data.date_x, data.date_y);
+        createTextElement(this.getAttribute('data-payee'), data.payee_x, data.payee_y);
+        createTextElement(this.getAttribute('data-amount'), data.amtnum_x, data.amtnum_y);
+        createTextElement(this.getAttribute('data-amount-word'), data.amtwrds_x, data.amtwrds_y);
+
+        // Add the signature (image only if available)
+        const signUrl = this.getAttribute('data-sign');
+        if (signUrl) {
+          createTextElement(signUrl, data.sign_x, data.sign_y, true); // Pass `true` for the image
+        }
+        // If `signUrl` is empty or undefined, do nothing (skip adding a sign element)
+      } catch (error) {
+        console.error(error.message);
+      }
     });
   });
 });
+
+
+
 
 
 

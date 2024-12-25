@@ -13,6 +13,9 @@ def cheque_issue(request):
         issue_amount = request.POST.get('chq_amt')
         issue_naration = request.POST.get('chq_narration')
         issue_sign = request.FILES.get('chq_sign')
+
+        if issue_sign:
+            issue_sign = issue_sign
         
         # print("POST - ", request.POST)
 
@@ -126,5 +129,60 @@ def edit_template(request):
 
 
 
-def cheque_issue_preview(request):
-    return JsonResponse({'success':True})
+def get_cheque_text(request):
+    template_id = request.GET.get('template_id')
+
+    if not template_id:
+        return JsonResponse({'error': 'Template ID is required'}, status=400)
+    
+    try:
+        cheque_text = ChequeText.objects.get(template=template_id)
+        data = {
+            'date_x': cheque_text.date_x_position,
+            'date_y': cheque_text.date_y_position,
+            'payee_x': cheque_text.payee_x_position,
+            'payee_y': cheque_text.payee_y_position,
+            'amtwrds_x': cheque_text.amtwrds_x_position,
+            'amtwrds_y': cheque_text.amtwrds_y_position,
+            'amtnum_x': cheque_text.amtnum_x_position,
+            'amtnum_y': cheque_text.amtnum_y_position,
+            'sign_x': cheque_text.sign_x_position,
+            'sign_y': cheque_text.sign_y_position,
+        }
+        return JsonResponse({'data': data}, status=200)
+    except ChequeText.DoesNotExist:
+        return JsonResponse({'error': 'Cheque text not found for this template'}, status=404)
+    
+
+
+
+def print_cheque(request, cheque_id):
+    # Fetch the cheque issue and its template details
+    cheque_issue = get_object_or_404(ChequeIssue, id=cheque_id)
+    template = cheque_issue.issue_template
+    cheque_text = get_object_or_404(ChequeText, template=template)
+
+
+    print("cheque sign - ", cheque_text.amtnum_x_position, cheque_text.amtnum_y_position)
+
+    # Context for the template
+    context = {
+        'width': template.width,  # in mm
+        'height': template.height,  # in mm
+        'date': cheque_issue.issue_cheque_date.strftime('%d-%m-%Y'),
+        'payee': cheque_issue.issue_payee,
+        'amount': cheque_issue.issue_amount,
+        'amount_word': cheque_issue.issue_amount_wrd,
+        'positions': {
+            'date': (cheque_text.date_x_position, cheque_text.date_y_position),
+            'payee': (cheque_text.payee_x_position, cheque_text.payee_y_position),
+            'amount_word': (cheque_text.amtwrds_x_position, cheque_text.amtwrds_y_position),
+            'amount_num': (cheque_text.amtnum_x_position, cheque_text.amtnum_y_position),
+            'sign': (cheque_text.sign_x_position, cheque_text.sign_y_position),
+        },
+        'sign_url': cheque_issue.issue_sign.url if cheque_issue.issue_sign else None,
+    }
+
+    return render(request, 'Cheque_issue/print_cheque.html', context)
+    
+    
