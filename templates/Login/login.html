@@ -34,6 +34,61 @@
                 <div class="form-group mb-3">
                   <div class="input-group input-group-merge input-group-alternative">
                     <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="ni ni-paper-diploma"></i></span>
+                    </div>
+                    <input class="form-control" placeholder="Reg Code" id="regCodeInput" name="login_reg_code" type="text" oninput="sendRegCode(this.value)" required>
+                  </div>
+                </div>
+
+                <!-- to send the reg_code to backend -->
+                <script>
+                  async function sendRegCode(value) {
+                    console.log("Reg code entered:", value); // Log the input
+                    if (value.length >= 4) {
+                      try {
+                        const response = await fetch('/check_reg_update_sett/', {
+                          method: 'POST',
+                          headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCSRFToken(),
+                          },
+                          body: JSON.stringify({ reg_code: value }),
+                        });
+
+                        console.log("Response status:", response.status); // Log the status
+                        if (response.ok) {
+                          const result = await response.json();
+                          console.log("Server response:", result); // Log the server's response
+                        } else {
+                          console.error("Failed to send reg code. Status:", response.status);
+                        }
+                      } catch (error) {
+                        console.error("Error:", error);
+                      }
+                    }
+                  }
+
+                
+                  function getCSRFToken() {
+                    // Assuming Django's CSRF token is available in cookies
+                    const cookies = document.cookie.split('; ');
+                    for (const cookie of cookies) {
+                      const [name, value] = cookie.split('=');
+                      if (name === 'csrftoken') {
+                        return value;
+                      }
+                    }
+                    return '';
+                  }
+                </script>
+                <!-- to send the reg_code to backend -->
+
+
+
+                
+                <div class="form-group">
+                  <div class="input-group input-group-merge input-group-alternative">
+                    <div class="input-group-prepend">
                       <span class="input-group-text"><i class="ni ni-email-83"></i></span>
                     </div>
                     <input class="form-control" placeholder="Email" name="login_email" type="email" required>

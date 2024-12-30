@@ -102,7 +102,16 @@
                       data-template="{{ cheque.issue_template.background_image.url }}" 
                       data-width="{{ cheque.issue_template.width }}" 
                       data-height="{{ cheque.issue_template.height }}" 
-                      data-date="{{ cheque.issue_cheque_date|date:"d-m-Y" }}" 
+                      data-date="{% with cheque.issue_cheque_date|date:'d-m-Y' as formatted_date %}
+                        {{ formatted_date|slice:":1" }}&nbsp;
+                        {{ formatted_date|slice:"1:2" }}&nbsp;
+                        {{ formatted_date|slice:"3:4" }}&nbsp;
+                        {{ formatted_date|slice:"4:5" }}&nbsp;
+                        {{ formatted_date|slice:"6:7" }}&nbsp;
+                        {{ formatted_date|slice:"7:8" }}&nbsp;
+                        {{ formatted_date|slice:"8:9" }}&nbsp;
+                        {{ formatted_date|slice:"9:" }}
+                      {% endwith %}"  
                       data-payee="{{ cheque.issue_payee }}" 
                       data-amount="{{ cheque.issue_amount}}" 
                       data-amount-word="{{ cheque.issue_amount_wrd}}"  

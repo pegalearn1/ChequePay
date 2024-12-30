@@ -1,0 +1,42 @@
+.m0{margin:0}.mt0{margin-top:0}.ml5{margin-left:5px;}.ml10{margin-left:10px;}.mt5{margin-top:5px}.mt10{margin-top:10px}.mt15{margin-top:15px}.mb5{margin-bottom:5px}.mb10{margin-bottom:10px}.mb15{margin-bottom:15px}
+.p0{padding:0}.pt0{padding-top:0}.p5{padding:5px}.p7{padding:7px}
+.truncate300{max-width: 300px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+.clearer{clear:both;}
+label.required::after{content:' *';color:#cc0000;}
+.login-logo .logo-icon {width: 150px}
+.content-header>.actionbtns>li+li:before{display:inline-block}
+.open.btn-dwn>.dropdown-menu{min-width:100%}
+.parsley-errors-list,.parsley-error-list {margin-top: 4px;padding: 0;}
+.parsley-errors-list li,.parsley-error-list li {padding: 0;list-style: none;color: #cc0000;}
+#chq_status .col-xs-3 .small-box{padding-left:2px;padding-right:2px}
+canvas#myCanvas{background: url("../images/chq-bg.png"); border: 1px solid #999;}
+#layout_builder{background: url("../images/chq-bg.png"); border: 1px solid #999;position:relative;margin: 5px auto 15px auto;}
+#layout_builder div{cursor:move;}
+#layout_builder div .ui-resizable-e{cursor:e-resize;background:#c33;}
+#layout_builder div .ui-resizable-w{cursor:w-resize;background:#c33;}
+.cheque_container .col-xs-6.issued{display:none;}
+.cheque_container.show_all .col-xs-6.issued{display:block;}
+.cheque_container .clearer{display:none;}
+.cheque_container.show_all .clearer{display:block;}
+ul.particulars-list li.list-group-item{ padding:5px 15px}
+ul.particulars-list li .checkbox{margin:0}
+ul.particulars-list li .checkbox{margin:0}
+#particularSettingsModal .modal-header{cursor:move}
+.info-box .progress-description a{color:#fff}
+.fixed_info_block{position:fixed;top: 0;width: 200px;z-index: 1050;background: #e2e2e2;height: 25px;text-align: center;right: 0;font-size:12px}
+#measurement_info{}
+.cheque-size{}
+.cheque-size input.input-sm{width: 50px;padding:5px;}
+.searchResults .box .box-body{max-height: 300px;overflow-y: scroll;overflow: auto}
+.searchFormContainer #frmSearch .parsley-errors-list{position: absolute;top: 40px;z-index: 10}
+.navbar-nav>.currency-menu>.dropdown-menu{width:300px}
+.navbar-nav>.currency-menu>.dropdown-menu li{float:left;width:25%}
+.navbar-nav>.currency-menu>.dropdown-menu li a{padding:3px 10px;text-align: center}
+.navbar-nav>.currency-menu>.dropdown-menu li a .fa{margin-right:0}
+#frmUserConCurSettings select option{padding:5px;border-bottom:1px solid #ccc}
+#frmParticularSettings select, #frmParticularSettings input{padding:0px 10px; height:auto;}
+.bg-notif{background: url("../images/rip.gif") no-repeat;background-position:center;}
+table#payee_table tr.selected, table#cheque_voucher_table tr.selected{background:#ddd;}
+table#payee_table tr td i.selected_payees, table#cheque_voucher_table tr td i.selected_voucher{font-size:20px;color:#3c8dbc;cursor:pointer}
+table#payee_table tr td i.selected_payees:before, table#cheque_voucher_table tr td i.selected_voucher:before{content:"\f10c"}
+table#payee_table tr.selected td i.selected_payees:before, table#cheque_voucher_table tr.selected td i.selected_voucher:before{content:"\f05d"}

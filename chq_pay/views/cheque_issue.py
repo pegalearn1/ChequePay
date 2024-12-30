@@ -169,7 +169,7 @@ def print_cheque(request, cheque_id):
     context = {
         'width': template.width,  # in mm
         'height': template.height,  # in mm
-        'date': cheque_issue.issue_cheque_date.strftime('%d-%m-%Y'),
+        'date': '  '.join([char for char in cheque_issue.issue_cheque_date.strftime('%d%m%Y')]),
         'payee': cheque_issue.issue_payee,
         'amount': cheque_issue.issue_amount,
         'amount_word': cheque_issue.issue_amount_wrd,

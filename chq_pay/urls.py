@@ -15,13 +15,14 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
-from chq_pay.views import base_views, authentic_views, cheque_views, bank_views, payee_views, currency_views, company_views, cheque_issue
+from chq_pay.views import base_views, authentic_views, cheque_views, bank_views, payee_views, currency_views, company_views, cheque_issue, imp_libs
 from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
     #base/home urls
+    path('', base_views.home, name = "home"),
     path('base/', base_views.base_temp, name = "base"),
-    path('', base_views.index, name = "index"),
+    path('index/', base_views.index, name = "index"),
     path('icons/', base_views.icons, name = "icons"),
   
     #login/register urls
@@ -29,6 +30,7 @@ urlpatterns = [
     path('login/', authentic_views.user_login, name = "login"),
     path('register/', authentic_views.user_register, name = "register"),
     path('profile/', authentic_views.user_profile, name = "profile"),
+    path('check_reg_update_sett/', imp_libs.check_reg_update_sett, name = "check_reg_update_sett"),
 
     #company urls
     path('add-bank/', bank_views.add_bank, name='add_bank'),

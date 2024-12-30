@@ -3,6 +3,9 @@ in 2024-2025.'''
 
 from .imp_libs import *
 
+def home(request):
+    return render(request, "home/home.html")
+
 @login_required
 def base_temp(request):
     return render(request, "layouts/base.html")

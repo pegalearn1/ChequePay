@@ -45,6 +45,17 @@ INSTALLED_APPS = [
     'chq_pay',
 ]
 
+
+# Use cookies to store session data
+SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
+
+# Optional: Set additional session cookie properties
+SESSION_COOKIE_NAME = 'chq_pay_session'  # Name of the cookie
+SESSION_COOKIE_SECURE = False  # Use `True` if running over HTTPS
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True  # Session persists until expiration
+SESSION_COOKIE_AGE = 1209600  # (2 weeks) Time in seconds until cookie expires
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

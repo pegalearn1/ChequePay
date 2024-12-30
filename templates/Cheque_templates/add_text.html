@@ -41,20 +41,27 @@
             
                 <!-- Draggable divs for each field, aligned horizontally -->
                 <div id="dateDiv" contenteditable="true" class="draggable border border-dark"
-                     style="position: absolute; left: {{ text.date_x_position|default:"0" }}mm; top: {{ text.date_y_position|default:"0" }}mm; display: inline-block; font-family: Arial, sans-serif; font-size: 14px;">
-                    Date
+                     style="position: absolute; left: {{ text.date_x_position|default:"0" }}mm; top: {{ text.date_y_position|default:"0" }}mm; display: inline-block; ">
+                     <span style="display: inline-block; width: 4mm;">D</span>
+                     <span style="display: inline-block; width: 4mm;">D</span>
+                     <span style="display: inline-block; width: 4mm;">M</span>
+                     <span style="display: inline-block; width: 4mm;">M</span>
+                     <span style="display: inline-block; width: 4mm;">Y</span>
+                     <span style="display: inline-block; width: 4mm;">Y</span>
+                     <span style="display: inline-block; width: 4mm;">Y</span>
+                     <span style="display: inline-block; width: 4mm;">Y</span>
                 </div>
                 <div id="payeeDiv" contenteditable="true" class="draggable border border-dark"
-                     style="position: absolute; left: {{ text.payee_x_position|default:"20" }}mm; top: {{ text.payee_y_position|default:"0" }}mm; display: inline-block; font-family: Arial, sans-serif; font-size: 14px;">
+                     style="position: absolute; left: {{ text.payee_x_position|default:"20" }}mm; top: {{ text.payee_y_position|default:"0" }}mm; display: inline-block; ">
                     Payee
                 </div>
                 <div id="amtWordsDiv" contenteditable="true" class="draggable border border-dark"
-                     style="position: absolute; left: {{ text.amtwrds_x_position|default:"40" }}mm; top: {{ text.amtwrds_y_position|default:"0" }}mm; display: inline-block; font-family: Arial, sans-serif; font-size: 14px;">
+                     style="position: absolute; left: {{ text.amtwrds_x_position|default:"40" }}mm; top: {{ text.amtwrds_y_position|default:"0" }}mm; display: inline-block; ">
                     Amount in Words
                 </div>
                 <div id="amtNumDiv" contenteditable="true" class="draggable border border-dark"
-                     style="position: absolute; left: {{ text.amtnum_x_position|default:"80" }}mm; top: {{ text.amtnum_y_position|default:"0" }}mm; display: inline-block; font-family: Arial, sans-serif; font-size: 14px;">
-                    Amount in Numbers
+                     style="position: absolute; left: {{ text.amtnum_x_position|default:"80" }}mm; top: {{ text.amtnum_y_position|default:"0" }}mm; display: inline-block; ">
+                    Amount
                 </div>
                 <div id="signDiv" contenteditable="true" class="draggable border border-dark"
                      style="position: absolute; left: {{ text.sign_x_position|default:"130" }}mm; top: {{ text.sign_y_position|default:"0" }}mm; display: inline-block;">
