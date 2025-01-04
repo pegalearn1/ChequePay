@@ -87,7 +87,7 @@ def check_reg_update_sett(request):
          
         response1.raise_for_status()
         res1 = response1.json()
-        print('printing response - ',res1)
+        
 
         if res1['status'] is True:
 
@@ -129,6 +129,8 @@ def check_reg_update_sett(request):
                 "customer_id": cust_id,
                 "password" : passw,
                 "database" : dtbs,
+                "country_id": cntry_id,
+                "country_name":country_name,
                 "allowed_templates" : templates_api
             }
 

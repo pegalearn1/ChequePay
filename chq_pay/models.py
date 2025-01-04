@@ -153,3 +153,18 @@ class ChequeIssue(models.Model):
 
 
 ##########################################################################################################################################################################################################################################################
+
+class AppUser(models.Model):
+    reg_code = models.IntegerField()
+    license_key = models.CharField(max_length=100)
+    name = models.CharField(max_length=200)
+    email = models.CharField(max_length=100)
+    cust_id = models.CharField(max_length=200)
+    country_id = models.IntegerField()
+    country_name = models.CharField(max_length=100)
+    allowed_templates = models.IntegerField()
+
+
+
+
+##########################################################################################################################################################################################################################################################
