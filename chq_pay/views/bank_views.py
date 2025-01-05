@@ -37,8 +37,16 @@ def add_bank(request):
 
 @login_required
 def bank_list(request):
-    banks = Banks.objects.all()
-    return render(request,"Banks/bank_list_new.html",{'banks':banks})
+    banks = Banks.objects.all().order_by('bank_char')
+
+    #pagination
+    per_page = 25
+    paginator = Paginator(banks, per_page)
+    page_number = request.GET.get('page')
+    banks_list = paginator.get_page(page_number)
+    #pagination
+
+    return render(request,"Banks/bank_list_new.html",{'banks':banks_list})
 
 @login_required
 def delete_bank(request, bank_id):

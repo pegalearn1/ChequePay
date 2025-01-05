@@ -1,103 +1,76 @@
 {% extends 'layouts/base.html' %}
-
-{% block title %}Cheque Issue List{% endblock title %}
-
-<!-- Specific CSS goes HERE -->
-{% block stylesheets %}{% endblock stylesheets %}
-
+{% block tiitle %}Cheque Issue{% endblock tiitle %}
 {% block content %}
 
-    <!-- Header -->
-    <div class="header bg-primary">
-        <div class="container-fluid">
-            <div class="header-body">
-                <div class="row align-items-center py-4">
-                    <div class="col-lg-6 col-7">
-                        <h6 class="h2 text-white d-inline-block mb-0">Issue Cheque</h6>
-                        <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
-                            <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
-                                <li class="breadcrumb-item">
-                                    <a href="/"><i class="fas fa-home"></i></a>
-                                </li>
-                                <li class="breadcrumb-item active" aria-current="page">Issue Cheque</li>
-                            </ol>
-                        </nav>
-                    </div>
-                </div>
+
+<!-- Page header -->
+<div class="page-header d-print-none">
+    <div class="container-xl">
+      <div class="row g-2 align-items-center">
+        <div class="col">
+          <h2 class="page-title">
+            Cheque Issue
+          </h2>
+        </div>
+        <!-- Page title actions -->
+        <div class="col-auto ms-auto d-print-none">
+            <div class="btn-list">
+             <a href="#" class="btn btn-primary d-none d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#addChequeModal">
+                <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+                Issue new Cheque
+              </a>
+              <a href="#" class="btn btn-primary d-sm-none btn-icon" data-bs-toggle="modal" data-bs-target="#addChequeModal" aria-label="addChequeModalLabel">
+                <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+              </a>
             </div>
-        </div>
-    </div>
-
-   <!-- Main Content -->
-<div class="container-fluid mt-4">
-  
-  <!-- Card for the Form -->
-  <div class="card mt-3">
-    <div class="card-body">
-      
-      <div class="d-flex justify-content-between align-items-center">
-        <h1 class="text-primary">Cheque Issue List</h1>
-        <div>
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addChequeModal">New</button>
-        </div>
+          </div>
       </div>
-      <!-- Light table -->
-      <div class="table-responsive mt-4">
-        <table class="table align-items-center table-flush">
-          <thead class="thead-light">
-            <tr>
-              <th scope="col"></th>
-              <th scope="col" class="sort" data-sort="budget">Template</th>
-              <th scope="col" class="sort" data-sort="budget">Bank</th>
-              <th scope="col" class="sort" data-sort="budget">Payee</th>
-              <th scope="col" class="sort" data-sort="budget">Cheque Date</th>
-              <th scope="col" class="sort" data-sort="budget">Cheque Amount</th>
-              <th scope="col" class="sort" data-sort="budget">Issue Date</th>
-              <th scope="col"></th>
-            </tr>
-          </thead>
-          {% if cheques %}
-          {% for cheque in cheques %}
-          <tbody class="list">
-            <tr>
-              <td class="budget">
-                <input type="checkbox" name="" id="">
-              </td>
-
-              <td class="budget">
-                {{cheque.issue_template}}
-              </td>
-
-              <td class="budget">
-                {{cheque.issue_bank}}
-              </td>
-
-              <td class="budget">
-                {{cheque.issue_payee}}
-              </td>
-
-              <td>
-                <span class="budget">
-                  {{cheque.issue_cheque_date}}  
-              </td>
-
-              <td>
-                <span class="budget">
-                  {{cheque.issue_amount}} {{cheque.issue_currency}} - {{cheque.issue_amount_wrd}}
-              </td>
-              <td>
-                <span class="budget">
-                  {{cheque.issue_issue_date}}
-              </td>
-
-              <td class="text-right">
-                <div class="dropdown">
-                  <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="fas fa-ellipsis-v"></i>
-                  </a>
-                  
-                  <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#previewChequeModal" 
+    </div>
+  </div>
+  <!-- Page body -->
+  <div class="page-body">
+    <div class="container-xl">
+        <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Cheque Issue List</h3>
+            </div>
+           <div class="table-responsive" >
+              <table class="table card-table table-vcenter text-nowrap datatable">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Template</th>
+                    <th>Bank</th>
+                    <th>Payee</th>
+                    <th>Cheque Date</th>
+                    <th>Cheque Amount</th>
+                    <th>Issue Date</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% if cheques %}
+                  {% for cheque in cheques %}
+                  <tr>
+                    <td class="budget">
+                      <input type="checkbox" name="" id="">
+                    </td>
+                    <td>{{cheque.issue_template}}</td>
+                    <td>{{cheque.issue_bank}}</td>
+                    <td>{{cheque.issue_payee}}</td>
+                    <td>{{cheque.issue_cheque_date}}</td>
+                    <td>{{cheque.issue_amount}} {{cheque.issue_currency}} - {{cheque.issue_amount_wrd}}</td>
+                    <td>{{cheque.issue_issue_date}}</td>
+                    <td class="text-end">
+                      
+                        <div class="dropdown">
+                        <button class="btn dropdown-toggle align-text-top" data-bs-toggle="dropdown">
+                          Actions
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end">
+                          <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#previewChequeModal" 
                       data-template-id="{{cheque.issue_template.id}}" 
                       data-template="{{ cheque.issue_template.background_image.url }}" 
                       data-width="{{ cheque.issue_template.width }}" 
@@ -115,126 +88,186 @@
                       data-payee="{{ cheque.issue_payee }}" 
                       data-amount="{{ cheque.issue_amount}}" 
                       data-amount-word="{{ cheque.issue_amount_wrd}}"  
-                      data-sign=" {% if cheque.issue_sign %}{{ cheque.issue_sign.url}}{% endif %}">
-                        <i class="fas fa-eye text-success"></i> Preview Cheque
-                    </a>
+                      data-sign=" {% if cheque.issue_sign %}{{ cheque.issue_sign.url}}{% endif %}"> Preview Cheque</a>
+                          
+                          <a class="dropdown-item" href="{% url 'print_cheque' cheque.id %}" target="_blank"> Print Cheque</a>
+                          
+                          <a class="dropdown-item" onclick="if (confirm('Are You sure? Want to delete cheque to {{cheque.issue_payee}} on {{cheque.issue_cheque_date}} ?')){return true;}else{event.stopPropagation(); event.preventDefault();};" href="{% url 'delete_chequeissue' cheque.id %}">
+                          Delete Issued Cheque
+                          </a>
+                        </div>
+                      </div>
 
-                    <a class="dropdown-item" href="{% url 'print_cheque' cheque.id %}" target="_blank">
-                      <i class="fas fa-print text-primary"></i> Print Cheque
-                  </a>
 
-                    <a class="dropdown-item text-danger" onclick="if (confirm('Are You sure? Want to delete cheque to {{cheque.issue_payee}} on {{cheque.issue_cheque_date}} ?')){return true;}else{event.stopPropagation(); event.preventDefault();};" href="{% url 'delete_chequeissue' cheque.id %}"><i class="fas fa-trash-alt text-danger"></i> Delete Issued Cheque</a>
-                    
-                  </div>
-                </div>
-              </td>
-            </tr>
-            
-          </tbody>
-          {% endfor %}
+                    </td>
+                  </tr>
+                  {% endfor %}
           {% else %}
           <tr>
-              <td colspan="6" class="text-center">No Cheques Issued</td>
+              <td colspan="8" class="text-center">No Cheques Issued.</td>
           </tr>
           {% endif %}
-        </table>
-      </div>
-      <!-- table-->
-    
-      
-    </div>
-    <!-- card-body -->
-  </div>
-  <!-- Card -->
-
-
-<!--add new cheque_issue Modal -->
-<div class="modal fade" id="addChequeModal" tabindex="-1" role="dialog" aria-labelledby="addChequeModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-scrollable" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="addChequeModalLabel">Issue New Cheque</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form id="addChequeForm" method="POST" action="{% url 'cheque_issue' %}" enctype="multipart/form-data" >
-          {% csrf_token %}
-          <div class="form-group">
-            <label for="template">Template</label>
-            <select class="form-control" name="chq_template" id="chq_template" required>
-              <option value="" disabled>Select Template</option>
-              {% for template in templates %}
-              <option value="{{template.id}}">{{template.name}}</option>
-              {% endfor %}
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="chq_no">Cheque Number</label>
-            <input type="text" class="form-control" id="chq_no" name="chq_no" required>
-          </div>
-          <div class="form-group">
-            <label for="chq_date">Cheque Date</label>
-            <input type="date" class="form-control" id="chq_date" name="chq_date" required>
-          </div>
-          <div class="form-group">
-            <label for="template">Payee</label>
-            <select class="form-control" name="chq_payee" id="chq_payee" required>
-              <option value="" disabled>Select Payee</option>
-              {% for payee in payees %}
-              <option value="{{payee.id}}">{{payee.payee_name}}</option>
-              {% endfor %}
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="chq_date">Cheque Amount</label>
-            <input type="text" class="form-control" id="chq_amt" name="chq_amt" required>
-          </div>
-          <div class="form-group">
-            <label for="chq_date">Cheque Narration</label>
-            <textarea class="form-control" id="chq_narration" name="chq_narration" required></textarea>
-          </div>
-          <div class="form-group">
-            <label for="chq_sign">Cheque Issue Sign</label>
-            <input type="file" name="chq_sign" id="chq_sign" class="form-control-file" style="max-width: 400px; width: 100%;" accept="image/*" onchange="previewImage(event)">
-            <!-- Image Preview -->
-            <div id="image-preview" class="mt-3">
-              <img id="selected-image" src="" alt="Selected Image" style="display: none; max-width: 100%; height: auto; border: 1px solid #ddd; padding: 5px;">
+                </tbody>
+              </table>
             </div>
+
+            <!-- pagination -->
+            <div class="card-footer d-flex align-items-center">
+              <p class="m-0 text-secondary">
+                Showing <span>{{ cheques.start_index }}</span> to <span>{{ cheques.end_index }}</span> of <span>{{ cheques.paginator.count }}</span> entries
+              </p>
+              <ul class="pagination m-0 ms-auto">
+                {% if cheques.has_previous %}
+                <li class="page-item">
+                  <a class="page-link" href="?page=1{% if searched %}&searched={{ searched }}{% endif %}{% if company %}&company={{ company }}{% endif %}{% if emp_loc %}&emp_loc={{ emp_loc|join:"," }}{% endif %}{% if emp_department %}&emp_department={{ emp_department|join:"," }}{% endif %}" tabindex="-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path d="M17 6l-6 6l6 6" />
+                      <path d="M11 6l-6 6l6 6" />
+                    </svg>
+                    First
+                  </a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ cheques.previous_page_number }}{% if searched %}&searched={{ searched }}{% endif %}{% if company %}&company={{ company }}{% endif %}{% if emp_loc %}&emp_loc={{ emp_loc|join:"," }}{% endif %}{% if emp_department %}&emp_department={{ emp_department|join:"," }}{% endif %}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path d="M15 6l-6 6l6 6" />
+                    </svg>
+                    
+                  </a>
+                </li>
+                {% endif %}
+            
+                {% for i in cheques.paginator.page_range %}
+                {% if cheques.number == i %}
+                <li class="page-item active"><a class="page-link" href="#">{{ i }}</a></li>
+                {% elif i > cheques.number|add:'-3' and i < cheques.number|add:'3' %}
+                <li class="page-item"><a class="page-link" href="?page={{ i }}{% if searched %}&searched={{ searched }}{% endif %}{% if company %}&company={{ company }}{% endif %}{% if emp_loc %}&emp_loc={{ emp_loc|join:"," }}{% endif %}{% if emp_department %}&emp_department={{ emp_department|join:"," }}{% endif %}">{{ i }}</a></li>
+                {% endif %}
+                {% endfor %}
+            
+                {% if cheques.has_next %}
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ cheques.next_page_number }}{% if searched %}&searched={{ searched }}{% endif %}{% if company %}&company={{ company }}{% endif %}{% if emp_loc %}&emp_loc={{ emp_loc|join:"," }}{% endif %}{% if emp_department %}&emp_department={{ emp_department|join:"," }}{% endif %}">
+                    
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path d="M9 6l6 6l-6 6" />
+                    </svg>
+                  </a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ cheques.paginator.num_pages }}{% if searched %}&searched={{ searched }}{% endif %}{% if company %}&company={{ company }}{% endif %}{% if emp_loc %}&emp_loc={{ emp_loc|join:"," }}{% endif %}{% if emp_department %}&emp_department={{ emp_department|join:"," }}{% endif %}">
+                    Last
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path d="M7 6l6 6l-6 6" />
+                      <path d="M13 6l6 6l-6 6" />
+                    </svg>
+                  </a>
+                </li>
+                {% endif %}
+              </ul>
+            </div>
+            <!-- pagination -->
+            
           </div>
-          
-          <!-- image script -->
-          <script>
-            function previewImage(event) {
-                const input = event.target;
-                const preview = document.getElementById('selected-image');
-                
-                if (input.files && input.files[0]) {
-                    const reader = new FileReader();
-                    
-                    reader.onload = function (e) {
-                        preview.src = e.target.result;
-                        preview.style.display = 'block'; // Show the image
-                    };
-                    
-                    reader.readAsDataURL(input.files[0]); // Read the image file as a data URL
-                }
-            }
-            </script>
+      </div>
+    </div>
+
+
+
+
+
+<!--add new Currency Modal -->
+<div class="modal modal-blur fade" id="addChequeModal" tabindex="-1" role="dialog" aria-labelledby="addChequeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addChequeModalLabel">Issue New Cheque</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="mb-3">
+          <form id="addChequeForm" method="POST" action="{% url 'cheque_issue' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group mb-2">
+              <label for="template" class="form-label">Template</label>
+              <select class="form-control" name="chq_template" id="chq_template" required>
+                <option value="" disabled>Select Template</option>
+                {% for template in templates %}
+                <option value="{{template.id}}">{{template.name}}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-group mb-2">
+              <label for="chq_no" class="form-label">Cheque Number</label>
+              <input type="text" class="form-control" id="chq_no" name="chq_no" required>
+            </div>
+            <div class="form-group mb-2">
+              <label for="chq_date" class="form-label">Cheque Date</label>
+              <input type="date" class="form-control" id="chq_date" name="chq_date" required>
+            </div>
+            <div class="form-group mb-2">
+              <label for="template" class="form-label">Payee</label>
+              <select class="form-control" name="chq_payee" id="chq_payee" required>
+                <option value="" disabled>Select Payee</option>
+                {% for payee in payees %}
+                <option value="{{payee.id}}">{{payee.payee_name}}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-group mb-2">
+              <label for="chq_date" class="form-label">Cheque Amount</label>
+              <input type="text" class="form-control" id="chq_amt" name="chq_amt" required>
+            </div>
+            <div class="form-group mb-2">
+              <label for="chq_date" class="form-label">Cheque Narration</label>
+              <textarea class="form-control" id="chq_narration" name="chq_narration" required></textarea>
+            </div>
+            <div class="form-group mb-2">
+              <label for="chq_sign" class="form-label">Cheque Issue Sign</label>
+              <input type="file" name="chq_sign" id="chq_sign" class="form-control-file" style="max-width: 400px; width: 100%;" accept="image/*" onchange="previewImage(event)">
+              <!-- Image Preview -->
+              <div id="image-preview" class="mt-3">
+                <img id="selected-image" src="" alt="Selected Image" style="display: none; max-width: 100%; height: auto; border: 1px solid #ddd; padding: 5px;">
+              </div>
+            </div>
+            
             <!-- image script -->
-             
-          <button type="submit" class="btn btn-primary">Save</button>
+            <script>
+              function previewImage(event) {
+                  const input = event.target;
+                  const preview = document.getElementById('selected-image');
+                  
+                  if (input.files && input.files[0]) {
+                      const reader = new FileReader();
+                      
+                      reader.onload = function (e) {
+                          preview.src = e.target.result;
+                          preview.style.display = 'block'; // Show the image
+                      };
+                      
+                      reader.readAsDataURL(input.files[0]); // Read the image file as a data URL
+                  }
+              }
+              </script>
+              <!-- image script -->
+            <div class="modal-footer">
+            <button type="button" class="btn me-auto" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
         </form>
+        </div>
+        </div>
       </div>
     </div>
   </div>
-</div>
-
-
-
-
-{% comment %} Edit Cheque Issue Modal
+  
+  
+  
+  {% comment %} Edit Cheque Issue Modal
 <div class="modal fade" id="editTemplateModal" tabindex="-1" role="dialog" aria-labelledby="editTemplateModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -310,12 +343,9 @@
 </div> {% endcomment %}
 
 
-
-
-
 <!-- Preview Cheque Issue Modal -->
-<div class="modal fade" id="previewChequeModal" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog" style="position: relative; max-width: none; margin: 20px; padding: 0; width: auto; height: auto;">
+<div class="modal modal-blur fade" id="previewChequeModal" tabindex="-1" role="dialog" aria-hidden="false">
+  <div class="modal-dialog modal-lg modal-dialog-centered" style="position: relative; max-width: none; margin: 20px; padding: 0; width: auto; height: auto;">
     <div id="cheque-template-container" style="position: relative; display: block; margin: auto;">
       <img id="cheque-template-image" src="" alt="Cheque Template" style="display: block; margin: auto;">
     </div>
@@ -325,19 +355,12 @@
 
 
 
-
-</div>
-<!-- container-fluid -->
-
-    <!-- Footer -->
-    <div class="container-fluid mt-6">
-        {% include "includes/footer.html" %}
-    </div>
-
 {% endblock content %}
 
-<!-- Specific JS goes HERE --> 
-{% block javascripts %}
+
+{% block scripts %}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
   // Handle Edit Template Form Submission
@@ -531,12 +554,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
-
-
-
-
-
-
-
 </script>
-{% endblock javascripts %}
+
+
+
+
+    
+{% endblock scripts %}
+

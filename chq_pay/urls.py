@@ -23,7 +23,7 @@ urlpatterns = [
     path('', base_views.home, name = "home"),
     path('base/', base_views.base_temp, name = "base"),
     path('index/', base_views.index, name = "index"),
-    path('icons/', base_views.icons, name = "icons"),
+    path('profile/', base_views.profile, name = "profile"),
   
     #login/register urls
     path("logout/", authentic_views.user_logout, name="logout"),

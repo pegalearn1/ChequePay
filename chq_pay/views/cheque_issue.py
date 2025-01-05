@@ -68,7 +68,7 @@ def cheque_issue(request):
 
 @login_required
 def cheque_issue_list(request):
-    cheques = ChequeIssue.objects.all()
+    cheques = ChequeIssue.objects.all().order_by('-issue_cheque_date')
     templates = ChequeTemplate.objects.all()
     banks = Banks.objects.all()
     currencies = Currencies.objects.all()
@@ -76,7 +76,15 @@ def cheque_issue_list(request):
     chq_txts = ChequeText.objects.all()
 
 
-    context = {'cheques':cheques,
+    #pagination
+    per_page = 25
+    paginator = Paginator(cheques, per_page)
+    page_number = request.GET.get('page')
+    cheques_issued = paginator.get_page(page_number)
+    #pagination
+
+
+    context = {'cheques':cheques_issued,
                'templates': templates,
                'banks':banks,
                'currencies':currencies,

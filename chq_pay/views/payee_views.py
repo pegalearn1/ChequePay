@@ -36,8 +36,16 @@ def add_payee(request):
 
 @login_required
 def payee_list(request):
-    payees = Payee.objects.all()
-    return render(request,"Payees/payee_list_new.html",{'payees':payees})
+    payees = Payee.objects.all().order_by('payee_name')
+
+    #pagination
+    per_page = 25
+    paginator = Paginator(payees, per_page)
+    page_number = request.GET.get('page')
+    payee_list = paginator.get_page(page_number)
+    #pagination
+
+    return render(request,"Payees/payee_list_new.html",{'payees':payee_list})
 
 
 @login_required

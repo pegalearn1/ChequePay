@@ -32,8 +32,16 @@ def add_currency(request):
 
 @login_required
 def currency_list(request):
-    currencies = Currencies.objects.all()
-    return render(request,"Currency/currency_list_new.html",{'currencies':currencies})
+    currencies = Currencies.objects.all().order_by('currency_char')
+
+    #pagination
+    per_page = 25
+    paginator = Paginator(currencies, per_page)
+    page_number = request.GET.get('page')
+    currency_list = paginator.get_page(page_number)
+    #pagination
+
+    return render(request,"Currency/currency_list_new.html",{'currencies':currency_list})
 
 
 @login_required

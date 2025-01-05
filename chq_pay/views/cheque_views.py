@@ -52,11 +52,18 @@ def upload_template(request):
 
 @login_required
 def template_list(request):
-    templates = ChequeTemplate.objects.all()
+    templates = ChequeTemplate.objects.all().order_by('name')
     banks = Banks.objects.all()
     currencies = Currencies.objects.all()
 
-    context = {'templates': templates,
+    #pagination
+    per_page = 25
+    paginator = Paginator(templates, per_page)
+    page_number = request.GET.get('page')
+    temp_list = paginator.get_page(page_number)
+    #pagination
+
+    context = {'templates': temp_list,
                'banks':banks,
                'currencies':currencies}
     return render(request, 'Cheque_templates/template_list.html', context )
