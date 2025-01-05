@@ -1,179 +1,159 @@
 {% extends 'layouts/base.html' %}
+{% block tiitle %}Template Details{% endblock tiitle %}
 
-{% block title %}Template List{% endblock title %}
-
-<!-- Specific CSS goes HERE -->
-{% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
 
-    <!-- Header -->
-    <div class="header bg-primary">
-        <div class="container-fluid">
-            <div class="header-body">
-                <div class="row align-items-center py-4">
-                    <div class="col-lg-6 col-7">
-                        <h6 class="h2 text-white d-inline-block mb-0">Template Details</h6>
-                        <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
-                            <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
-                                <li class="breadcrumb-item">
-                                    <a href="/"><i class="fas fa-home"></i></a>
-                                </li>
-                                <li class="breadcrumb-item">
-                                  <a href="{% url "template_list" %}">Cheque Templates</a>
-                              </li>
-                                <li class="breadcrumb-item active" aria-current="page">Template Details</li>
-                            </ol>
-                        </nav>
-                    </div>
-                </div>
-            </div>
+<!-- Page header -->
+<div class="page-header d-print-none">
+    <div class="container-xl">
+      <div class="row g-2 align-items-center">
+        <div class="col">
+          <h2 class="page-title">
+            Template Details
+          </h2>
         </div>
-    </div>
-
-   <!-- Main Content -->
-<div class="container-fluid mt-4">
-  
-  <!-- Card for the Form -->
-  <div class="card mt-3">
-    <div class="card-body">
-      
-      <h1 class="text-primary">{{ template.name }}</h1><br>
-
-      <div style="position: relative; display: inline-block;">
-        <img src="{{ template.background_image.url }}" style="width: {{ template.width }}mm; height: {{ template.height }}mm;">
-          
-        <!-- Render each text on the cheque at its specific position -->
-
-        {% for texts in chq_txts  %}
-        
-        <div style="position: absolute; left: {{ texts.date_x_position }}mm; top: {{ texts.date_y_position }}mm; ">
-          <span style="display: inline-block; width: 4mm;">D</span>
-          <span style="display: inline-block; width: 4mm;">D</span>
-          <span style="display: inline-block; width: 4mm;">M</span>
-          <span style="display: inline-block; width: 4mm;">M</span>
-          <span style="display: inline-block; width: 4mm;">Y</span>
-          <span style="display: inline-block; width: 4mm;">Y</span>
-          <span style="display: inline-block; width: 4mm;">Y</span>
-          <span style="display: inline-block; width: 4mm;">Y</span>
-        </div>
-        <div style="position: absolute; left: {{ texts.payee_x_position }}mm; top: {{ texts.payee_y_position }}mm;">
-          Payee
-        </div>
-        <div style="position: absolute; left: {{ texts.amtwrds_x_position }}mm; top: {{ texts.amtwrds_y_position }}mm;">
-          Amount In Words
-        </div>
-        <div style="position: absolute; left: {{ texts.amtnum_x_position }}mm; top: {{ texts.amtnum_y_position }}mm;">
-          Amount
-        </div>
-        <div style="position: absolute; left: {{ texts.sign_x_position }}mm; top: {{ texts.sign_y_position }}mm; ">
-          Signature
-        </div>
-
-        {% endfor %}
-        
-    </div>
-    
-    
-    <div class = "mt-4">
-    <a href="{% url 'add_text_to_template' template.id %}" class="btn btn-primary">Set Text Positions</a>
-    </div><br> 
-    <h2 class="text-primary">Text Positions</h2>
-    <!-- Light table -->
-    <div class="table-responsive">
-        <table class="table align-items-center table-flush">
-          <thead class="thead-light">
-            <tr>
-              <th scope="col" class="sort" >Attributes</th>
-              <th scope="col" class="sort" >Position</th>
-              <th scope="col"></th>
-            </tr>
-          </thead>
-          
-          <tbody class="list">
-
-            {% if chq_txts %}
-            {% for texts in chq_txts  %}
-           
-            <tr>
-                <td class="budget">
-                  Date
-                  </td>
-              <td class="budget">
-                X: {{ texts.date_x_position }}mm, Y: {{ texts.date_y_position }}mm
-              </td>
-              
-            </tr>
-            <tr>
-              <td class="budget">
-                Payee
-                </td>
-            <td class="budget">
-              X: {{ texts.payee_x_position }}mm, Y: {{ texts.payee_y_position }}mm
-            </td>
-            
-          </tr>
-          <tr>
-            <td class="budget">
-              Amount In Words
-              </td>
-          <td class="budget">
-            X: {{ texts.amtwrds_x_position }}mm, Y: {{ texts.amtwrds_y_position }}mm
-          </td>
-          
-        </tr>
-        <tr>
-          <td class="budget">
-            Amount in Numbers
-            </td>
-        <td class="budget">
-          X: {{ texts.amtnum_x_position }}mm, Y: {{ texts.amtnum_y_position }}mm
-        </td>
-       
-      </tr>
-      <tr>
-        <td class="budget">
-          Signature
-          </td>
-      <td class="budget">
-        X: {{ texts.sign_x_position }}mm, Y: {{ texts.sign_y_position }}mm
-      </td>
-      
-    </tr>
-    
-    {% endfor %}
-
-    {% else %}
-    <tr>
-      <td colspan="4" class="text-center">No Text Attributes found.</td>
-  </tr>
-    
-
-    {% endif %}
-          </tbody>
-          
-        </table>
+        <!-- Page title actions -->
       </div>
-      <!-- table-->
-
-
-
     </div>
-    <!-- card-body -->
   </div>
-  <!-- Card -->
-</div>
-<!-- container-fluid -->
-
-    <!-- Footer -->
-    <div class="container-fluid mt-6">
-        {% include "includes/footer.html" %}
+  <!-- Page body -->
+<div class="page-body">
+    <div class="container-xl">
+        <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Template Name - {{ template.name }} </h3>
+            </div>
+            <div class="card-body">
+          
+                <div style="position: relative; display: inline-block;">
+                  <img src="{{ template.background_image.url }}" style="width: {{ template.width }}mm; height: {{ template.height }}mm;">
+                    
+                  <!-- Render each text on the cheque at its specific position -->
+          
+                  {% for texts in chq_txts  %}
+                  
+                  <div class = "text-primary" style="position: absolute; left: {{ texts.date_x_position }}mm; top: {{ texts.date_y_position }}mm; ">
+                    <span style="display: inline-block; width: 4mm;">D</span>
+                    <span style="display: inline-block; width: 4mm;">D</span>
+                    <span style="display: inline-block; width: 4mm;">M</span>
+                    <span style="display: inline-block; width: 4mm;">M</span>
+                    <span style="display: inline-block; width: 4mm;">Y</span>
+                    <span style="display: inline-block; width: 4mm;">Y</span>
+                    <span style="display: inline-block; width: 4mm;">Y</span>
+                    <span style="display: inline-block; width: 4mm;">Y</span>
+                  </div>
+                  <div class = "text-primary" style="position: absolute; left: {{ texts.payee_x_position }}mm; top: {{ texts.payee_y_position }}mm;">
+                    Payee
+                  </div>
+                  <div class = "text-primary" style="position: absolute; left: {{ texts.amtwrds_x_position }}mm; top: {{ texts.amtwrds_y_position }}mm;">
+                    Amount In Words
+                  </div>
+                  <div class = "text-primary" style="position: absolute; left: {{ texts.amtnum_x_position }}mm; top: {{ texts.amtnum_y_position }}mm;">
+                    Amount
+                  </div>
+                  <div class = "text-primary" style="position: absolute; left: {{ texts.sign_x_position }}mm; top: {{ texts.sign_y_position }}mm; ">
+                    Signature
+                  </div>
+          
+                  {% endfor %}
+                  
+              </div>
+              
+              
+              <div class = "mt-4">
+              <a href="{% url 'add_text_to_template' template.id %}" class="btn btn-primary">Set Text Positions</a>
+              </div><br> 
+              <h2 class="text-primary">Text Positions</h2>
+              <!-- Light table -->
+              <div class="table-responsive">
+                  <table class="table align-items-center table-flush">
+                    <thead class="thead-light">
+                      <tr>
+                        <th scope="col" class="sort" >Attributes</th>
+                        <th scope="col" class="sort" >Position</th>
+                        <th scope="col"></th>
+                      </tr>
+                    </thead>
+                    
+                    <tbody class="list">
+          
+                      {% if chq_txts %}
+                      {% for texts in chq_txts  %}
+                     
+                      <tr>
+                          <td class="budget">
+                            Date
+                            </td>
+                        <td class="budget">
+                          X: {{ texts.date_x_position }}mm, Y: {{ texts.date_y_position }}mm
+                        </td>
+                        
+                      </tr>
+                      <tr>
+                        <td class="budget">
+                          Payee
+                          </td>
+                      <td class="budget">
+                        X: {{ texts.payee_x_position }}mm, Y: {{ texts.payee_y_position }}mm
+                      </td>
+                      
+                    </tr>
+                    <tr>
+                      <td class="budget">
+                        Amount In Words
+                        </td>
+                    <td class="budget">
+                      X: {{ texts.amtwrds_x_position }}mm, Y: {{ texts.amtwrds_y_position }}mm
+                    </td>
+                    
+                  </tr>
+                  <tr>
+                    <td class="budget">
+                      Amount in Numbers
+                      </td>
+                  <td class="budget">
+                    X: {{ texts.amtnum_x_position }}mm, Y: {{ texts.amtnum_y_position }}mm
+                  </td>
+                 
+                </tr>
+                <tr>
+                  <td class="budget">
+                    Signature
+                    </td>
+                <td class="budget">
+                  X: {{ texts.sign_x_position }}mm, Y: {{ texts.sign_y_position }}mm
+                </td>
+                
+              </tr>
+              
+              {% endfor %}
+          
+              {% else %}
+              <tr>
+                <td colspan="4" class="text-center">No Text Attributes found.</td>
+            </tr>
+              
+          
+              {% endif %}
+                    </tbody>
+                    
+                  </table>
+                </div>
+                <!-- table-->
+          
+          
+          
+              </div>
+              <!-- card-body -->
+           
+        </div>
     </div>
+</div>
 
 {% endblock content %}
 
-<!-- Specific JS goes HERE --> 
-{% block javascripts %}
-    <script src="/static/assets/vendor/chart.js/dist/Chart.min.js"></script>
-    <script src="/static/assets/vendor/chart.js/dist/Chart.extension.js"></script>
-{% endblock javascripts %}
+
+{% block scripts %}
+
+{% endblock scripts %}

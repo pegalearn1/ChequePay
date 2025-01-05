@@ -144,7 +144,7 @@ a.btn-cta {
   text-align: center;
 }
 .header .logo .logo-icon {
-width: 150px;  margin-right: 0;
+width: 200px;  margin-right: 0;
 }
 .header .main-nav .nav .nav-item a {
   color: #202124;
@@ -177,7 +177,7 @@ width: 150px;  margin-right: 0;
   top: -3px;
 }
 .header .logo .logo-icon {
-  width: 150px;
+  width: 200px;
 }
 .header .logo .highlight {
   font-weight: 800;

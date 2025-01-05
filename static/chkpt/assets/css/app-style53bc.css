@@ -3,7 +3,7 @@
 .truncate300{max-width: 300px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
 .clearer{clear:both;}
 label.required::after{content:' *';color:#cc0000;}
-.login-logo .logo-icon {width: 150px}
+.login-logo .logo-icon {width: 200px}
 .content-header>.actionbtns>li+li:before{display:inline-block}
 .open.btn-dwn>.dropdown-menu{min-width:100%}
 .parsley-errors-list,.parsley-error-list {margin-top: 4px;padding: 0;}

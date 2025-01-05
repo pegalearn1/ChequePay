@@ -4,6 +4,7 @@ in 2024-2025.'''
 from .imp_libs import *
 from chq_pay.models import ChequeTemplate, ChequeText, Banks, Currencies, Payee, ChequeIssue
 
+@login_required
 def cheque_issue(request):
     if request.method == 'POST':
         issue_template = request.POST.get('chq_template')
@@ -65,6 +66,7 @@ def cheque_issue(request):
             print("error : ",str(e))
     return JsonResponse({"success": False})
 
+@login_required
 def cheque_issue_list(request):
     cheques = ChequeIssue.objects.all()
     templates = ChequeTemplate.objects.all()
@@ -82,6 +84,8 @@ def cheque_issue_list(request):
                'chq_txts':chq_txts}
     return render(request, 'Cheque_issue/cheque_issue_list.html', context )
 
+
+@login_required
 def delete_chequeissue(request, chequeissue_id):
     cheque_issue = get_object_or_404(ChequeIssue, id=chequeissue_id)
     cheque_issue.delete()
@@ -89,6 +93,8 @@ def delete_chequeissue(request, chequeissue_id):
     return redirect('cheque_issue_list')
 
 
+
+@login_required
 def edit_template(request):
     if request.method == "POST":
         template_id = request.POST.get("template_id")
@@ -129,6 +135,8 @@ def edit_template(request):
 
 
 
+
+@login_required
 def get_cheque_text(request):
     template_id = request.GET.get('template_id')
 
@@ -155,7 +163,7 @@ def get_cheque_text(request):
     
 
 
-
+@login_required
 def print_cheque(request, cheque_id):
     # Fetch the cheque issue and its template details
     cheque_issue = get_object_or_404(ChequeIssue, id=cheque_id)

@@ -1,171 +1,209 @@
 {% extends 'layouts/base.html' %}
-
-{% block title %}Payee List{% endblock title %}
-
-<!-- Specific CSS goes HERE -->
-{% block stylesheets %}{% endblock stylesheets %}
-
+{% block tiitle %}Payees{% endblock tiitle %}
 {% block content %}
-<!-- Header -->
-<div class="header bg-primary">
-    <div class="container-fluid">
-        <div class="header-body">
-            <div class="row align-items-center py-4">
-                <div class="col-lg-6 col-7">
-                    <h6 class="h2 text-white d-inline-block mb-0">Payees</h6>
-                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
-                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
-                            <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i></a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Payees</li>
-                        </ol>
-                    </nav>
-                </div>
-            </div>
+
+
+<!-- Page header -->
+<div class="page-header d-print-none">
+    <div class="container-xl">
+      <div class="row g-2 align-items-center">
+        <div class="col">
+          <h2 class="page-title">
+            Payees
+          </h2>
         </div>
+        <!-- Page title actions -->
+        <div class="col-auto ms-auto d-print-none">
+            <div class="btn-list">
+             <a href="#" class="btn btn-primary d-none d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#addPayeeModal">
+                <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+                Create new Payee
+              </a>
+              <a href="#" class="btn btn-primary d-sm-none btn-icon" data-bs-toggle="modal" data-bs-target="#addPayeeModal" aria-label="addPayeeModalLabel">
+                <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+              </a>
+            </div>
+          </div>
+      </div>
     </div>
-</div>
-
-<!-- Main Content -->
-<div class="container-fluid mt-4">
-    <!-- Card for Payee List -->
-    <div class="card mt-3">
-        <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center">
-                <h1 class="text-primary">Payee List</h1>
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addPayeeModal">New</button>
+  </div>
+  <!-- Page body -->
+  <div class="page-body">
+    <div class="container-xl">
+        <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Payee List</h3>
             </div>
+           <div class="table-responsive" >
+              <table class="table card-table table-vcenter text-nowrap datatable">
+                <thead>
+                  <tr>
+                    <th>Payee Name</th>
+                    <th>Mobile Number</th>
+                    <th>Email</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% if payees %}
+                        {% for payee in payees %}
+                  <tr>
+                    <td>{{ payee.payee_name }}</td>
+                    <td>{{ payee.mobile_no }}</td>
+                    <td>{{ payee.email }}</td>
+                    <td class="text-end">
+                      
+                        <div class="dropdown">
+                        <button class="btn dropdown-toggle align-text-top" data-bs-toggle="dropdown">
+                          Actions
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end">
+                          <a class="dropdown-item" href="#" data-bs-toggle="modal"  
+                          data-bs-target="#editPayeeModal" 
+                          data-id="{{ payee.id }}" 
+                          data-payee-name="{{ payee.payee_name }}" 
+                          data-mobile-no="{{ payee.mobile_no }}" 
+                          data-email="{{ payee.email }}">
+                            Edit Payee
+                          </a>
+                          <a class="dropdown-item" onclick="return confirm('Are you sure you want to delete {{ payee.payee_name }}?')" 
+                          href="{% url 'delete_payee' payee.id %}">
+                            Delete Payee
+                          </a>
+                        </div>
+                      </div>
 
-            <!-- Table -->
-            <div class="table-responsive mt-4">
-                <table class="table align-items-center table-flush">
-                    <thead class="thead-light">
-                        <tr>
-                            <th>Payee Name</th>
-                            <th>Mobile Number</th>
-                            <th>Email</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody class="list">
-                        {% if payees %}
-                            {% for payee in payees %}
-                                <tr>
-                                    <td>{{ payee.payee_name }}</td>
-                                    <td>{{ payee.mobile_no }}</td>
-                                    <td>{{ payee.email }}</td>
-                                    <td class="text-right">
-                                        <div class="dropdown">
-                                            <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <i class="fas fa-ellipsis-v"></i>
-                                            </a>
-                                            <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                                                <a class="dropdown-item" href="#" 
-                                                   data-toggle="modal" 
-                                                   data-target="#editPayeeModal" 
-                                                   data-id="{{ payee.id }}" 
-                                                   data-payee-name="{{ payee.payee_name }}" 
-                                                   data-mobile-no="{{ payee.mobile_no }}" 
-                                                   data-email="{{ payee.email }}">
-                                                    <i class="fas fa-edit text-primary"></i> Edit Payee
-                                                </a>
-                                                <a class="dropdown-item text-danger" 
-                                                   onclick="return confirm('Are you sure you want to delete {{ payee.payee_name }}?')" 
-                                                   href="{% url 'delete_payee' payee.id %}">
-                                                    <i class="fas fa-trash-alt text-danger"></i> Delete Payee
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        {% else %}
-                            <tr>
-                                <td colspan="4" class="text-center">No payees found.</td>
-                            </tr>
-                        {% endif %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
 
-    <!-- Add Payee Modal -->
-    <div class="modal fade" id="addPayeeModal" tabindex="-1" role="dialog" aria-labelledby="addPayeeModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addPayeeModalLabel">Add New Payee</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="addPayeeForm" method="POST" action="{% url 'add_payee' %}">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <label for="payee_name">Payee Name</label>
-                            <input type="text" class="form-control" id="payee_name" name="payee_name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="payee_mobile_no">Mobile Number</label>
-                            <input type="text" class="form-control" id="payee_mobile_no" name="payee_mobile_no" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="payee_email">Email</label>
-                            <input type="email" class="form-control" id="payee_email" name="payee_email">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Save</button>
-                    </form>
-                </div>
+                    </td>
+                  </tr>
+                  {% endfor %}
+          {% else %}
+          <tr>
+              <td colspan="4" class="text-center">No Payees found.</td>
+          </tr>
+          {% endif %}
+                </tbody>
+              </table>
             </div>
-        </div>
+            <div class="card-footer d-flex align-items-center">
+              <p class="m-0 text-secondary">Showing <span>1</span> to <span>8</span> of <span>16</span> entries</p>
+              <ul class="pagination m-0 ms-auto">
+                <li class="page-item disabled">
+                  <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                    <!-- Download SVG icon from http://tabler-icons.io/i/chevron-left -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 6l-6 6l6 6" /></svg>
+                    prev
+                  </a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item active"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">4</a></li>
+                <li class="page-item"><a class="page-link" href="#">5</a></li>
+                <li class="page-item">
+                  <a class="page-link" href="#">
+                    next <!-- Download SVG icon from http://tabler-icons.io/i/chevron-right -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6l-6 6" /></svg>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+      </div>
     </div>
 
-    <!-- Edit Payee Modal -->
-    <div class="modal fade" id="editPayeeModal" tabindex="-1" role="dialog" aria-labelledby="editPayeeModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editPayeeModalLabel">Edit Payee</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="editPayeeForm" method="POST" action="{% url 'edit_payee' %}">
-                        {% csrf_token %}
-                        <input type="hidden" id="edit_payee_id" name="payee_id">
-                        <div class="form-group">
-                            <label for="edit_payee_name">Payee Name</label>
-                            <input type="text" class="form-control" id="edit_payee_name" name="payee_name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="edit_payee_mobile_no">Mobile Number</label>
-                            <input type="text" class="form-control" id="edit_payee_mobile_no" name="payee_mobile_no" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="edit_payee_email">Email</label>
-                            <input type="email" class="form-control" id="edit_payee_email" name="payee_email" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Update</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
-<!-- Footer -->
-<div class="container-fluid mt-6">
-    {% include "includes/footer.html" %}
-</div>
+
+
+
+<!--add new Payee Modal -->
+<div class="modal modal-blur fade" id="addPayeeModal" tabindex="-1" role="dialog" aria-labelledby="addPayeeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addPayeeModalLabel">Add New Payee</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="mb-3">
+          <form id="addPayeeForm" method="POST" action="{% url 'add_payee' %}">
+            {% csrf_token %}
+            <div class="form-group mb-2">
+                <label for="payee_name" class="form-label">Payee Name</label>
+                <input type="text" class="form-control" id="payee_name" name="payee_name" required>
+            </div>
+            <div class="form-group mb-2">
+                <label for="payee_mobile_no" class="form-label">Mobile Number</label>
+                <input type="text" class="form-control" id="payee_mobile_no" name="payee_mobile_no" required>
+            </div>
+            <div class="form-group mb-2">
+                <label for="payee_email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="payee_email" name="payee_email">
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn me-auto" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+        </form>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  
+  <!--edit Payee Modal -->
+  <div class="modal modal-blur fade" id="editPayeeModal" tabindex="-1" role="dialog" aria-labelledby="editPayeeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editPayeeModalLabel">Edit Payee</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+            </button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+          <form id="editPayeeForm" method="POST" action="{% url 'edit_payee' %}">
+            {% csrf_token %}
+            <input type="hidden" id="edit_payee_id" name="payee_id">
+            <div class="form-group mb-2">
+                <label for="edit_payee_name" class="form-label">Payee Name</label>
+                <input type="text" class="form-control" id="edit_payee_name" name="payee_name" required>
+            </div>
+            <div class="form-group mb-2">
+                <label for="edit_payee_mobile_no" class="form-label">Mobile Number</label>
+                <input type="text" class="form-control" id="edit_payee_mobile_no" name="payee_mobile_no" required>
+            </div>
+            <div class="form-group mb-2">
+                <label for="edit_payee_email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="edit_payee_email" name="payee_email" required>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn me-auto" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Update</button>
+          </div>
+          </form>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  <!--edit Payee Modal -->
+
 {% endblock content %}
 
 
+{% block scripts %}
 
-<!-- JavaScript -->
-{% block javascripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
+
     // Populate Edit Modal
     $('#editPayeeModal').on('show.bs.modal', function (event) {
         const button = $(event.relatedTarget);
@@ -232,5 +270,15 @@
         })
         .catch(error => console.error("Error:", error));
     });
+
+  
 </script>
-{% endblock javascripts %}
+
+
+    
+{% endblock scripts %}
+
+
+
+
+
