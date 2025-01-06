@@ -2,7 +2,7 @@
 in 2024-2025.'''
 
 from .imp_libs import *
-from chq_pay.models import ChequeTemplate, ChequeText, Banks, Currencies, Payee
+from chq_pay.models import ChequeTemplate, ChequeText, Banks, Currencies, Payee, ChequeIssue
 
 @login_required
 def upload_template(request):
@@ -71,9 +71,14 @@ def template_list(request):
 
 @login_required
 def delete_template(request, template_id):
+    issued_templ = ChequeIssue.objects.filter(issue_template = template_id).exists()
     template = get_object_or_404(ChequeTemplate, id=template_id)
-    template.delete()
-    messages.error(request,('Template Deleted Successfully!!'))
+    
+    if issued_templ:
+        messages.warning(request,("Can't be deleted, Cheque has been issued with the template"))
+    else:
+        template.delete()
+        messages.success(request,('Template Deleted Successfully!!'))
     return redirect('template_list')
 
 

@@ -20,14 +20,29 @@
             align-items: center;
             height: 100vh;
             background-color: white;
+            
         }
 
         /* Main cheque container */
         .cheque-container {
-            position: relative;
-            width: {{ width }}mm;
-            height: {{ height }}mm;
+        background-image: url({{template.url}});
+        background-size: cover; /* Ensures the image covers the entire container */
+        background-repeat: no-repeat; /* Prevents the image from repeating */
+        position: relative;
+        width: {{ width }}mm;
+        height: {{ height }}mm;
         }
+
+        /* Style for date */
+        .cheque-date {
+            display: inline-block;
+            font-family: monospace; /* Ensures consistent character width */
+            letter-spacing: .8mm; /* Adjust to match the space between the blocks */
+            font-size: 12px; /* Adjust font size to fit within blocks */
+            position: absolute; /* Keeps the text positioned relative to the container */
+            white-space: nowrap; /* Prevents text from wrapping */
+        }
+
 
         /* Style for text */
         .cheque-text {
@@ -69,7 +84,7 @@
 <body onload="window.print();">
     <div class="cheque-container">
         <!-- Date -->
-        <span class="cheque-text" style="left: {{ positions.date.0 }}mm; top: {{ positions.date.1 }}mm;">
+        <span class="cheque-text cheque-date" style="left: {{ positions.date.0 }}mm; top: {{ positions.date.1 }}mm;">
             {{ date }}
         </span>
         

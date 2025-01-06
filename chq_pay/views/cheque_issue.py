@@ -4,6 +4,55 @@ in 2024-2025.'''
 from .imp_libs import *
 from chq_pay.models import ChequeTemplate, ChequeText, Banks, Currencies, Payee, ChequeIssue
 
+
+
+def amount_in_words(amount, currency, lang):
+    """
+    Convert a numeric amount into words for a given currency and language.
+    Args:
+        amount (float): The numeric amount.
+        currency (str): The currency code (e.g., "INR", "KWD").
+        lang (str): The language code (e.g., "en", "hi", "ar").
+    Returns:
+        str: The amount in words.
+    """
+    amount_parts = str(amount).split('.')
+    whole_part = int(amount_parts[0])
+    fractional_part = int(amount_parts[1]) if len(amount_parts) > 1 else 0
+
+    if currency == "INR" and lang == "en":  # Indian Rupees in Hindi
+        rupees = num2words(whole_part, lang="en")
+        if fractional_part > 0:
+            paise = num2words(fractional_part, lang="hi")
+            return f"{rupees} Rupees and {paise} Paise"
+        return f"{rupees} Rupees"
+    
+    elif currency == "INR" and lang == "hi":  # Indian Rupees in Hindi
+        rupees = num2words(whole_part, lang="hi")
+        if fractional_part > 0:
+            paise = num2words(fractional_part, lang="hi")
+            return f"{rupees} रुपये और {paise} पैसे"
+        return f"{rupees} रुपये"
+
+    elif currency == "KWD" and lang == "en":  # Kuwaiti Dinar in English
+        dinars = num2words(whole_part, lang="en")
+        if fractional_part > 0:
+            fils = num2words(fractional_part, lang="en")
+            return f"{dinars} KD and {fils} Fils"
+        return f"{dinars} KD"
+
+    elif currency == "KWD" and lang == "ar":  # Kuwaiti Dinar in Arabic
+        dinars = num2words(whole_part, lang="ar")
+        if fractional_part > 0:
+            fils = num2words(fractional_part, lang="ar")
+            return f"{dinars} دينار كويتي و {fils} فلس"
+        return f"{dinars} دينار كويتي"
+
+    else:
+        raise ValueError(f"Unsupported currency {currency} or language {lang}")
+
+
+
 @login_required
 def cheque_issue(request):
     if request.method == 'POST':
@@ -23,7 +72,12 @@ def cheque_issue(request):
 
         # Save the data to the database
         cheque_issue_temp = get_object_or_404(ChequeTemplate, id = issue_template)
-        issue_amount_wrd = num2words(issue_amount)
+        issue_currency = get_object_or_404(Currencies, id = cheque_issue_temp.currency.id)
+        issue_currency_char = issue_currency.currency_char
+        issue_amount_wrd = amount_in_words(issue_amount, issue_currency_char, 'en')
+        issue_amount_wrd_title = issue_amount_wrd.title()
+
+        print(issue_amount_wrd)
 
 
 
@@ -31,12 +85,12 @@ def cheque_issue(request):
             cheque_issue_new = ChequeIssue(
                 issue_template=cheque_issue_temp,
                 issue_cheque_no=issue_cheque_no,
-                issue_currency= get_object_or_404(Currencies, id = cheque_issue_temp.currency.id),
+                issue_currency= issue_currency,
                 issue_cheque_date = issue_cheque_date,
                 issue_payee = get_object_or_404(Payee, id = issue_payee),
                 issue_bank=get_object_or_404(Banks, id = cheque_issue_temp.bank.id),
                 issue_amount = issue_amount,
-                issue_amount_wrd = issue_amount_wrd +' '+'only',
+                issue_amount_wrd = issue_amount_wrd_title +' '+'only',
                 issue_issue_date=date.today(),
                 issue_naration=issue_naration,
                 issue_sign=issue_sign,
@@ -183,6 +237,7 @@ def print_cheque(request, cheque_id):
 
     # Context for the template
     context = {
+        'template':template.background_image,
         'width': template.width,  # in mm
         'height': template.height,  # in mm
         'date': '  '.join([char for char in cheque_issue.issue_cheque_date.strftime('%d%m%Y')]),

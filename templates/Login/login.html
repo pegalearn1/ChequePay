@@ -1,4 +1,5 @@
 <!doctype html>
+{% load static %}
 
 <html lang="en">
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
@@ -14,7 +15,7 @@
     <meta name="mobile-web-app-capable" content="yes"/>
     <meta name="HandheldFriendly" content="True"/>
     <meta name="MobileOptimized" content="320"/>
-    <link rel="icon" href="/static/tabler/favicon.ico" type="image/x-icon"/>
+    <link rel="icon" href="{% static 'Cheque_Pay_Fevi.png' %}" type="image/x-icon"/>
     <link rel="shortcut icon" href="/static/tabler/favicon.ico" type="image/x-icon"/>
     <meta name="description" content="Tabler comes with tons of well-designed components and features. Start your adventure with Tabler and make your dashboard great again. For free!"/>
     <meta name="canonical" content="https://tabler.io/demo/sign-in-illustration.html">
@@ -49,6 +50,73 @@
   </head>
   <body  class=" d-flex flex-column">
     <script src="/static/tabler/dist/js/demo-theme.min4f79.js?1735606190"></script>
+
+    <!-- messages -->
+
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+      {% if messages %}
+          {% for message in messages %}
+              <div class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true">
+                  <div class="toast-header">
+                      {% if message.tags == "success" %}
+                          <span class="me-2 text-success">
+                              <!-- Tick icon -->
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
+                                  <path d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>
+                                  <path d="M10.97 6.03a.75.75 0 0 1 1.08 1.04l-3.99 4.99a.75.75 0 0 1-1.08 0L5.324 9.384a.75.75 0 0 1 1.06-1.06l1.37 1.37 3.22-4.02z"/>
+                              </svg>
+                          </span>
+                      {% elif message.tags == "error" or message.tags == "danger" %}
+                          <span class="me-2 text-danger">
+                              <!-- Cross icon -->
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+                                  <path d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>
+                                  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                              </svg>
+                          </span>
+                      {% elif message.tags == "warning" %}
+                          <span class="me-2 text-warning">
+                              <!-- Warning icon -->
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-circle" viewBox="0 0 16 16">
+                                  <path d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>
+                                  <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zm.93-6.418a.58.58 0 0 0-1.165 0l-.359 3.467a.548.548 0 0 0 1.086 0l.358-3.467z"/>
+                              </svg>
+                          </span>
+                      {% else %}
+                          <span class="me-2 text-info">
+                              <!-- Info icon -->
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                                  <path d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>
+                                  <path d="M8.93 6.588a.5.5 0 1 0-.86-.588l-1 1.5a.5.5 0 1 0 .86.588l1-1.5zm-2.684 2.847a.5.5 0 0 0-.176.543l.73 3.042a.5.5 0 0 0 .972-.242l-.731-3.042a.5.5 0 0 0-.543-.3z"/>
+                              </svg>
+                          </span>
+                      {% endif %}
+                      <strong class="me-auto">{{ message.level_tag|title }}</strong>
+                      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                  </div>
+                  <div class="toast-body">
+                      {{ message|escape }}
+                  </div>
+              </div>
+          {% endfor %}
+      {% endif %}
+  </div>
+  
+  <script>
+      document.addEventListener("DOMContentLoaded", function () {
+          // Initialize all Bootstrap toasts
+          const toastElements = document.querySelectorAll('.toast');
+          toastElements.forEach(toastEl => {
+              const toastInstance = new bootstrap.Toast(toastEl);
+              toastInstance.show();
+          });
+      });
+  </script>
+
+<!-- messages -->
+
+
+
     <div class="page my-auto">
       <div class="container container-normal py-4">
         <div class="row align-items-center g-4">
@@ -120,25 +188,50 @@
                     <div class="mb-2">
                       <label class="form-label">
                         Password
+                      </label>
+                      <div class="input-group input-group-flat">
+                        <input type="password" class="form-control" placeholder="Your password" name="login_password" id="loginPassword" autocomplete="on">
+                        <span class="input-group-text">
+                          <a href="#" class="link-secondary" title="Show password" data-bs-toggle="tooltip" id="togglePassword">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-eye-off" id="passwordIcon">
+                              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                              <path d="M10.585 10.587a2 2 0 0 0 2.829 2.828" />
+                              <path d="M16.681 16.673a8.717 8.717 0 0 1 -4.681 1.327c-3.6 0 -6.6 -2 -9 -6c1.272 -2.12 2.712 -3.678 4.32 -4.674m2.86 -1.146a9.055 9.055 0 0 1 1.82 -.18c3.6 0 6.6 2 9 6c-.666 1.11 -1.379 2.067 -2.138 2.87" />
+                              <path d="M3 3l18 18" />
+                            </svg>
+                          </a>
+                        </span>
+                      </div>
+                      
+                      <script>
+                        document.getElementById('togglePassword').addEventListener('click', function (e) {
+                          e.preventDefault(); // Prevent the default action of the anchor tag
+                          const passwordField = document.getElementById('loginPassword');
+                          const passwordIcon = document.getElementById('passwordIcon');
+                          const passwordFieldType = passwordField.getAttribute('type');
+                      
+                          if (passwordFieldType === 'password') {
+                            passwordField.setAttribute('type', 'text');
+                            this.title = 'Hide password';
+                            passwordIcon.innerHTML = '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" />'; // Updated to visible eye icon
+                          } else {
+                            passwordField.setAttribute('type', 'password');
+                            this.title = 'Show password';
+                            passwordIcon.innerHTML = '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10.585 10.587a2 2 0 0 0 2.829 2.828" /><path d="M16.681 16.673a8.717 8.717 0 0 1 -4.681 1.327c-3.6 0 -6.6 -2 -9 -6c1.272 -2.12 2.712 -3.678 4.32 -4.674m2.86 -1.146a9.055 9.055 0 0 1 1.82 -.18c3.6 0 6.6 2 9 6c-.666 1.11 -1.379 2.067 -2.138 2.87" /><path d="M3 3l18 18" />'; // Updated to crossed eye icon
+                          }
+                        });
+                      </script>
+                      
+                    </div>
+                    <!-- <div class="mb-2">
+                      <label class="form-check">
+                        <input type="checkbox" class="form-check-input"/>
+                        <span class="form-check-label">Remember me on this device</span>
                         <span class="form-label-description">
                           <a href="forgot-password.html">I forgot password</a>
                         </span>
                       </label>
-                      <div class="input-group input-group-flat">
-                        <input type="password" class="form-control"  placeholder="Your password" name="login_password"  autocomplete="on">
-                        <span class="input-group-text">
-                          <a href="#" class="link-secondary" title="Show password" data-bs-toggle="tooltip"><!-- Download SVG icon from http://tabler-icons.io/i/eye -->
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
-                          </a>
-                        </span>
-                      </div>
-                    </div>
-                    <div class="mb-2">
-                      <label class="form-check">
-                        <input type="checkbox" class="form-check-input"/>
-                        <span class="form-check-label">Remember me on this device</span>
-                      </label>
-                    </div>
+                    </div> -->
                     <div class="form-footer">
                       <button type="submit" class="btn btn-primary w-100">Sign in</button>
                     </div>
