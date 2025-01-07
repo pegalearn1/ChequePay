@@ -73,7 +73,7 @@ urlpatterns = [
     path('cheque_issue/', cheque_issue.cheque_issue, name = "cheque_issue"),
     path('cheque_issue_list/', cheque_issue.cheque_issue_list, name = "cheque_issue_list"),
     path('delete_chequeissue/<int:chequeissue_id>/', cheque_issue.delete_chequeissue, name='delete_chequeissue'),
-    path('get-cheque-text', cheque_issue.get_cheque_text, name='get_cheque_text'),
+    path('get_cheque_text', cheque_issue.get_cheque_text, name='get_cheque_text'),
     path('print-cheque/<int:cheque_id>/', cheque_issue.print_cheque, name='print_cheque'),
 
 
