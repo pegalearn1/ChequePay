@@ -138,7 +138,6 @@ class ChequeIssue(models.Model):
     issue_payee = models.ForeignKey(Payee, on_delete=models.CASCADE)
     issue_bank = models.ForeignKey(Banks, on_delete=models.CASCADE)
     issue_amount = models.DecimalField(max_digits=30, decimal_places=3)
-    issue_amount_wrd = models.CharField(max_length=200)
     issue_naration = models.CharField(max_length=200)
     issue_issue_date = models.DateField()
     issue_sign = models.ImageField(upload_to='Signatures/', null=True, blank= True)

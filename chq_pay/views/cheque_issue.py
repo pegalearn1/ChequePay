@@ -23,7 +23,7 @@ def amount_in_words(amount, currency, lang):
     if currency == "INR" and lang == "en":  # Indian Rupees in Hindi
         rupees = num2words(whole_part, lang="en")
         if fractional_part > 0:
-            paise = num2words(fractional_part, lang="hi")
+            paise = num2words(fractional_part, lang="en")
             return f"{rupees} Rupees and {paise} Paise"
         return f"{rupees} Rupees"
     
@@ -38,8 +38,8 @@ def amount_in_words(amount, currency, lang):
         dinars = num2words(whole_part, lang="en")
         if fractional_part > 0:
             fils = num2words(fractional_part, lang="en")
-            return f"{dinars} KD and {fils} Fils"
-        return f"{dinars} KD"
+            return f"{dinars} KWD and {fils} Fils"
+        return f"{dinars} KWD"
 
     elif currency == "KWD" and lang == "ar":  # Kuwaiti Dinar in Arabic
         dinars = num2words(whole_part, lang="ar")
@@ -47,6 +47,55 @@ def amount_in_words(amount, currency, lang):
             fils = num2words(fractional_part, lang="ar")
             return f"{dinars} دينار كويتي و {fils} فلس"
         return f"{dinars} دينار كويتي"
+    
+    elif currency == "USD" and lang == "en":  # US Dollars in English
+        dollars = num2words(whole_part, lang="en")
+        if fractional_part > 0:
+            cents = num2words(fractional_part, lang="en")
+            result = f"{dollars} Dollars And {cents} Cents"
+        else:
+            result = f"{dollars} Dollars"
+
+    elif currency == "EUR" and lang == "en":  # Euros in English
+        euros = num2words(whole_part, lang="en")
+        if fractional_part > 0:
+            cents = num2words(fractional_part, lang="en")
+            result = f"{euros} Euros And {cents} Cents"
+        else:
+            result = f"{euros} Euros"
+
+    elif currency == "AED" and lang == "en":  # UAE Dirhams in Arabic
+        dirhams = num2words(whole_part, lang="en")
+        if fractional_part > 0:
+            fils = num2words(fractional_part, lang="en")
+            result = f"{dirhams} Dirhams And {fils} Fils"
+        else:
+            result = f"{dirhams} Dirhams"
+    
+    
+    elif currency == "AED" and lang == "ar":  # UAE Dirhams in Arabic
+        dirhams = num2words(whole_part, lang="ar")
+        if fractional_part > 0:
+            fils = num2words(fractional_part, lang="ar")
+            result = f"{dirhams} درهم إماراتي و {fils} فلس"
+        else:
+            result = f"{dirhams} درهم إماراتي"
+
+    elif currency == "SAR" and lang == "en":  # Saudi Riyals in Arabic
+        riyals = num2words(whole_part, lang="en")
+        if fractional_part > 0:
+            halalas = num2words(fractional_part, lang="en")
+            result = f"{riyals} Riyals And {halalas} Halala"
+        else:
+            result = f"{riyals} ريال سعودي"
+    
+    elif currency == "SAR" and lang == "ar":  # Saudi Riyals in Arabic
+        riyals = num2words(whole_part, lang="ar")
+        if fractional_part > 0:
+            halalas = num2words(fractional_part, lang="ar")
+            result = f"{riyals} ريال سعودي و {halalas} هللة"
+        else:
+            result = f"{riyals} ريال سعودي"
 
     else:
         raise ValueError(f"Unsupported currency {currency} or language {lang}")
@@ -90,7 +139,6 @@ def cheque_issue(request):
                 issue_payee = get_object_or_404(Payee, id = issue_payee),
                 issue_bank=get_object_or_404(Banks, id = cheque_issue_temp.bank.id),
                 issue_amount = issue_amount,
-                issue_amount_wrd = issue_amount_wrd_title +' '+'only',
                 issue_issue_date=date.today(),
                 issue_naration=issue_naration,
                 issue_sign=issue_sign,
@@ -232,6 +280,9 @@ def print_cheque(request, cheque_id):
     template = cheque_issue.issue_template
     cheque_text = get_object_or_404(ChequeText, template=template)
 
+    issue_currency = cheque_issue.issue_currency.currency_char
+    issue_amount_wrd = amount_in_words(cheque_issue.issue_amount, issue_currency, 'ar')
+    issue_amount_wrd_title = issue_amount_wrd.title()
 
     print("cheque sign - ", cheque_text.amtnum_x_position, cheque_text.amtnum_y_position)
 
@@ -241,9 +292,9 @@ def print_cheque(request, cheque_id):
         'width': template.width,  # in mm
         'height': template.height,  # in mm
         'date': '  '.join([char for char in cheque_issue.issue_cheque_date.strftime('%d%m%Y')]),
-        'payee': cheque_issue.issue_payee,
-        'amount': cheque_issue.issue_amount,
-        'amount_word': cheque_issue.issue_amount_wrd,
+        'payee': '*'+'*'+cheque_issue.issue_payee.payee_name+'*'+'*',
+        'amount': '*'+'*'+str(cheque_issue.issue_amount)+'*'+'*',
+        'amount_word': '*'+'*'+issue_amount_wrd_title+'*'+'*',
         'positions': {
             'date': (cheque_text.date_x_position, cheque_text.date_y_position),
             'payee': (cheque_text.payee_x_position, cheque_text.payee_y_position),
