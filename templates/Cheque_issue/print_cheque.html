@@ -3,112 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Print Cheque</title>
+    <title>Preview and Print Cheque</title>
     <style>
-        /* Ensure the page size and margin are fixed */
+        /* Ensure the page size and margin are fixed for printing */
         @page {
             size: {{ width }}mm {{ height }}mm;
             margin: 0;
         }
 
-        /* Ensure no body margin and padding */
+        /* General body styling */
         body {
             margin: 0;
             padding: 0;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: white;
-            
+            background-color: #f4f4f4;
         }
 
-        /* Main cheque container */
+        /* Cheque container */
         .cheque-container {
-        background-image: url({{template.url}});
-        background-size: cover; /* Ensures the image covers the entire container */
-        background-repeat: no-repeat; /* Prevents the image from repeating */
-        position: relative;
-        width: {{ width }}mm;
-        height: {{ height }}mm;
+            background-image: url({{ template.url }});
+            background-size: cover;
+            background-repeat: no-repeat;
+            position: relative;
+            width: {{ width }}mm;
+            height: {{ height }}mm;
+            margin: 20px;
         }
 
-        /* Style for date */
-        .cheque-date {
-            display: inline-block;
-            font-family: monospace; /* Ensures consistent character width */
-            letter-spacing: .8mm; /* Adjust to match the space between the blocks */
-            font-size: 12px; /* Adjust font size to fit within blocks */
-            position: absolute; /* Keeps the text positioned relative to the container */
-            white-space: nowrap; /* Prevents text from wrapping */
-        }
-
-
-        /* Style for text */
+        /* Text styling */
         .cheque-text {
             position: absolute;
             font-family: "Times New Roman", serif;
             font-size: 12pt;
         }
 
-        /* Signature styling */
-        .cheque-sign {
+        /* Date styling */
+        .cheque-date {
+            display: inline-block;
+            font-family: monospace;
+            letter-spacing: 0.8mm;
+            font-size: 12px;
             position: absolute;
-            max-width: none;  /* Remove max width to prevent resizing */
-            width: auto; /* Set width to auto to respect image dimensions */
-            height: auto; /* Set height to auto to respect image dimensions */
-            max-height: 30mm; /* Ensure the signature is not too big */
+            white-space: nowrap;
         }
 
-        /* Ensure the page does not scale */
+        /* Signature styling */
+        .cheque-sign img {
+            max-height: 30mm;
+            width: auto;
+        }
+
+        /* Buttons */
+        .buttons {
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 0 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .print-btn {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .back-btn {
+            background-color: #007bff;
+            color: white;
+        }
+
+        /* Print-specific styles */
         @media print {
-            body, html {
-                height: 100%;
-                margin: 0;
-                padding: 0;
+            body {
+                display: block;
+                background-color: white;
             }
 
-            .cheque-container {
-                width: {{ width }}mm;
-                height: {{ height }}mm;
+            .buttons {
+                display: none;
             }
-        }
-
-        /* Remove any page breaks if printing multiple pages */
-        @page {
-            size: {{ width }}mm {{ height }}mm;
-            margin: 0;
         }
     </style>
 </head>
-<body onload="window.print();">
+<body>
     <div class="cheque-container">
         <!-- Date -->
         <span class="cheque-text cheque-date" style="left: {{ positions.date.0 }}mm; top: {{ positions.date.1 }}mm;">
             {{ date }}
         </span>
-        
+
         <!-- Payee -->
         <span class="cheque-text" style="left: {{ positions.payee.0 }}mm; top: {{ positions.payee.1 }}mm;">
             {{ payee }}
         </span>
-        
+
         <!-- Amount in Words -->
         <span class="cheque-text" style="left: {{ positions.amount_word.0 }}mm; top: {{ positions.amount_word.1 }}mm;">
             {{ amount_word }}
         </span>
-        
+
         <!-- Amount in Numbers -->
         <span class="cheque-text" style="left: {{ positions.amount_num.0 }}mm; top: {{ positions.amount_num.1 }}mm;">
             {{ amount }}
         </span>
-        
+
         <!-- Signature -->
         {% if sign_url %}
         <div class="cheque-sign" style="left: {{ positions.sign.0 }}mm; top: {{ positions.sign.1 }}mm;">
             <img src="{{ sign_url }}" alt="Signature">
         </div>
         {% endif %}
+    </div>
+
+    <!-- Buttons -->
+    <div class="buttons">
+        <button class="back-btn" onclick="window.history.back();">Back</button>
+        <button class="print-btn" onclick="window.print();">Print</button>
     </div>
 </body>
 </html>

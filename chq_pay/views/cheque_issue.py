@@ -280,21 +280,20 @@ def print_cheque(request, cheque_id):
     template = cheque_issue.issue_template
     cheque_text = get_object_or_404(ChequeText, template=template)
 
+    # Generate amount in words
     issue_currency = cheque_issue.issue_currency.currency_char
     issue_amount_wrd = amount_in_words(cheque_issue.issue_amount, issue_currency, 'ar')
     issue_amount_wrd_title = issue_amount_wrd.title()
 
-    print("cheque sign - ", cheque_text.amtnum_x_position, cheque_text.amtnum_y_position)
-
     # Context for the template
     context = {
-        'template':template.background_image,
-        'width': template.width,  # in mm
-        'height': template.height,  # in mm
+        'template': template.background_image,
+        'width': template.width,
+        'height': template.height,
         'date': '  '.join([char for char in cheque_issue.issue_cheque_date.strftime('%d%m%Y')]),
-        'payee': '*'+'*'+cheque_issue.issue_payee.payee_name+'*'+'*',
-        'amount': '*'+'*'+str(cheque_issue.issue_amount)+'*'+'*',
-        'amount_word': '*'+'*'+issue_amount_wrd_title+'*'+'*',
+        'payee': '*' + '*' + cheque_issue.issue_payee.payee_name + '*' + '*',
+        'amount': '*' + '*' + str(cheque_issue.issue_amount) + '*' + '*',
+        'amount_word': '*' + '*' + issue_amount_wrd_title + '*' + '*',
         'positions': {
             'date': (cheque_text.date_x_position, cheque_text.date_y_position),
             'payee': (cheque_text.payee_x_position, cheque_text.payee_y_position),
@@ -306,5 +305,6 @@ def print_cheque(request, cheque_id):
     }
 
     return render(request, 'Cheque_issue/print_cheque.html', context)
+
     
     
