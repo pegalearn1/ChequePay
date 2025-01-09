@@ -71,7 +71,7 @@
                           Actions
                         </button>
                         <div class="dropdown-menu dropdown-menu-end">
-                          <a class="dropdown-item" href="{% url 'print_cheque' cheque.id %}" target="_blank"> Print Cheque</a>
+                          <a class="dropdown-item" href="{% url 'print_cheque' cheque.id %}" target="_blank"> Preview & Print Cheque</a>
                           
                           <a class="dropdown-item" onclick="if (confirm('Are You sure? Want to delete cheque to {{cheque.issue_payee}} on {{cheque.issue_cheque_date}} ?')){return true;}else{event.stopPropagation(); event.preventDefault();};" href="{% url 'delete_chequeissue' cheque.id %}">
                           Delete Issued Cheque

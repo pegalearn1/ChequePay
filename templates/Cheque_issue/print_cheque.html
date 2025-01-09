@@ -1,133 +1,214 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Preview and Print Cheque</title>
-    <style>
-        /* Ensure the page size and margin are fixed for printing */
-        @page {
-            size: {{ width }}mm {{ height }}mm;
-            margin: 0;
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block tiitle %}Cheque Issue Preview{% endblock tiitle %}
+
+{% block stylesheet %}
+
+<style>
+    /* Ensure the page size and margin are fixed for printing */
+    @page {
+        size: {{ width }}mm {{ height }}mm;
+        margin: 0;
+    }
+
+    /* Cheque container */
+    .cheque-container {
+        background-image: url({{ template.url }});
+        background-size: cover;
+        background-repeat: no-repeat;
+        position: relative;
+        width: {{ width }}mm;
+        height: {{ height }}mm;
+        margin: 20px;
+    }
+
+    /* Text styling */
+    .cheque-text {
+        position: absolute;
+        font-family: "Times New Roman", serif;
+        font-size: 12pt;
+    }
+
+    /* Date styling */
+    .cheque-date {
+        display: inline-block;
+        font-family: monospace;
+        letter-spacing: 0.4mm;
+        font-size: 14px;
+        position: absolute;
+        white-space: nowrap;
+    }
+
+    /* Signature styling */
+    .cheque-sign img {
+        max-height: 30mm;
+        width: auto;
+    }
+
+    /* Buttons */
+    .buttons {
+        margin-top: 20px;
+    }
+
+    button {
+        padding: 10px 20px;
+        font-size: 16px;
+        margin: 0 10px;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+    }
+
+    .print-btn {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .back-btn {
+        background-color: #007bff;
+        color: white;
+    }
+
+    /* Print-specific styles */
+    @media print {
+        /* Hide everything except the cheque container */
+        body * {
+            visibility: hidden;
+        }
+        
+        /* Make sure the cheque container is visible during printing */
+        .cheque-container, .cheque-container * {
+            visibility: visible;
         }
 
-        /* General body styling */
-        body {
+        /* Ensure the cheque container is positioned correctly in print */
+        .cheque-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             margin: 0;
             padding: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f4f4f4;
         }
+    }
+    
+</style>
 
-        /* Cheque container */
-        .cheque-container {
-            background-image: url({{ template.url }});
-            background-size: cover;
-            background-repeat: no-repeat;
-            position: relative;
-            width: {{ width }}mm;
-            height: {{ height }}mm;
-            margin: 20px;
-        }
+{% endblock stylesheet %}
 
-        /* Text styling */
-        .cheque-text {
-            position: absolute;
-            font-family: "Times New Roman", serif;
-            font-size: 12pt;
-        }
+{% block content %}
 
-        /* Date styling */
-        .cheque-date {
-            display: inline-block;
-            font-family: monospace;
-            letter-spacing: 0.8mm;
-            font-size: 12px;
-            position: absolute;
-            white-space: nowrap;
-        }
-
-        /* Signature styling */
-        .cheque-sign img {
-            max-height: 30mm;
-            width: auto;
-        }
-
-        /* Buttons */
-        .buttons {
-            margin-top: 20px;
-        }
-
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            margin: 0 10px;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-        }
-
-        .print-btn {
-            background-color: #28a745;
-            color: white;
-        }
-
-        .back-btn {
-            background-color: #007bff;
-            color: white;
-        }
-
-        /* Print-specific styles */
-        @media print {
-            body {
-                display: block;
-                background-color: white;
-            }
-
-            .buttons {
-                display: none;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="cheque-container">
-        <!-- Date -->
-        <span class="cheque-text cheque-date" style="left: {{ positions.date.0 }}mm; top: {{ positions.date.1 }}mm;">
-            {{ date }}
-        </span>
-
-        <!-- Payee -->
-        <span class="cheque-text" style="left: {{ positions.payee.0 }}mm; top: {{ positions.payee.1 }}mm;">
-            {{ payee }}
-        </span>
-
-        <!-- Amount in Words -->
-        <span class="cheque-text" style="left: {{ positions.amount_word.0 }}mm; top: {{ positions.amount_word.1 }}mm;">
-            {{ amount_word }}
-        </span>
-
-        <!-- Amount in Numbers -->
-        <span class="cheque-text" style="left: {{ positions.amount_num.0 }}mm; top: {{ positions.amount_num.1 }}mm;">
-            {{ amount }}
-        </span>
-
-        <!-- Signature -->
-        {% if sign_url %}
-        <div class="cheque-sign" style="left: {{ positions.sign.0 }}mm; top: {{ positions.sign.1 }}mm;">
-            <img src="{{ sign_url }}" alt="Signature">
+<!-- Page header -->
+<div class="page-header d-print-none">
+    <div class="container-xl">
+      <div class="row g-2 align-items-center">
+        <div class="col">
+          <h2 class="page-title">
+            Cheque Issue preview
+          </h2>
         </div>
-        {% endif %}
+        <!-- Page title actions -->
+       
+      </div>
     </div>
+  </div>
+  <!-- Page body -->
+  <div class="page-body">
+    <div class="container-xl">
+        <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Preview Cheque</h3>
+            </div>
 
-    <!-- Buttons -->
-    <div class="buttons">
-        <button class="back-btn" onclick="window.history.back();">Back</button>
-        <button class="print-btn" onclick="window.print();">Print</button>
+            <div style="margin-left: 20px; margin-top: 20px;">
+                <select name="" id="" style="margin-right: 20px;">
+                    <option value="en">English</option>
+                    {% if issue_currency == 'KWD' or issue_currency == 'AED' or issue_currency == 'SAR' %}
+                    <option value="ar">Arabic</option>
+                    {% endif %}
+                    {% if issue_currency == 'INR' %}
+                    <option value="hi" >Hindi</option>
+                    {% endif %}
+                </select>
+            </div>
+
+<div class="cheque-container">
+    
+    <!-- Date -->
+    <span class="cheque-text cheque-date" style="left: {{ positions.date.0 }}mm; top: {{ positions.date.1 }}mm;">
+        {{ date }}
+    </span>
+
+    <!-- Payee -->
+    <span class="cheque-text" style="left: {{ positions.payee.0 }}mm; top: {{ positions.payee.1 }}mm;">
+        {{ payee }}
+    </span>
+
+    <!-- Amount in Words -->
+    <span class="cheque-text" data-type="amount-word" style="left: {{ positions.amount_word.0 }}mm; top: {{ positions.amount_word.1 }}mm;">
+        {{ amount_word }}
+    </span>
+
+    <!-- Amount in Numbers -->
+    <span class="cheque-text" style="left: {{ positions.amount_num.0 }}mm; top: {{ positions.amount_num.1 }}mm;">
+        {{ amount }}
+    </span>
+
+    <!-- Signature -->
+    {% if sign_url %}
+    <div class="cheque-sign" style="left: {{ positions.sign.0 }}mm; top: {{ positions.sign.1 }}mm;">
+        <img src="{{ sign_url }}" alt="Signature">
     </div>
-</body>
-</html>
+    {% endif %}
+</div>
+
+<!-- Buttons -->
+<div class="buttons" style="margin-left: 20px; margin-bottom: 20px;">
+    <button class="print-btn" onclick="window.print();">Print</button>
+    <a href="{% url "cheque_issue_list" %}" class="btn btn-danger">Back</a>
+</div>
+
+
+
+
+</div>
+</div>
+</div>
+
+{% endblock content %}
+
+{% block scripts %}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const languageDropdown = document.querySelector("select");
+        const amountWordSpan = document.querySelector(".cheque-text[data-type='amount-word']");
+
+        languageDropdown.addEventListener("change", function () {
+            const selectedLanguage = languageDropdown.value;
+
+            // Send the selected language to the backend
+            fetch("{% url 'print_cheque' cheque_id=cheque_id %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}",
+                },
+                body: JSON.stringify({ language: selectedLanguage }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update the "amount in words" field dynamically
+                    amountWordSpan.textContent = data.amount_word;
+                } else {
+                    alert("Failed to update the amount in words.");
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        });
+    });
+</script>
+
+{% endblock scripts %}

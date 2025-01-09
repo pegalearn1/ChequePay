@@ -38,8 +38,8 @@ def amount_in_words(amount, currency, lang):
         dinars = num2words(whole_part, lang="en")
         if fractional_part > 0:
             fils = num2words(fractional_part, lang="en")
-            return f"{dinars} KWD and {fils} Fils"
-        return f"{dinars} KWD"
+            return f"{dinars} Dinar and {fils} Fils"
+        return f"{dinars} Dinar"
 
     elif currency == "KWD" and lang == "ar":  # Kuwaiti Dinar in Arabic
         dinars = num2words(whole_part, lang="ar")
@@ -274,18 +274,37 @@ def get_cheque_text(request):
 
 
 @login_required
+@csrf_exempt
 def print_cheque(request, cheque_id):
-    # Fetch the cheque issue and its template details
     cheque_issue = get_object_or_404(ChequeIssue, id=cheque_id)
     template = cheque_issue.issue_template
     cheque_text = get_object_or_404(ChequeText, template=template)
 
-    # Generate amount in words
     issue_currency = cheque_issue.issue_currency.currency_char
-    issue_amount_wrd = amount_in_words(cheque_issue.issue_amount, issue_currency, 'ar')
+
+    if request.method == "POST":
+        # Process language selection
+        data = json.loads(request.body)
+        selected_language = data.get("language", "en")
+
+        # Generate the amount in words in the selected language
+        issue_amount_wrd = amount_in_words(
+            cheque_issue.issue_amount, issue_currency, selected_language
+        )
+        issue_amount_wrd_title = issue_amount_wrd.title()
+
+        # Return only the updated "amount in words"
+        return JsonResponse({
+            "success": True,
+            "amount_word": '*' + '*' + issue_amount_wrd_title + '*' + '*',
+        })
+
+    # Handle GET request (initial page load)
+    issue_amount_wrd = amount_in_words(
+        cheque_issue.issue_amount, issue_currency, 'en'
+    )
     issue_amount_wrd_title = issue_amount_wrd.title()
 
-    # Context for the template
     context = {
         'template': template.background_image,
         'width': template.width,
@@ -302,9 +321,11 @@ def print_cheque(request, cheque_id):
             'sign': (cheque_text.sign_x_position, cheque_text.sign_y_position),
         },
         'sign_url': cheque_issue.issue_sign.url if cheque_issue.issue_sign else None,
+        'cheque_id': cheque_id,
+        'issue_currency':issue_currency
     }
-
     return render(request, 'Cheque_issue/print_cheque.html', context)
+
 
     
     
