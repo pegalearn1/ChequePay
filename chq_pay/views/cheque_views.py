@@ -41,10 +41,8 @@ def upload_template(request):
                 else:
                     cheque_template.save()
                     messages.success(request,('Template Created Successfully!!!'))
+                    return JsonResponse({"success": True})
                     
-                    response = ({"success": True})
-                    print("responseee = ",response)
-                    return JsonResponse(response)
             except Exception as e:
                 print("error : ",str(e))
     return JsonResponse({"success": False})
@@ -72,11 +70,14 @@ def template_list(request):
 @login_required
 def delete_template(request, template_id):
     issued_templ = ChequeIssue.objects.filter(issue_template = template_id).exists()
+    cheque_txt = ChequeText.objects.filter(template = template_id)
     template = get_object_or_404(ChequeTemplate, id=template_id)
     
     if issued_templ:
         messages.warning(request,("Can't be deleted, Cheque has been issued with the template"))
     else:
+        if cheque_txt:
+            cheque_txt.delete()
         template.delete()
         messages.success(request,('Template Deleted Successfully!!'))
     return redirect('template_list')
@@ -91,7 +92,10 @@ def edit_template(request):
         height = request.POST.get('height')
         bank = request.POST.get('bank')
         currency = request.POST.get('currency')
+
         background_image = request.FILES.get('background_image')
+
+        print("image - ",background_image)
 
         print("currency_id - ",template_id)
         
@@ -103,17 +107,18 @@ def edit_template(request):
             template.height = height
             template.bank = get_object_or_404(Banks, id=bank)
             template.currency = get_object_or_404(Currencies, id=currency)
-            template.background_image = background_image
             template.modified_by = request.user.id
             template.modified_date = datetime.now()
+
+            if background_image:
+                template.background_image = background_image
 
             template_exist = ChequeTemplate.objects.filter(name=name).exclude(id=template_id)
 
             if template_exist:
-                messages.error(request,('Currency with same name or Currency Char already exits!!'))
+                messages.error(request,('Template with same name or Currency Char already exits!!'))
 
             else:
-                
                 template.save()
                 messages.success(request,('Template Details Updated Successfully!!!'))
                 return JsonResponse({"success": True})

@@ -75,7 +75,6 @@ def edit_currency(request):
                 messages.error(request,('Currency with same name or Currency Char already exits!!'))
 
             else:
-                
                 currency.save()
                 messages.success(request,('Currency Details Updated Successfully!!!'))
                 return JsonResponse({"success": True})

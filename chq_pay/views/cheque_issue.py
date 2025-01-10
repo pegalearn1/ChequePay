@@ -278,7 +278,17 @@ def get_cheque_text(request):
 def print_cheque(request, cheque_id):
     cheque_issue = get_object_or_404(ChequeIssue, id=cheque_id)
     template = cheque_issue.issue_template
-    cheque_text = get_object_or_404(ChequeText, template=template)
+    try:
+        cheque_text = get_object_or_404(ChequeText, template=template)
+    except Exception as e:
+        messages.error(request, 'Set Text Positions On Template First.')
+        return redirect('cheque_issue_list')  # You should redirect or render an error page
+    
+
+    hindi = amount_in_words('115', 'INR', 'en')
+    
+    print("HINDIIIII - ", hindi)
+        
 
     issue_currency = cheque_issue.issue_currency.currency_char
 

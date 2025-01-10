@@ -173,7 +173,7 @@
         </div>
         <div class="modal-body">
             <div class="mb-3">
-          <form id="addTemplateForm" method="POST" action="{% url 'upload_template' %}" enctype="multipart/form-data">
+          <form id="addTemplateForm" method="POST"  enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-group mb-2">
               <label for="name" class="form-label">Cheque Template Name</label>
@@ -207,7 +207,7 @@
             </div>
             <div class="form-group mb-2">
               <label for="background_image" class="form-label">Cheque Background Image</label>
-              <input type="file" name="background_image" id="id_background_image" class="form-control-file" style="max-width: 400px; width: 100%;" required accept="image/*" onchange="previewImage(event)">
+              <input type="file" name="background_image" id="id_background_image" class="form-control-file" style="max-width: 400px; width: 100%;" required accept="image/*" onchange="addpreviewImage(event)">
               <!-- Image Preview -->
               <div id="image-preview" class="mt-3">
                 <img id="selected-image" src="" alt="Selected Image" style="display: none; max-width: 100%; height: auto; border: 1px solid #ddd; padding: 5px;">
@@ -216,7 +216,7 @@
             
             <!-- image script -->
             <script>
-              function previewImage(event) {
+              function addpreviewImage(event) {
                   const input = event.target;
                   const preview = document.getElementById('selected-image');
                   
@@ -257,7 +257,7 @@
         </div>
         <div class="modal-body">
           <div class="mb-3">
-          <form id="editCurrencyForm" method="POST" action="{% url 'edit_template' %}" enctype="multipart/form-data">
+          <form id="editTemplateForm" method="POST"  enctype="multipart/form-data">
             {% csrf_token %}
             <input type="hidden" id="edit_template_id" name="template_id">
             <div class="form-group mb-2">
@@ -307,12 +307,39 @@
               <!-- Image Preview -->
               <div id="image-preview" class="mt-3">
                 <img 
-                  id="selected-image" 
+                  id="edit-selected-image" 
                   src="" 
                   alt="Selected Image" 
                   style="display: none; max-width: 100%; height: auto; border: 1px solid #ddd; padding: 5px;">
               </div>
             </div>
+
+            <!-- image script -->
+
+            <script>
+
+            // Image preview function
+            function previewImage(event) {
+              const input = event.target;
+              const preview = document.getElementById('edit-selected-image');
+
+              if (input.files && input.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                  preview.src = e.target.result;
+                  preview.style.display = 'block'; // Show the image
+                };
+
+                reader.readAsDataURL(input.files[0]); // Read the image file as a data URL
+              }
+            }
+
+          </script>
+
+          <!-- image script -->
+            
+            
             <div class="modal-footer">
               <button type="button" class="btn me-auto" data-bs-dismiss="modal">Close</button>
             <button type="submit" class="btn btn-primary">Update</button>
@@ -360,12 +387,11 @@ $(document).ready(function () {
     modal.find('#edit_bank').val(templateBankId);
     modal.find('#edit_currency').val(templateCurrencyId);
     
+    // to show previous image
     if (templateBackgroundImage) {
-      const imagePreview = modal.find('#selected-image');
+      const imagePreview = modal.find('#edit-selected-image');
       imagePreview.attr('src', templateBackgroundImage).show();
-    } else {
-      modal.find('#selected-image').hide();
-    }
+    } 
   });
 
   // Handle form submission
@@ -384,32 +410,14 @@ $(document).ready(function () {
       .then(data => {
         if (data.success) {
           $('#editTemplateModal').modal('hide');
-          location.reload(); // Reload the page to reflect changes
+          window.location.href = "{% url 'template_list' %}";
         } else {
-          location.reload();
+          window.location.href = "{% url 'template_list' %}";
         }
       })
       .catch(error => console.error("Error:", error));
   });
 });
-
-// Image preview function
-function previewImage(event) {
-  const input = event.target;
-  const preview = document.getElementById('selected-image');
-
-  if (input.files && input.files[0]) {
-    const reader = new FileReader();
-
-    reader.onload = function (e) {
-      preview.src = e.target.result;
-      preview.style.display = 'block'; // Show the image
-    };
-
-    reader.readAsDataURL(input.files[0]); // Read the image file as a data URL
-  }
-}
-
 
 
 // Handle Add Template Form Submission
