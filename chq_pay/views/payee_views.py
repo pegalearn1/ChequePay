@@ -2,7 +2,7 @@
 in 2024-2025.'''
 
 from .imp_libs import *
-from chq_pay.models import Payee
+from chq_pay.models import Payee, Company_Setup
 
 
 @login_required
@@ -14,6 +14,7 @@ def add_payee(request):
         
         payee_exist = Payee.objects.filter(payee_name = payee_name)
 
+        
         if payee_exist:
             messages.error(request,('Payee Already Exits!!'))
 

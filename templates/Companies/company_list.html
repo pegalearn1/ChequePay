@@ -1,0 +1,325 @@
+{% extends 'layouts/base.html' %}
+{% load i18n %}
+{% load static %}
+{% block tiitle %}{% trans "Companies" %}{% endblock tiitle %}
+{% block content %}
+
+
+<!-- Page header -->
+<div class="page-header d-print-none">
+    <div class="container-xl">
+      <div class="row g-2 align-items-center">
+        <div class="col">
+          <h2 class="page-title">
+            {% trans "Companies" %}
+          </h2>
+        </div>
+        <!-- Page title actions -->
+        <div class="col-auto ms-auto d-print-none">
+            <div class="btn-list">
+             <a href="#" class="btn btn-primary d-none d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#addCompanyModal">
+                <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+                {% trans "Create new Company" %}
+              </a>
+              <a href="#" class="btn btn-primary d-sm-none btn-icon" data-bs-toggle="modal" data-bs-target="#addCompanyModal" aria-label="addCompanyModalLabel">
+                <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+              </a>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+  <!-- Page body -->
+  <div class="page-body">
+    <div class="container-xl">
+        <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">{% trans "Company List" %}</h3>
+            </div>
+           <div class="table-responsive" >
+              <table class="table card-table table-vcenter text-nowrap datatable">
+                <thead>
+                  <tr>
+                    <th>{% trans "Company" %}</th>
+                    <th>{% trans "Phone" %}</th>
+                    <th>{% trans "Email" %}</th>
+                    <th>{% trans "Taxation ID" %}</th>
+                    <th>{% trans "Address" %}</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% if companies %}
+                            {% for company in companies %}
+                  <tr>
+                    <td>
+                        <div class="d-flex py-1 align-items-center">
+                            <span class="avatar me-2" style="background-image: {% if company.logo %}url({{company.logo.url}}){% else %}url( {% static "tabler/default_company.png" %} ){% endif %} "></span>
+                            <div class="flex-fill">
+                              <div class="font-weight-medium">{{company.company_name}}</div>
+                              </div>
+                          </div>
+                    </td>
+                    <td>{{ company.tel_no }}</td>
+                    <td>{{ company.email }}</td>
+                    <td>{% if company.tax_id %}{{ company.tax_id }}{% endif %}</td>
+                    <td>{{ company.address }}</td>
+
+                    <td class="text-end">
+                      
+                        <div class="dropdown">
+                        <button class="btn dropdown-toggle align-text-top" data-bs-toggle="dropdown">
+                          Actions
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end">
+                          <a class="dropdown-item" href="#" data-bs-toggle="modal"  
+                          data-bs-target="#editCompanyModal" 
+                          data-id="{{ company.id }}" 
+                          {% comment %} data-logo="{{ company.logo.url }}" {% endcomment %}
+                          data-name="{{ company.company_name }}" 
+                          data-phone="{{ company.tel_no }}"
+                          data-email="{{ company.email }}"
+                          data-tax-id="{{ company.tax_id }}"
+                          data-address="{{ company.address }}">
+                            {% trans "Edit Company" %}
+                          </a>
+                          <a class="dropdown-item" onclick="return confirm('Are you sure you want to delete {{ company.company_name }}?')" 
+                          href="">
+                            {% trans "Delete Company" %}
+                          </a>
+                        </div>
+                      </div>
+
+
+                    </td>
+                  </tr>
+                  {% endfor %}
+          {% else %}
+          <tr>
+              <td colspan="4" class="text-center">No Companies found.</td>
+          </tr>
+          {% endif %}
+                </tbody>
+              </table>
+            </div>
+            <!-- pagination -->
+            <div class="card-footer d-flex align-items-center">
+              <p class="m-0 text-secondary">
+                Showing <span>{{ companies.start_index }}</span> to <span>{{ companies.end_index }}</span> of <span>{{ companies.paginator.count }}</span> entries
+              </p>
+              <ul class="pagination m-0 ms-auto">
+                {% if companies.has_previous %}
+                <li class="page-item">
+                  <a class="page-link" href="?page=1{% if searched %}&searched={{ searched }}{% endif %}{% if company %}&company={{ company }}{% endif %}{% if emp_loc %}&emp_loc={{ emp_loc|join:"," }}{% endif %}{% if emp_department %}&emp_department={{ emp_department|join:"," }}{% endif %}" tabindex="-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path d="M17 6l-6 6l6 6" />
+                      <path d="M11 6l-6 6l6 6" />
+                    </svg>
+                    First
+                  </a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ companies.previous_page_number }}{% if searched %}&searched={{ searched }}{% endif %}{% if company %}&company={{ company }}{% endif %}{% if emp_loc %}&emp_loc={{ emp_loc|join:"," }}{% endif %}{% if emp_department %}&emp_department={{ emp_department|join:"," }}{% endif %}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path d="M15 6l-6 6l6 6" />
+                    </svg>
+                    
+                  </a>
+                </li>
+                {% endif %}
+
+                {% for i in companies.paginator.page_range %}
+                {% if companies.number == i %}
+                <li class="page-item active"><a class="page-link" href="#">{{ i }}</a></li>
+                {% elif i > companies.number|add:'-3' and i < companies.number|add:'3' %}
+                <li class="page-item"><a class="page-link" href="?page={{ i }}{% if searched %}&searched={{ searched }}{% endif %}{% if company %}&company={{ company }}{% endif %}{% if emp_loc %}&emp_loc={{ emp_loc|join:"," }}{% endif %}{% if emp_department %}&emp_department={{ emp_department|join:"," }}{% endif %}">{{ i }}</a></li>
+                {% endif %}
+                {% endfor %}
+
+                {% if companies.has_next %}
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ companies.next_page_number }}{% if searched %}&searched={{ searched }}{% endif %}{% if company %}&company={{ company }}{% endif %}{% if emp_loc %}&emp_loc={{ emp_loc|join:"," }}{% endif %}{% if emp_department %}&emp_department={{ emp_department|join:"," }}{% endif %}">
+                    
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path d="M9 6l6 6l-6 6" />
+                    </svg>
+                  </a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ companies.paginator.num_pages }}{% if searched %}&searched={{ searched }}{% endif %}{% if company %}&company={{ company }}{% endif %}{% if emp_loc %}&emp_loc={{ emp_loc|join:"," }}{% endif %}{% if emp_department %}&emp_department={{ emp_department|join:"," }}{% endif %}">
+                    Last
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path d="M7 6l6 6l-6 6" />
+                      <path d="M13 6l6 6l-6 6" /> <!-- Second chevron -->
+                    </svg>
+                  </a>
+                </li>
+                {% endif %}
+              </ul>
+            </div>
+            <!-- pagination -->
+          </div>
+      </div>
+    </div>
+
+
+
+
+
+<!--add new Currency Modal -->
+<div class="modal modal-blur fade" id="addCompanyModal" tabindex="-1" role="dialog" aria-labelledby="addCompanyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addCompanyModalLabel">Add New Currency</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="mb-3">
+          <form id="addCurrencyForm" method="POST" action="{% url 'add_currency' %}">
+            {% csrf_token %}
+            <div class="form-group mb-2">
+                <label for="currency_char" class="form-label">Currency Char</label>
+                <input type="text" class="form-control" id="currency_char" name="currency_char" required>
+            </div>
+            
+            <div class="form-group mb-2">
+                <label for="currency_name" class="form-label">Currency Name</label>
+                <input type="text" class="form-control" id="currency_name" name="currency_name" required>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn me-auto" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+        </form>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  
+  <!--edit Currency Modal -->
+  <div class="modal modal-blur fade" id="editCompanyModal" tabindex="-1" role="dialog" aria-labelledby="editCompanyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editCompanyModalLabel">Edit Currency</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+            </button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+          <form id="editCurrencyForm" method="POST" action="{% url 'edit_currency' %}">
+            {% csrf_token %}
+            <input type="hidden" id="edit_currency_id" name="currency_id">
+            <div class="form-group mb-2">
+                <label for="edit_currency_char" class="form-label">Currency Char</label>
+                <input type="text" class="form-control" id="edit_currency_char" name="currency_char" required>
+            </div>
+            <div class="form-group mb-2">
+                <label for="edit_currency_name" class="form-label">Currency Name</label>
+                <input type="text" class="form-control" id="edit_currency_name" name="currency_name" required>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn me-auto" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Update</button>
+          </div>
+          </form>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  <!--edit Currency Modal -->
+
+{% endblock content %}
+
+
+{% block scripts %}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+
+    // Populate Edit Modal
+    $('#editCompanyModal').on('show.bs.modal', function (event) {
+        const button = $(event.relatedTarget);
+        const id = button.data('id');
+        const currencyChar = button.data('currency-char');
+        const currencyName = button.data('currency-name');
+        
+        const modal = $(this);
+        modal.find('#edit_currency_id').val(id);
+        modal.find('#edit_currency_char').val(currencyChar);
+        modal.find('#edit_currency_name').val(currencyName);
+        
+    });
+
+    // Handle Edit Payee Form Submission
+    document.getElementById('editCurrencyForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+
+        fetch("{% url 'edit_currency' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Hide the modal on success
+                $('#editCompanyModal').modal('hide');
+                
+                // Reload the page to reflect changes
+                location.reload();
+            } else {
+                 // Reload the page to reflect changes
+                 location.reload();
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    });
+
+    // Handle Add Payee Form Submission
+    document.getElementById('addCurrencyForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+
+        fetch("{% url 'add_currency' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                $('#addCompanyModal').modal('hide');
+                location.reload();
+            } else {
+                location.reload();
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    });
+
+  
+</script>
+
+
+    
+{% endblock scripts %}

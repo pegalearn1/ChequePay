@@ -2,7 +2,7 @@
 in 2024-2025.'''
 
 from .imp_libs import *
-from chq_pay.models import Currencies
+from chq_pay.models import Currencies, Company_Setup
 
 @login_required
 def add_currency(request):

@@ -2,7 +2,7 @@
 in 2024-2025.'''
 
 from .imp_libs import *
-from chq_pay.models import ChequeTemplate, ChequeText, Banks, Currencies, Payee, ChequeIssue
+from chq_pay.models import ChequeTemplate, ChequeText, Banks, Currencies, Payee, ChequeIssue, Company_Setup
 
 @login_required
 def upload_template(request):
@@ -16,11 +16,14 @@ def upload_template(request):
 
         print("POST - ", request.POST)
 
+        comapny_now = get_object_or_404(Company_Setup, is_selected = True)
+
 
         # Save the data to the database
         if name and width and height and background_image:
             try:
                 cheque_template = ChequeTemplate(
+                    company = comapny_now,
                     name=name,
                     width=width,
                     height=height,
@@ -50,7 +53,7 @@ def upload_template(request):
 
 @login_required
 def template_list(request):
-    templates = ChequeTemplate.objects.all().order_by('name')
+    templates = ChequeTemplate.objects.all().filter(Q(company__is_selected=True)).order_by('name')
     banks = Banks.objects.all()
     currencies = Currencies.objects.all()
 

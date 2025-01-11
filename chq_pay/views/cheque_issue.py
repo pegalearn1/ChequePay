@@ -2,7 +2,7 @@
 in 2024-2025.'''
 
 from .imp_libs import *
-from chq_pay.models import ChequeTemplate, ChequeText, Banks, Currencies, Payee, ChequeIssue
+from chq_pay.models import ChequeTemplate, ChequeText, Banks, Currencies, Payee, ChequeIssue, Company_Setup
 
 
 
@@ -120,6 +120,7 @@ def cheque_issue(request):
 
 
         # Save the data to the database
+        comapny_now = get_object_or_404(Company_Setup, is_selected = True)
         cheque_issue_temp = get_object_or_404(ChequeTemplate, id = issue_template)
         issue_currency = get_object_or_404(Currencies, id = cheque_issue_temp.currency.id)
         issue_currency_char = issue_currency.currency_char
@@ -132,6 +133,7 @@ def cheque_issue(request):
 
         try:
             cheque_issue_new = ChequeIssue(
+                company = comapny_now,
                 issue_template=cheque_issue_temp,
                 issue_cheque_no=issue_cheque_no,
                 issue_currency= issue_currency,
@@ -170,7 +172,7 @@ def cheque_issue(request):
 
 @login_required
 def cheque_issue_list(request):
-    cheques = ChequeIssue.objects.all().order_by('-issue_cheque_date')
+    cheques = ChequeIssue.objects.all().filter(Q(company__is_selected=True)).order_by('-issue_cheque_date')
     templates = ChequeTemplate.objects.all()
     banks = Banks.objects.all()
     currencies = Currencies.objects.all()
@@ -284,12 +286,6 @@ def print_cheque(request, cheque_id):
         messages.error(request, 'Set Text Positions On Template First.')
         return redirect('cheque_issue_list')  # You should redirect or render an error page
     
-
-    hindi = amount_in_words('115', 'INR', 'en')
-    
-    print("HINDIIIII - ", hindi)
-        
-
     issue_currency = cheque_issue.issue_currency.currency_char
 
     if request.method == "POST":
@@ -297,17 +293,19 @@ def print_cheque(request, cheque_id):
         data = json.loads(request.body)
         selected_language = data.get("language", "en")
 
+        print("request pst - ", selected_language)
         # Generate the amount in words in the selected language
-        issue_amount_wrd = amount_in_words(
-            cheque_issue.issue_amount, issue_currency, selected_language
-        )
+        issue_amount_wrd = amount_in_words(cheque_issue.issue_amount, issue_currency, selected_language)
         issue_amount_wrd_title = issue_amount_wrd.title()
 
+        
         # Return only the updated "amount in words"
         return JsonResponse({
             "success": True,
             "amount_word": '*' + '*' + issue_amount_wrd_title + '*' + '*',
         })
+    
+        
 
     # Handle GET request (initial page load)
     issue_amount_wrd = amount_in_words(

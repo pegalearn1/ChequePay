@@ -196,8 +196,8 @@
                 </div>
               </a>
               <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                {% comment %} <a href="#" class="dropdown-item">Status</a> {% endcomment %}
                 <a href="{% url "profile" %}" class="dropdown-item">Profile</a>
+                <a href="{% url "company_list" %}" class="dropdown-item">Companies</a>
                 <div class="dropdown-divider"></div>
                 {% comment %} <a href="settings.html" class="dropdown-item">Settings</a> {% endcomment %}
                 <a href="{% url "logout" %}" class="dropdown-item">Logout</a>
@@ -275,17 +275,49 @@
                     </li>
                   </ul>
                 </div>
-                <div class="col-2 d-none d-xxl-block">
+                <div class="col-2">
                   <div class="my-2 my-md-0 flex-grow-1 flex-md-grow-0 order-first order-md-last">
-                    <form action="https://preview.tabler.io/" method="get" autocomplete="off" novalidate>
+                    <form action="{% url "current_company" %}" id="company-form" method="post" autocomplete="off" novalidate>
                       <div class="input-icon">
                         <span class="input-icon-addon">
-                          <!-- Download SVG icon from http://tabler-icons.io/i/search -->
-                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
+                          <!-- SVG icon for search -->
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-buildings">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M4 21v-15c0 -1 1 -2 2 -2h5c1 0 2 1 2 2v15" />
+                            <path d="M16 8h2c1 0 2 1 2 2v11" />
+                            <path d="M3 21h18" />
+                            <path d="M10 12v0" />
+                            <path d="M10 16v0" />
+                            <path d="M10 8v0" />
+                            <path d="M7 12v0" />
+                            <path d="M7 16v0" />
+                            <path d="M7 8v0" />
+                            <path d="M17 12v0" />
+                            <path d="M17 16v0" />
+                          </svg>
                         </span>
-                        <input type="text" value="" class="form-control" placeholder="Search…" aria-label="Search in website">
+                        <select name="current_company" id="company-select" class="form-control" onchange="submitCompanyForm()" required>
+                          <option value="" disabled selected>Select a Company</option>
+                          {% if companies %}
+                          {% for company in companies %}
+                          
+                          <option value="{{company.id}}" {% if company.is_selected %}selected{% endif %}>{{company.company_name}}</option>
+                          
+                          {% endfor %}
+                          {% endif %}
+                          
+                        </select>
                       </div>
                     </form>
+                    <!-- to submit form on selection -->
+                    <script>
+                      function submitCompanyForm() {
+                        document.getElementById('company-form').submit();
+                      }
+                    </script>
+                    <!-- to submit form on selection -->
+
+
                   </div>
                 </div>
               </div>

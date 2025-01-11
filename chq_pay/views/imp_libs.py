@@ -132,7 +132,10 @@ def check_reg_update_sett(request):
                 "database" : dtbs,
                 "country_id": cntry_id,
                 "country_name":country_name,
-                "allowed_templates" : templates_api
+                "allowed_templates" : templates_api,
+                "company":cmpny,
+                "phone":phn,
+                "address":addrs
             }
 
             # param_data = {

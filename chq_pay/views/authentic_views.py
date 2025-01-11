@@ -3,7 +3,8 @@ in 2024-2025.'''
 
 from .imp_libs import *
 from django.db.migrations.executor import MigrationExecutor
-from chq_pay.models import AppUser
+from chq_pay.models import AppUser, Company_Setup
+from datetime import datetime
 
 # Get the custom user model
 User = get_user_model()
@@ -22,7 +23,7 @@ def check_table_exists():
     except OperationalError:
         return False
 
-def create_user_if_needed(reg_code, email, password, name, license_key, cust_id, country_id, country_name, allowed_templates):
+def create_user_if_needed(reg_code, email, password, name, license_key, cust_id, country_id, country_name, allowed_templates, company, phone, address):
     """
     If the table doesn't exist, apply migrations to create it.
     Then create a new user if the table was successfully created.
@@ -36,6 +37,7 @@ def create_user_if_needed(reg_code, email, password, name, license_key, cust_id,
         # After migration, create the user
         # Replace this with your user creation logic, for example:
         AppUser.objects.create(reg_code = reg_code, license_key = license_key, name=name, email=email, cust_id=cust_id, country_id=country_id, country_name=country_name, allowed_templates=allowed_templates)
+        Company_Setup.objects.create(registration_id = reg_code, company_name = company, is_selected = True, tel_no = phone, email = email, address = address, created_by = 1,created_date = datetime.now(), modified_by = 1, modified_date = datetime.now())
         
         user = User.objects.create_user(
             username=email, 
@@ -73,6 +75,9 @@ def user_login(request):
         sess_country_name = license_data.get('country_name', None)
         sess_allowed_templates = license_data.get('allowed_templates', None)
         sess_expiry_date = license_data.get('expiry_date', None)
+        sess_company = license_data.get('company', None)
+        sess_phone = license_data.get('phone', None)
+        sess_address = license_data.get('address', None)
         expiry_dt_time = datetime.strptime( sess_expiry_date, "%Y-%m-%d %H:%M:%S") #setting to right fromat to compare expiry date
 
         if not all([sess_reg_code, sess_email, sess_password, sess_name, sess_expiry_date]):
@@ -85,7 +90,7 @@ def user_login(request):
                 print("code matched")
                 if expiry_dt_time >= datetime.now():
                     
-                    user = create_user_if_needed(sess_reg_code, sess_email, sess_password, sess_name, sess_license_key, sess_cust_id, sess_country_id, sess_country_name, sess_allowed_templates)
+                    user = create_user_if_needed(sess_reg_code, sess_email, sess_password, sess_name, sess_license_key, sess_cust_id, sess_country_id, sess_country_name, sess_allowed_templates, sess_company, sess_phone, sess_address)
 
                     user = authenticate(request, username=username, password=password)
                 

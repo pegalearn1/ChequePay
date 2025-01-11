@@ -23,7 +23,6 @@ def index(request):
         'payee_count':payee_count,
         'template_count':template_count,
         'chq_issue_count':chq_issue_count
-        
         }
 
 

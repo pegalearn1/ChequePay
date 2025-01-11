@@ -34,8 +34,10 @@ urlpatterns = [
 
     #company urls
     path('add-bank/', bank_views.add_bank, name='add_bank'),
+    path('company_list/', company_views.company_list, name = "company_list"),
     path('edit-bank/', bank_views.edit_bank, name='edit_bank'),
     path('delete_bank/<int:bank_id>/', bank_views.delete_bank, name='delete_bank'),
+    path('current_company', company_views.current_company, name='current_company'),
     
     
     

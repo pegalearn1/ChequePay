@@ -2,7 +2,7 @@
 in 2024-2025.'''
 
 from .imp_libs import *
-from chq_pay.models import Banks
+from chq_pay.models import Banks, Company_Setup
 
 @login_required
 def add_bank(request):
@@ -14,6 +14,8 @@ def add_bank(request):
         address = request.POST.get("address")
 
         bank_exist = Banks.objects.filter(Q(bank_name_e=bank_name_e) | Q(bank_char=bank_char))
+
+       
 
         if bank_exist:
             messages.error(request,('Bank Already Exits!!'))
@@ -37,7 +39,7 @@ def add_bank(request):
 
 @login_required
 def bank_list(request):
-    banks = Banks.objects.all().order_by('bank_char')
+    banks = Banks.objects.order_by('bank_char')
 
     #pagination
     per_page = 25

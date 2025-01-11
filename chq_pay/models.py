@@ -1,20 +1,41 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
+##########################################################################################################################################################################################################################################################
 
 #Abstract User profile
 
 class ChqpayUser(AbstractUser):
     profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
-    civil_id = models.CharField(max_length=20, unique=True, null=True, blank=True)
-    privilege_char = models.CharField(max_length=50, null=True, blank=True)  # or use choices for predefined roles
+    privilege_role = models.CharField(max_length=100, null=True, blank=True)  # or use choices for predefined roles
 
     def __str__(self):
         return self.username
-
-
+    
 
 ##########################################################################################################################################################################################################################################################
+#company_setup
+
+class Company_Setup(models.Model):
+    registration_id = models.CharField(max_length=50)
+    company_name = models.CharField(max_length=120)
+    logo = models.ImageField(upload_to ='company_logos/', blank = True, null=True )
+    tax_id = models.CharField(max_length=120, null=True, blank=True)
+    is_selected = models.BooleanField()
+    # currency_id = models.IntegerField()
+    tel_no = models.CharField(max_length=20)
+    email = models.EmailField(max_length=100)
+    address = models.TextField(blank=True, null=True)
+    created_by = models.IntegerField()
+    created_date = models.DateTimeField()
+    modified_by = models.IntegerField()
+    modified_date = models.DateTimeField()
+
+    def __str__(self):
+        return self.company_name
+
+#########################################################################################################################################################################################################################################################
+
 
 #bank models
 
@@ -50,26 +71,7 @@ class Currencies(models.Model):
 
 #########################################################################################################################################################################################################################################################
 
-#company_setup
 
-class Company_Setup(models.Model):
-    registration_id = models.CharField(max_length=50)
-    company_name = models.CharField(max_length=120)
-    logo = models.ImageField(upload_to ='company_logos/', blank = True, null=True )
-    tax_id = models.CharField(max_length=120, null=True, blank=True)
-    currency_id = models.IntegerField()
-    tel_no = models.CharField(max_length=20)
-    email = models.EmailField(max_length=100)
-    address = models.TextField(blank=True, null=True)
-    created_by = models.IntegerField()
-    created_date = models.DateTimeField()
-    modified_by = models.IntegerField()
-    modified_date = models.DateTimeField()
-
-    def __str__(self):
-        return self.company_name
-
-#########################################################################################################################################################################################################################################################
 
 #Payee
 
@@ -92,6 +94,7 @@ class Payee(models.Model):
 #Cheque Models
 #to add and save the cheque template
 class ChequeTemplate(models.Model):
+    company = models.ForeignKey(Company_Setup, on_delete=models.CASCADE)
     name = models.CharField(max_length=100, help_text="*Name of the cheque template")
     bank = models.ForeignKey(Banks, on_delete=models.CASCADE)
     currency = models.ForeignKey(Currencies, on_delete=models.CASCADE)
@@ -131,6 +134,7 @@ class ChequeText(models.Model):
 ##########################################################################################################################################################################################################################################################
 #Cheque Issue Model
 class ChequeIssue(models.Model):
+    company = models.ForeignKey(Company_Setup, on_delete=models.CASCADE)
     issue_template = models.ForeignKey(ChequeTemplate, on_delete=models.CASCADE)
     issue_cheque_no = models.IntegerField()
     issue_currency = models.ForeignKey(Currencies, on_delete=models.CASCADE)

@@ -2,7 +2,7 @@
 in 2024-2025.'''
 
 from .imp_libs import *
-from chq_pay.models import Company_Setup, Currencies
+from chq_pay.models import Company_Setup, Currencies, Banks, ChequeTemplate, ChequeIssue
 
 
 def add_company(request):
@@ -27,7 +27,6 @@ def add_company(request):
                 registration_id=registration_id,
                 company_name=company_name,
                 tax_id=tax_id,
-                currency_id=currency_id,
                 tel_no=tel_no,
                 email=email,
                 address=address,
@@ -43,11 +42,39 @@ def add_company(request):
 
 
 
+@login_required
+def company_list(request):
+    companies = Company_Setup.objects.all().order_by('company_name')
 
-def delete_currency(request, currency_id):
-    currency = get_object_or_404(Currencies, id=currency_id)
-    currency.delete()
-    messages.error(request,('Currency Deleted Successfully!!!'))
+    #pagination
+    per_page = 25
+    paginator = Paginator(companies, per_page)
+    page_number = request.GET.get('page')
+    company_list = paginator.get_page(page_number)
+    #pagination
+
+    return render(request,"Companies/company_list.html",{'companies':company_list})
+
+
+
+
+def delete_company(request, company_id):
+    company = get_object_or_404(Company_Setup, id=company_id)
+     # Check if the company ID exists in other models
+    related_models = [
+        Banks,  
+        ChequeTemplate,
+        ChequeIssue
+    ]
+    
+    for model in related_models:
+        if model.objects.filter(company_id=company_id).exists():
+            messages.error(request, 'Cannot delete the company as it is referenced in other records.')
+            return redirect('currency_list')
+    
+    # If no references exist, delete the company
+    company.delete()
+    messages.error(request,('Company Deleted Successfully!!!'))
     return redirect('currency_list')
 
 def edit_currency(request):
@@ -79,3 +106,31 @@ def edit_currency(request):
         except Currencies.DoesNotExist:
             return JsonResponse({"success": False, "error": "Currency not found"})
     return JsonResponse({"success": False, "error": "Invalid request"})
+
+@csrf_exempt
+def current_company(request):
+    if request.method == 'POST':
+        company_id = request.POST.get("current_company")
+
+        if company_id:
+            # Reset all companies to is_selected = False
+            Company_Setup.objects.update(is_selected=False)
+
+            # Set the selected company to is_selected = True
+            selected_company = get_object_or_404(Company_Setup, id=company_id)
+            selected_company.is_selected = True
+            selected_company.save()
+            messages.success(request,(f'Company Switched To {selected_company.company_name}'))
+            previous_path = request.META.get('HTTP_REFERER', '/')
+            return redirect(previous_path)
+        else:
+
+            messages.error(request,("Company Doesn't Exists."))
+
+
+    else:
+        return redirect('index')
+
+    
+
+    return HttpResponse('Company Switched')
