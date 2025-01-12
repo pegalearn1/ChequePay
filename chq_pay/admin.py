@@ -6,7 +6,7 @@ from .models import ChqpayUser, Banks
 @admin.register(ChqpayUser)
 class ChqpayUserAdmin(UserAdmin):
     fieldsets = UserAdmin.fieldsets + (
-        ('Additional Info', {'fields': ('profile_picture', 'civil_id', 'privilege_char')}),
+        ('Additional Info', {'fields': ('profile_picture','privilege_role')}),
     )
 
 @admin.register(Banks)

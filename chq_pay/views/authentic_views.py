@@ -44,6 +44,7 @@ def create_user_if_needed(reg_code, email, password, name, license_key, cust_id,
             password=password, 
             email=email,
             first_name = name,
+            privilege_role = 'SuperAdmin',
             is_superuser=True,
             is_staff=True
         )

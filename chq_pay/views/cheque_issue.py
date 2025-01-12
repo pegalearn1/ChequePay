@@ -116,9 +116,7 @@ def cheque_issue(request):
         if issue_sign:
             issue_sign = issue_sign
         
-        # print("POST - ", request.POST)
-
-
+        
         # Save the data to the database
         comapny_now = get_object_or_404(Company_Setup, is_selected = True)
         cheque_issue_temp = get_object_or_404(ChequeTemplate, id = issue_template)
@@ -178,6 +176,8 @@ def cheque_issue_list(request):
     currencies = Currencies.objects.all()
     payees = Payee.objects.all()
     chq_txts = ChequeText.objects.all()
+
+    
 
 
     #pagination
@@ -291,6 +291,10 @@ def print_cheque(request, cheque_id):
     if request.method == "POST":
         # Process language selection
         data = json.loads(request.body)
+
+        print("dataaa - ", data)
+
+
         selected_language = data.get("language", "en")
 
         print("request pst - ", selected_language)

@@ -192,7 +192,7 @@
                 <span class="avatar avatar-sm" style="background-image: url({% if request.user.profile_picture %} {{request.user.profile_picture.url}} {%else%}/static/tabler/static/avatars/user_image.jpg){% endif %}"></span>
                 <div class="d-none d-xl-block ps-2">
                   <div>{{request.user.first_name}}</div>
-                  <div class="mt-1 small text-secondary">{{request.user.privilege_char}}</div>
+                  <div class="mt-1 small text-secondary">{{request.user.privilege_role}}</div>
                 </div>
               </a>
               <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">

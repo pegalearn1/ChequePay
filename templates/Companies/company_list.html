@@ -71,22 +71,22 @@
                       
                         <div class="dropdown">
                         <button class="btn dropdown-toggle align-text-top" data-bs-toggle="dropdown">
-                          Actions
+                          {% trans "Actions" %}
                         </button>
                         <div class="dropdown-menu dropdown-menu-end">
                           <a class="dropdown-item" href="#" data-bs-toggle="modal"  
                           data-bs-target="#editCompanyModal" 
                           data-id="{{ company.id }}" 
-                          {% comment %} data-logo="{{ company.logo.url }}" {% endcomment %}
                           data-name="{{ company.company_name }}" 
                           data-phone="{{ company.tel_no }}"
                           data-email="{{ company.email }}"
                           data-tax-id="{{ company.tax_id }}"
-                          data-address="{{ company.address }}">
+                          data-address="{{ company.address }}"
+                          {% if company.logo %}data-logo="{{ company.logo.url }}"{% endif %}  >
                             {% trans "Edit Company" %}
                           </a>
                           <a class="dropdown-item" onclick="return confirm('Are you sure you want to delete {{ company.company_name }}?')" 
-                          href="">
+                          href="{% url "delete_company" company.id %}">
                             {% trans "Delete Company" %}
                           </a>
                         </div>
@@ -98,7 +98,7 @@
                   {% endfor %}
           {% else %}
           <tr>
-              <td colspan="4" class="text-center">No Companies found.</td>
+              <td colspan="4" class="text-center">{% trans "No" %} {% trans "Companies" %} {% trans "found" %}</td>
           </tr>
           {% endif %}
                 </tbody>
@@ -107,7 +107,7 @@
             <!-- pagination -->
             <div class="card-footer d-flex align-items-center">
               <p class="m-0 text-secondary">
-                Showing <span>{{ companies.start_index }}</span> to <span>{{ companies.end_index }}</span> of <span>{{ companies.paginator.count }}</span> entries
+                {% trans "Showing" %} <span>{{ companies.start_index }}</span> {% trans "to" %} <span>{{ companies.end_index }}</span> {% trans "of" %} <span>{{ companies.paginator.count }}</span> {% trans "entries" %}
               </p>
               <ul class="pagination m-0 ms-auto">
                 {% if companies.has_previous %}
@@ -118,7 +118,7 @@
                       <path d="M17 6l-6 6l6 6" />
                       <path d="M11 6l-6 6l6 6" />
                     </svg>
-                    First
+                    {% trans "First" %}
                   </a>
                 </li>
                 <li class="page-item">
@@ -152,7 +152,7 @@
                 </li>
                 <li class="page-item">
                   <a class="page-link" href="?page={{ companies.paginator.num_pages }}{% if searched %}&searched={{ searched }}{% endif %}{% if company %}&company={{ company }}{% endif %}{% if emp_loc %}&emp_loc={{ emp_loc|join:"," }}{% endif %}{% if emp_department %}&emp_department={{ emp_department|join:"," }}{% endif %}">
-                    Last
+                    {% trans "Last" %}
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
                       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                       <path d="M7 6l6 6l-6 6" />
@@ -172,30 +172,75 @@
 
 
 
-<!--add new Currency Modal -->
+<!--add new Company Modal -->
 <div class="modal modal-blur fade" id="addCompanyModal" tabindex="-1" role="dialog" aria-labelledby="addCompanyModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="addCompanyModalLabel">Add New Currency</h5>
+          <h5 class="modal-title" id="addCompanyModalLabel">{% trans "Add" %} {% trans "New" %} {% trans "Company" %}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
             <div class="mb-3">
-          <form id="addCurrencyForm" method="POST" action="{% url 'add_currency' %}">
+          <form id="addCompanyForm" method="POST" action="{% url 'add_company' %}" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-group mb-2">
-                <label for="currency_char" class="form-label">Currency Char</label>
-                <input type="text" class="form-control" id="currency_char" name="currency_char" required>
+                <label for="company_name" class="form-label">{% trans "Company" %} {% trans "Name" %}</label>
+                <input type="text" class="form-control" id="company_name" name="company_name" required>
             </div>
             
             <div class="form-group mb-2">
-                <label for="currency_name" class="form-label">Currency Name</label>
-                <input type="text" class="form-control" id="currency_name" name="currency_name" required>
+                <label for="company_tel_no" class="form-label">{% trans "Company" %} {% trans "Phone" %}</label>
+                <input type="text" class="form-control" id="company_tel_no" name="company_tel_no" required>
             </div>
-            <div class="modal-footer">
-            <button type="button" class="btn me-auto" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Save Changes</button>
+
+            <div class="form-group mb-2">
+              <label for="company_email" class="form-label">{% trans "Company" %} {% trans "Email" %}</label>
+              <input type="email" class="form-control" id="company_email" name="company_email" required>
+            </div>
+
+            <div class="form-group mb-2">
+              <label for="company_tax_id" class="form-label">{% trans "Company" %} {% trans "Tax Id" %}</label>
+              <input type="text" class="form-control" id="company_tax_id" name="company_tax_id" >
+            </div>
+
+            <div class="form-group mb-2">
+                <label for="company_address" class="form-label">{% trans "Company" %} {% trans "Address" %}</label>
+                <textarea name="company_address" id="company_address" class="form-control"  required></textarea>
+            </div>
+
+            <div class="form-group mb-2">
+              <label for="company_logo" class="form-label">{% trans "Company" %} {% trans "Logo" %}</label>
+              <input type="file"  id="company_logo" name="company_logo" class="form-control-file" style="max-width: 400px; width: 100%;" required accept="image/*" onchange="addlogoImage(event)">
+            <!-- Image Preview -->
+            <div id="logo-preview" class="mt-3">
+              <img id="logo-image" src="" alt="LOGO" style="display: none; max-width: 100%; height: auto; border: 1px solid #ddd; padding: 5px;">
+            </div>
+          </div>
+          
+          <!-- image script -->
+          <script>
+            function addlogoImage(event) {
+                const input = event.target;
+                const preview = document.getElementById('logo-image');
+                
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function (e) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block'; // Show the image
+                    };
+                    
+                    reader.readAsDataURL(input.files[0]); // Read the image file as a data URL
+                }
+            }
+            </script>
+            <!-- image script -->
+            
+            <div class="modal-footer mb-2">
+            <button type="button" class="btn me-auto" data-bs-dismiss="modal">{% trans "Close" %}</button>
+            <button type="submit" class="btn btn-primary">{% trans "Save Changes" %}</button>
             </div>
         </form>
         </div>
@@ -206,7 +251,7 @@
   
   
   
-  <!--edit Currency Modal -->
+  <!--edit Company Modal -->
   <div class="modal modal-blur fade" id="editCompanyModal" tabindex="-1" role="dialog" aria-labelledby="editCompanyModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
       <div class="modal-content">
@@ -217,17 +262,62 @@
         </div>
         <div class="modal-body">
           <div class="mb-3">
-          <form id="editCurrencyForm" method="POST" action="{% url 'edit_currency' %}">
+          <form id="editCompanyForm" method="POST" action="{% url 'edit_company' %}">
             {% csrf_token %}
-            <input type="hidden" id="edit_currency_id" name="currency_id">
+            <input type="hidden" id="edit_company_id" name="company_id">
             <div class="form-group mb-2">
-                <label for="edit_currency_char" class="form-label">Currency Char</label>
-                <input type="text" class="form-control" id="edit_currency_char" name="currency_char" required>
-            </div>
-            <div class="form-group mb-2">
-                <label for="edit_currency_name" class="form-label">Currency Name</label>
-                <input type="text" class="form-control" id="edit_currency_name" name="currency_name" required>
-            </div>
+              <label for="company_name" class="form-label">{% trans "Company" %} {% trans "Name" %}</label>
+              <input type="text" class="form-control" id="edit_company_name" name="company_name" required>
+          </div>
+          
+          <div class="form-group mb-2">
+              <label for="company_tel_no" class="form-label">{% trans "Company" %} {% trans "Phone" %}</label>
+              <input type="text" class="form-control" id="edit_company_tel_no" name="company_tel_no" required>
+          </div>
+
+          <div class="form-group mb-2">
+            <label for="company_email" class="form-label">{% trans "Company" %} {% trans "Email" %}</label>
+            <input type="text" class="form-control" id="edit_company_email" name="company_email" required>
+          </div>
+
+          <div class="form-group mb-2">
+            <label for="company_tax_id" class="form-label">{% trans "Company" %} {% trans "Tax Id" %}</label>
+            <input type="text" class="form-control" id="edit_company_tax_id" name="company_tax_id" >
+          </div>
+
+          <div class="form-group mb-2">
+              <label for="company_address" class="form-label">{% trans "Company" %} {% trans "Address" %}</label>
+              <textarea name="company_address" id="edit_company_address" class="form-control"  required></textarea>
+          </div>
+
+          <div class="form-group mb-2">
+            <label for="company_logo" class="form-label">{% trans "Company" %} {% trans "Logo" %}</label>
+            <input type="file"  id="edit_company_logo" name="company_logo" class="form-control-file" style="max-width: 400px; width: 100%;" required accept="image/*" onchange="editlogoImage(event)">
+          <!-- Image Preview -->
+          <div id="logo-preview" class="mt-3">
+            <img id="edit-logo-image" src="" alt="LOGO" style="display: none; max-width: 100%; height: auto; border: 1px solid #ddd; padding: 5px;">
+          </div>
+        </div>
+        
+        <!-- image script -->
+        <script>
+          function editlogoImage(event) {
+              const input = event.target;
+              const preview = document.getElementById('edit-logo-image');
+              
+              if (input.files && input.files[0]) {
+                  const reader = new FileReader();
+                  
+                  reader.onload = function (e) {
+                      preview.src = e.target.result;
+                      preview.style.display = 'block'; // Show the image
+                  };
+                  
+                  reader.readAsDataURL(input.files[0]); // Read the image file as a data URL
+              }
+          }
+          </script>
+          <!-- image script -->
             <div class="modal-footer">
               <button type="button" class="btn me-auto" data-bs-dismiss="modal">Close</button>
             <button type="submit" class="btn btn-primary">Update</button>
@@ -240,7 +330,7 @@
   </div>
   
   
-  <!--edit Currency Modal -->
+  <!--edit Company Modal -->
 
 {% endblock content %}
 
@@ -253,24 +343,39 @@
 
     // Populate Edit Modal
     $('#editCompanyModal').on('show.bs.modal', function (event) {
-        const button = $(event.relatedTarget);
-        const id = button.data('id');
-        const currencyChar = button.data('currency-char');
-        const currencyName = button.data('currency-name');
-        
-        const modal = $(this);
-        modal.find('#edit_currency_id').val(id);
-        modal.find('#edit_currency_char').val(currencyChar);
-        modal.find('#edit_currency_name').val(currencyName);
-        
-    });
+      const button = $(event.relatedTarget);
+      const id = button.data('id');
+      const companyName = button.data('name');
+      const companyPhone = button.data('phone');
+      const companyEmail = button.data('email');
+      const companyTaxId = button.data('tax-id');
+      const companyAddress = button.data('address');
+      const companyLogo = button.data('logo');
+  
+      const modal = $(this);
+      modal.find('#edit_company_id').val(id);
+      modal.find('#edit_company_name').val(companyName);
+      modal.find('#edit_company_tel_no').val(companyPhone);
+      modal.find('#edit_company_email').val(companyEmail);
+      modal.find('#edit_company_tax_id').val(companyTaxId);
+      modal.find('#edit_company_address').val(companyAddress);
+  
+      // Handle logo preview
+      const logoPreview = modal.find('#edit-logo-image');
+      if (companyLogo) {
+          logoPreview.attr('src', companyLogo).show();
+      } else {
+          logoPreview.hide();
+      }
+  });
+  
 
-    // Handle Edit Payee Form Submission
-    document.getElementById('editCurrencyForm').addEventListener('submit', function (event) {
+    // Handle Edit Company Form Submission
+    document.getElementById('editCompanyForm').addEventListener('submit', function (event) {
         event.preventDefault();
         const formData = new FormData(this);
 
-        fetch("{% url 'edit_currency' %}", {
+        fetch("{% url 'edit_company' %}", {
             method: "POST",
             headers: {
                 "X-CSRFToken": "{{ csrf_token }}"
@@ -293,12 +398,12 @@
         .catch(error => console.error("Error:", error));
     });
 
-    // Handle Add Payee Form Submission
-    document.getElementById('addCurrencyForm').addEventListener('submit', function (event) {
+    // Handle Add Company Form Submission
+    document.getElementById('addCompanyForm').addEventListener('submit', function (event) {
         event.preventDefault();
         const formData = new FormData(this);
 
-        fetch("{% url 'add_currency' %}", {
+        fetch("{% url 'add_company' %}", {
             method: "POST",
             headers: {
                 "X-CSRFToken": "{{ csrf_token }}"

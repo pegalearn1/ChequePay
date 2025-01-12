@@ -33,10 +33,10 @@ urlpatterns = [
     path('check_reg_update_sett/', imp_libs.check_reg_update_sett, name = "check_reg_update_sett"),
 
     #company urls
-    path('add-bank/', bank_views.add_bank, name='add_bank'),
+    path('add_company/', company_views.add_company, name='add_company'),
     path('company_list/', company_views.company_list, name = "company_list"),
-    path('edit-bank/', bank_views.edit_bank, name='edit_bank'),
-    path('delete_bank/<int:bank_id>/', bank_views.delete_bank, name='delete_bank'),
+    path('edit_company/', company_views.edit_company, name='edit_company'),
+    path('delete_company/<int:company_id>/', company_views.delete_company, name='delete_company'),
     path('current_company', company_views.current_company, name='current_company'),
     
     
