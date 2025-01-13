@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
-from chq_pay.views import base_views, authentic_views, cheque_views, bank_views, payee_views, currency_views, company_views, cheque_issue, imp_libs
+from chq_pay.views import base_views, authentic_views, cheque_views, bank_views, payee_views, currency_views, company_views, cheque_issue, imp_libs, user_views
 from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
@@ -28,10 +28,18 @@ urlpatterns = [
     #login/register urls
     path("logout/", authentic_views.user_logout, name="logout"),
     path('login/', authentic_views.user_login, name = "login"),
-    path('register/', authentic_views.user_register, name = "register"),
     path('profile/', authentic_views.user_profile, name = "profile"),
     path('check_reg_update_sett/', imp_libs.check_reg_update_sett, name = "check_reg_update_sett"),
 
+    
+    #User Views
+    path('add_user/', user_views.add_user, name='add_user'),
+    path('users_list/', user_views.users_list, name = "users_list"),
+    path('edit_user/', user_views.edit_user, name='edit_user'),
+    path('delete_user/<int:user_id>/', user_views.delete_user, name='delete_user'),
+
+    
+    
     #company urls
     path('add_company/', company_views.add_company, name='add_company'),
     path('company_list/', company_views.company_list, name = "company_list"),

@@ -1,7 +1,9 @@
 <!doctype html>
 
 <html lang="en">
-  {% load static %}
+{% load i18n %}  
+{% load static %}
+  
 
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
 <head>
@@ -196,11 +198,12 @@
                 </div>
               </a>
               <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                <a href="{% url "profile" %}" class="dropdown-item">Profile</a>
-                <a href="{% url "company_list" %}" class="dropdown-item">Companies</a>
+                <a href="{% url "profile" %}" class="dropdown-item">{% trans "Profile" %}</a>
+                <a href="{% url "company_list" %}" class="dropdown-item">{% trans "Companies" %}</a>
                 <div class="dropdown-divider"></div>
                 {% comment %} <a href="settings.html" class="dropdown-item">Settings</a> {% endcomment %}
-                <a href="{% url "logout" %}" class="dropdown-item">Logout</a>
+                <a href="{% url "users_list" %}" class="dropdown-item">{% trans "Users" %}</a>
+                <a href="{% url "logout" %}" class="dropdown-item">{% trans "Logout" %}</a>
               </div>
             </div>
           </div>

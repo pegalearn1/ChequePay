@@ -1,0 +1,441 @@
+{% extends 'layouts/base.html' %}
+{% load i18n %}
+{% load static %}
+{% block tiitle %}{% trans "Users" %}{% endblock tiitle %}
+{% block content %}
+
+
+<!-- Page header -->
+<div class="page-header d-print-none">
+    <div class="container-xl">
+      <div class="row g-2 align-items-center">
+        <div class="col">
+          <h2 class="page-title">
+            {% trans "Users" %}
+          </h2>
+        </div>
+        <!-- Page title actions -->
+        <div class="col-auto ms-auto d-print-none">
+            <div class="btn-list">
+             <a href="#" class="btn btn-primary d-none d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+                {% trans "Create" %} {% trans "new" %} {% trans "User" %}
+              </a>
+              <a href="#" class="btn btn-primary d-sm-none btn-icon" data-bs-toggle="modal" data-bs-target="#addUserModal" aria-label="addUserModalLabel">
+                <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+              </a>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+  <!-- Page body -->
+  <div class="page-body">
+    <div class="container-xl">
+        <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">{% trans "User List" %}</h3>
+            </div>
+           <div class="table-responsive" >
+              <table class="table card-table table-vcenter text-nowrap datatable">
+                <thead>
+                  <tr>
+                    <th>{% trans "ID" %}</th>
+                    <th>{% trans "User" %}</th>
+                    <th>{% trans "Name" %}</th>
+                    <th>{% trans "Role" %}</th>
+                    <th>{% trans "Admin" %}</th>
+                    <th>{% trans "Last Login" %}</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% if users_present %}
+                            {% for user in users_present %}
+                  <tr>
+                    <td>{{user.id }}</td>
+                    <td>
+                      <div class="d-flex py-1 align-items-center">
+                        <span class="avatar me-2" style="background-image: {% if user.profile_picture %}url({{user.profile_picture.url}}){% else %}url( {% static "tabler/default_company.png" %} ){% endif %} "></span>
+                        <div class="flex-fill">
+                          <div class="font-weight-medium">{{user.username}}</div>
+                          </div>
+                      </div>
+                    </td>
+                    <td>{{user.first_name }}</td>
+                    <td>{{user.privilege_role }}</td>
+                    <td>{% if user.is_superuser %}Yes{% else %}No{% endif %}</td>
+                    <td>{{user.last_login }}</td>
+                    <td class="text-end">
+                      
+                        <div class="dropdown">
+                        <button class="btn dropdown-toggle align-text-top" data-bs-toggle="dropdown">
+                          {% trans "Actions" %}
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end">
+                          <a class="dropdown-item" href="#" data-bs-toggle="modal"  
+                          data-bs-target="#editUserModal" 
+                          data-id="{{ user.id }}" 
+                          data-fname="{{ user.first_name }}" 
+                          data-lname="{{ user.last_name }}"
+                          data-useremail="{{ user.username }}"
+                          data-p-role="{{ user.privilege_role }}"
+                          data-is_admin= {% if user.is_superuser %}"yes"{% else %}"no"{% endif %}
+                          data-profile_pic="{{ user.profile_picture.url }}">
+                            {% trans "Edit" %} {% trans "User" %}
+                          </a>
+                          <a class="dropdown-item" onclick="return confirm('Are you sure you want to delete {{ user.username }}?')" 
+                          href="{% url "delete_user" user.id %}">
+                            {% trans "Delete" %} {% trans "User" %}
+                          </a>
+                        </div>
+                      </div>
+
+
+                    </td>
+                  </tr>
+                  {% endfor %}
+          {% else %}
+          <tr>
+              <td colspan="4" class="text-center">No users_present found.</td>
+          </tr>
+          {% endif %}
+                </tbody>
+              </table>
+            </div>
+            <!-- pagination -->
+            <div class="card-footer d-flex align-items-center">
+              <p class="m-0 text-secondary">
+                {% trans "Showing" %} <span>{{ users_present.start_index }}</span> {% trans "to" %} <span>{{ users_present.end_index }}</span> {% trans "of" %} <span>{{ users_present.paginator.count }}</span> {% trans "entries" %}
+              </p>
+              <ul class="pagination m-0 ms-auto">
+                {% if users_present.has_previous %}
+                <li class="page-item">
+                  <a class="page-link" href="?page=1{% if searched %}&searched={{ searched }}{% endif %}{% if company %}&company={{ company }}{% endif %}{% if emp_loc %}&emp_loc={{ emp_loc|join:"," }}{% endif %}{% if emp_department %}&emp_department={{ emp_department|join:"," }}{% endif %}" tabindex="-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path d="M17 6l-6 6l6 6" />
+                      <path d="M11 6l-6 6l6 6" />
+                    </svg>
+                    {% trans "First" %}
+                  </a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ users_present.previous_page_number }}{% if searched %}&searched={{ searched }}{% endif %}{% if company %}&company={{ company }}{% endif %}{% if emp_loc %}&emp_loc={{ emp_loc|join:"," }}{% endif %}{% if emp_department %}&emp_department={{ emp_department|join:"," }}{% endif %}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path d="M15 6l-6 6l6 6" />
+                    </svg>
+                    
+                  </a>
+                </li>
+                {% endif %}
+
+                {% for i in users_present.paginator.page_range %}
+                {% if users_present.number == i %}
+                <li class="page-item active"><a class="page-link" href="#">{{ i }}</a></li>
+                {% elif i > users_present.number|add:'-3' and i < users_present.number|add:'3' %}
+                <li class="page-item"><a class="page-link" href="?page={{ i }}{% if searched %}&searched={{ searched }}{% endif %}{% if company %}&company={{ company }}{% endif %}{% if emp_loc %}&emp_loc={{ emp_loc|join:"," }}{% endif %}{% if emp_department %}&emp_department={{ emp_department|join:"," }}{% endif %}">{{ i }}</a></li>
+                {% endif %}
+                {% endfor %}
+
+                {% if users_present.has_next %}
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ users_present.next_page_number }}{% if searched %}&searched={{ searched }}{% endif %}{% if company %}&company={{ company }}{% endif %}{% if emp_loc %}&emp_loc={{ emp_loc|join:"," }}{% endif %}{% if emp_department %}&emp_department={{ emp_department|join:"," }}{% endif %}">
+                    
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path d="M9 6l6 6l-6 6" />
+                    </svg>
+                  </a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ users_present.paginator.num_pages }}{% if searched %}&searched={{ searched }}{% endif %}{% if company %}&company={{ company }}{% endif %}{% if emp_loc %}&emp_loc={{ emp_loc|join:"," }}{% endif %}{% if emp_department %}&emp_department={{ emp_department|join:"," }}{% endif %}">
+                    {% trans "Last" %}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path d="M7 6l6 6l-6 6" />
+                      <path d="M13 6l6 6l-6 6" /> <!-- Second chevron -->
+                    </svg>
+                  </a>
+                </li>
+                {% endif %}
+              </ul>
+            </div>
+            <!-- pagination -->
+          </div>
+      </div>
+    </div>
+
+
+
+
+
+<!--add new User Modal -->
+<div class="modal modal-blur fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addUserModalLabel">{% trans "Add" %} {% trans "New" %} {% trans "User" %}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="mb-3">
+          <form id="addUserForm" method="POST" action="{% url 'add_user' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group mb-2">
+                <label for="user_first_name" class="form-label">{% trans "First" %} {% trans "Name" %}</label>
+                <input type="text" class="form-control" id="user_first_name" name="user_first_name" placeholder = "{% trans "Your" %} {% trans "First Name" %}" required>
+            </div>
+
+            <div class="form-group mb-2">
+              <label for="user_last_name" class="form-label">{% trans "Last" %} {% trans "Name" %}</label>
+              <input type="text" class="form-control" id="user_last_name" name="user_last_name" placeholder = "{% trans "Your" %} {% trans "Last Name" %}" >
+          </div>
+            
+            <div class="form-group mb-2">
+              <label for="user_email" class="form-label">{% trans "Email" %}</label>
+              <input type="email" class="form-control" id="user_email" name="user_email" placeholder = "{% trans "Your" %} {% trans "User Email" %}" required>
+            </div>
+
+            <div class="form-group mb-2">
+              <label for="user_role" class="form-label"> {% trans "Role" %}</label>
+              <input type="text" class="form-control" id="user_role" name="user_role" placeholder = "{% trans "Your" %} {% trans "User Role" %}" required>
+            </div>
+
+            <div class="form-group mb-2">
+              <label for="user_password" class="form-label"> {% trans "Password" %}</label>
+              <input type="password" class="form-control" id="user_password" name="user_password" placeholder = "{% trans "Your" %} {% trans "Password" %}" required>
+            </div>
+
+            <div class="form-group mb-2">
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="is_admin" name="is_admin" value="true">
+                <label class="form-check-label" for="is_admin">{% trans "Make" %} {% trans "Admin" %}</label>
+              </div>
+            </div>
+
+            <div class="form-group mb-2">
+              <label for="user_pp" class="form-label"> {% trans "Profile Picture" %}</label>
+              <input type="file"  id="user_pp" name="user_pp" class="form-control-file" style="max-width: 400px; width: 100%;" accept="image/*" onchange="adduserImage(event)">
+            <!-- Image Preview -->
+            <div id="user-preview" class="mt-3">
+              <img id="user-image" src="" alt="User PP" style="display: none; max-width: 100%; height: auto; border: 1px solid #ddd; padding: 5px;">
+            </div>
+          </div>
+          
+          <!-- image script -->
+          <script>
+            function adduserImage(event) {
+                const input = event.target;
+                const preview = document.getElementById('user-image');
+                
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function (e) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block'; // Show the image
+                    };
+                    
+                    reader.readAsDataURL(input.files[0]); // Read the image file as a data URL
+                }
+            }
+            </script>
+            <!-- image script -->
+            
+            <div class="modal-footer mb-2">
+            <button type="button" class="btn me-auto" data-bs-dismiss="modal">{% trans "Close" %}</button>
+            <button type="submit" class="btn btn-primary">{% trans "Save Changes" %}</button>
+            </div>
+        </form>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  
+ <!-- Edit User Modal -->
+<div class="modal modal-blur fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editUserModalLabel">{% trans "Edit" %} {% trans "User" %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="editUserForm" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="modal-body">
+          <input type="hidden" id="edit_user_id" name="user_id">
+
+          <!-- First Name -->
+          <div class="form-group mb-2">
+            <label for="edit_user_first_name" class="form-label">{% trans "First Name" %}</label>
+            <input type="text" class="form-control" id="edit_user_first_name" name="user_first_name" placeholder="{% trans "Your First Name" %}" required>
+          </div>
+
+          <!-- Last Name -->
+          <div class="form-group mb-2">
+            <label for="edit_user_last_name" class="form-label">{% trans "Last Name" %}</label>
+            <input type="text" class="form-control" id="edit_user_last_name" name="user_last_name" placeholder="{% trans "Your Last Name" %}">
+          </div>
+
+          <!-- Email -->
+          <div class="form-group mb-2">
+            <label for="edit_user_email" class="form-label">{% trans "Email" %}</label>
+            <input type="email" class="form-control" id="edit_user_email" name="user_email" placeholder="{% trans "Your Email" %}" required>
+          </div>
+
+          <!-- Role -->
+          <div class="form-group mb-2">
+            <label for="edit_user_role" class="form-label">{% trans "Role" %}</label>
+            <input type="text" class="form-control" id="edit_user_role" name="user_role" placeholder="{% trans "Your Role" %}" required>
+          </div>
+
+          <!-- Admin Checkbox -->
+          <div class="form-group mb-2">
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" id="edit_is_admin" name="is_admin" value="true">
+              <label class="form-check-label" for="edit_is_admin">{% trans "Make Admin" %}</label>
+            </div>
+          </div>
+
+          <!-- Profile Picture -->
+          <div class="form-group mb-2">
+            <label for="edit_user_pp" class="form-label">{% trans "Profile Picture" %}</label>
+            <input type="file" id="edit_user_pp" name="user_pp" class="form-control-file" accept="image/*" onchange="previewUserImage(event)">
+            <div id="user-preview" class="mt-3">
+              <img id="edit-user-image" src="" alt="{% trans 'User Profile Picture' %}" style="display: none; max-width: 100%; height: auto; border: 1px solid #ddd; padding: 5px;">
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
+          <button type="submit" class="btn btn-primary">{% trans "Update" %}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+  
+  
+  <!--edit Company Modal -->
+
+{% endblock content %}
+
+
+{% block scripts %}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+
+    // Populate Edit Modal
+$('#editUserModal').on('show.bs.modal', function (event) {
+  const button = $(event.relatedTarget);
+  const id = button.data('id');
+  const fname = button.data('fname');
+  const lname = button.data('lname');
+  const email = button.data('useremail');
+  const role = button.data('p-role');
+  const isAdmin = button.data('is_admin');
+  const profilePicture = button.data('profile_pic');
+
+  const modal = $(this);
+  modal.find('#edit_user_id').val(id);
+  modal.find('#edit_user_first_name').val(fname);
+  modal.find('#edit_user_last_name').val(lname);
+  modal.find('#edit_user_email').val(email);
+  modal.find('#edit_user_role').val(role);
+
+  // Set checkbox state
+  modal.find('#edit_is_admin').prop('checked', isAdmin === "yes");
+
+  // Handle profile picture preview
+  const imagePreview = modal.find('#edit-user-image');
+  if (profilePicture) {
+    imagePreview.attr('src', profilePicture).show();
+  } else {
+    imagePreview.hide();
+  }
+});
+
+// Preview Image Function
+function previewUserImage(event) {
+  const input = event.target;
+  const preview = document.getElementById('edit-user-image');
+
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+      preview.src = e.target.result;
+      preview.style.display = 'block';
+    };
+
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+// Handle Edit User Form Submission
+document.getElementById('editUserForm').addEventListener('submit', function (event) {
+  event.preventDefault();
+  const formData = new FormData(this);
+
+  fetch("{% url 'edit_user' %}", {
+    method: "POST",
+    headers: {
+      "X-CSRFToken": "{{ csrf_token }}"
+    },
+    body: formData
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        // Hide modal and reload page
+        $('#editUserModal').modal('hide');
+        location.reload();
+      } else {
+        alert(data.error || "Failed to update user.");
+      }
+    })
+    .catch(error => console.error("Error:", error));
+});
+
+    
+    // Handle Add User Form Submission
+    document.getElementById('addUserForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+
+        fetch("{% url 'add_user' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                $('#addUserModal').modal('hide');
+                location.reload();
+            } else {
+                location.reload();
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    });
+
+  
+</script>
+
+
+    
+{% endblock scripts %}
