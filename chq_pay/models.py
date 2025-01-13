@@ -146,7 +146,7 @@ class ChequeIssue(models.Model):
     issue_issue_date = models.DateField()
     issue_sign = models.ImageField(upload_to='Signatures/', null=True, blank= True)
     issue_is_approved = models.BooleanField()
-    issue_approvedby = models.IntegerField()
+    issue_approvedby = models.IntegerField(null=True, blank=True)
     created_by = models.IntegerField()
     created_date = models.DateTimeField()
     modified_by = models.IntegerField()

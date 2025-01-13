@@ -48,6 +48,7 @@
                     <th>Cheque Date</th>
                     <th>Cheque Amount</th>
                     <th>Issue Date</th>
+                    <th>Approval</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -64,6 +65,7 @@
                     <td>{{cheque.issue_cheque_date}}</td>
                     <td>{{cheque.issue_amount}} {{cheque.issue_currency}}</td>
                     <td>{{cheque.issue_issue_date}}</td>
+                    <td>{% if cheque.issue_is_approved %}Approved{% else %}Pending{% endif %}</td>
                     <td class="text-end">
                       
                         <div class="dropdown">

@@ -141,6 +141,7 @@ def cheque_issue(request):
                 issue_amount = issue_amount,
                 issue_issue_date=date.today(),
                 issue_naration=issue_naration,
+                issue_is_approved = False,
                 issue_sign=issue_sign,
                 created_by = request.user.id,
                 created_date = datetime.now(),
