@@ -4,6 +4,9 @@ in 2024-2025.'''
 from .imp_libs import *
 from chq_pay.models import ChequeTemplate, ChequeText, Banks, Currencies, Payee, ChequeIssue, Company_Setup
 
+#user model
+User = get_user_model()
+
 
 
 def amount_in_words(amount, currency, lang):
@@ -141,7 +144,6 @@ def cheque_issue(request):
                 issue_amount = issue_amount,
                 issue_issue_date=date.today(),
                 issue_naration=issue_naration,
-                issue_is_approved = False,
                 issue_sign=issue_sign,
                 created_by = request.user.id,
                 created_date = datetime.now(),
@@ -178,7 +180,14 @@ def cheque_issue_list(request):
     payees = Payee.objects.all()
     chq_txts = ChequeText.objects.all()
 
-    
+    for chq in cheques:
+        try:
+            usr = User.objects.filter(id = chq.issue_approv_rejectby)
+            for us in usr:
+                chq.app_rej_by = us.first_name
+           
+        except User.DoesNotExist:
+             chq.user_first_name = None
 
 
     #pagination
@@ -280,6 +289,7 @@ def get_cheque_text(request):
 @csrf_exempt
 def print_cheque(request, cheque_id):
     cheque_issue = get_object_or_404(ChequeIssue, id=cheque_id)
+    isapproved = cheque_issue.issue_is_approved
     template = cheque_issue.issue_template
     try:
         cheque_text = get_object_or_404(ChequeText, template=template)
@@ -296,7 +306,7 @@ def print_cheque(request, cheque_id):
         print("dataaa - ", data)
 
 
-        selected_language = data.get("language", "en")
+        selected_language = data.get("language", "ar")
 
         print("request pst - ", selected_language)
         # Generate the amount in words in the selected language
@@ -314,7 +324,7 @@ def print_cheque(request, cheque_id):
 
     # Handle GET request (initial page load)
     issue_amount_wrd = amount_in_words(
-        cheque_issue.issue_amount, issue_currency, 'en'
+        cheque_issue.issue_amount, issue_currency, 'ar'
     )
     issue_amount_wrd_title = issue_amount_wrd.title()
 
@@ -335,9 +345,53 @@ def print_cheque(request, cheque_id):
         },
         'sign_url': cheque_issue.issue_sign.url if cheque_issue.issue_sign else None,
         'cheque_id': cheque_id,
-        'issue_currency':issue_currency
-    }
+        'issue_currency':issue_currency,
+        
+        }
     return render(request, 'Cheque_issue/print_cheque.html', context)
+
+
+def approval(request, cheque_id):
+
+    additional_value = request.GET.get('additional_value')
+
+    print("add val - ", additional_value)
+
+    cheque_issue = get_object_or_404(ChequeIssue, id=cheque_id)
+    if cheque_issue.issue_is_approved is None and additional_value == "True":
+        cheque_issue.issue_is_approved = True
+        cheque_issue.issue_approv_rejectby = request.user.id
+        cheque_issue.modified_by = request.user.id
+        cheque_issue.modified_date = datetime.now()
+        messages.success(request, 'Cheque is Approved.')
+    
+    elif cheque_issue.issue_is_approved is None and additional_value == "False":
+        cheque_issue.issue_is_approved = False
+        cheque_issue.issue_approv_rejectby = request.user.id
+        cheque_issue.modified_by = request.user.id
+        cheque_issue.modified_date = datetime.now()
+        messages.success(request, 'Cheque is Rejected.')
+    
+    elif cheque_issue.issue_is_approved == False:
+        cheque_issue.issue_is_approved = True
+        cheque_issue.issue_approv_rejectby = request.user.id
+        cheque_issue.modified_by = request.user.id
+        cheque_issue.modified_date = datetime.now()
+        messages.success(request, 'Cheque is Approved.')
+    
+    elif cheque_issue.issue_is_approved == True:
+        cheque_issue.issue_is_approved = False
+        cheque_issue.issue_approv_rejectby = request.user.id
+        cheque_issue.modified_by = request.user.id
+        cheque_issue.modified_date = datetime.now()
+        messages.error(request, 'Cheque is Rejected.')
+
+    cheque_issue.save()
+
+    previous_url = request.META.get('HTTP_REFERER')
+
+    return redirect(previous_url)
+
 
 
     

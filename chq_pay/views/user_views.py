@@ -49,7 +49,6 @@ def add_user(request):
                 first_name=first_name,
                 last_name = last_name,
                 privilege_role = privilege_role,
-                password = password,
                 )
             if profile_picture:
                 user_adding.profile_picture = profile_picture
@@ -57,6 +56,9 @@ def add_user(request):
             if is_admin == 'true':
                 user_adding.is_superuser = True
                 user_adding.is_staff = True
+            
+            # Hash the password before saving
+            user_adding.set_password(password)
             
             user_adding.save()
             messages.success(request,('User Created Successfully!!!'))

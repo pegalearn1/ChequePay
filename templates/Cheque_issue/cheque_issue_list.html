@@ -49,6 +49,7 @@
                     <th>Cheque Amount</th>
                     <th>Issue Date</th>
                     <th>Approval</th>
+                    <th>Approved/Rejected By</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -65,21 +66,44 @@
                     <td>{{cheque.issue_cheque_date}}</td>
                     <td>{{cheque.issue_amount}} {{cheque.issue_currency}}</td>
                     <td>{{cheque.issue_issue_date}}</td>
-                    <td>{% if cheque.issue_is_approved %}Approved{% else %}Pending{% endif %}</td>
+                    <td>{% if cheque.issue_is_approved %}Approved{% elif cheque.issue_is_approved is None %}Pending{% else %}Rejected{% endif %}</td>
+                    <td> {{cheque.app_rej_by}}</td>
                     <td class="text-end">
                       
-                        <div class="dropdown">
+                        
+                     <div class="dropdown">
                         <button class="btn dropdown-toggle align-text-top" data-bs-toggle="dropdown">
                           Actions
                         </button>
                         <div class="dropdown-menu dropdown-menu-end">
+                          {% if cheque.issue_is_approved %}
                           <a class="dropdown-item" href="{% url 'print_cheque' cheque.id %}" target="_blank"> Preview & Print Cheque</a>
+                          {% endif %}
                           
+                          {% if user.is_superuser %}
                           <a class="dropdown-item" onclick="if (confirm('Are You sure? Want to delete cheque to {{cheque.issue_payee}} on {{cheque.issue_cheque_date}} ?')){return true;}else{event.stopPropagation(); event.preventDefault();};" href="{% url 'delete_chequeissue' cheque.id %}">
                           Delete Issued Cheque
                           </a>
+                          {% endif %}
+
+                          {% if user.is_superuser %}
+                          
+                          {% if  cheque.issue_is_approved is None or cheque.issue_is_approved  == False  %}
+                          <a class="dropdown-item" onclick="if (confirm('Are You sure? Want to approve the cheque to {{cheque.issue_payee}} on {{cheque.issue_cheque_date}} ?')){return true;}else{event.stopPropagation(); event.preventDefault();};" href="{% url 'approval' cheque.id %}?additional_value=True">
+                          Approve Cheque  
+                          </a>
+                          {% endif %}
+
+                          {% if  cheque.issue_is_approved is None or cheque.issue_is_approved  == True  %}
+                          <a class="dropdown-item" onclick="if (confirm('Are You sure? Want to reject the cheque to {{cheque.issue_payee}} on {{cheque.issue_cheque_date}} ?')){return true;}else{event.stopPropagation(); event.preventDefault();};" href="{% url 'approval' cheque.id %}?additional_value=False">
+                          Reject Cheque  
+                          </a>
+                          {% endif %}
+
+                          {% endif %}
                         </div>
                       </div>
+                    
 
 
                     </td>

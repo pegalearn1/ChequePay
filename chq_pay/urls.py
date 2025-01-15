@@ -85,6 +85,7 @@ urlpatterns = [
     path('delete_chequeissue/<int:chequeissue_id>/', cheque_issue.delete_chequeissue, name='delete_chequeissue'),
     path('get_cheque_text', cheque_issue.get_cheque_text, name='get_cheque_text'),
     path('print-cheque/<int:cheque_id>/', cheque_issue.print_cheque, name='print_cheque'),
+    path('approval/<int:cheque_id>/', cheque_issue.approval, name='approval'),
 
 
 

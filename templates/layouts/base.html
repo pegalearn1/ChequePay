@@ -199,10 +199,14 @@
               </a>
               <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                 <a href="{% url "profile" %}" class="dropdown-item">{% trans "Profile" %}</a>
+                {% if user.is_superuser %}
                 <a href="{% url "company_list" %}" class="dropdown-item">{% trans "Companies" %}</a>
+                {% endif %}
                 <div class="dropdown-divider"></div>
                 {% comment %} <a href="settings.html" class="dropdown-item">Settings</a> {% endcomment %}
+                {% if user.is_superuser %}
                 <a href="{% url "users_list" %}" class="dropdown-item">{% trans "Users" %}</a>
+                {% endif %}
                 <a href="{% url "logout" %}" class="dropdown-item">{% trans "Logout" %}</a>
               </div>
             </div>

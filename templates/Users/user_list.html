@@ -58,7 +58,7 @@
                     <td>{{user.id }}</td>
                     <td>
                       <div class="d-flex py-1 align-items-center">
-                        <span class="avatar me-2" style="background-image: {% if user.profile_picture %}url({{user.profile_picture.url}}){% else %}url( {% static "tabler/default_company.png" %} ){% endif %} "></span>
+                        <span class="avatar me-2" style="background-image: {% if user.profile_picture %}url({{user.profile_picture.url}}){% else %}url( {% static "tabler/user_image.jpg" %} ){% endif %} "></span>
                         <div class="flex-fill">
                           <div class="font-weight-medium">{{user.username}}</div>
                           </div>
@@ -83,7 +83,7 @@
                           data-useremail="{{ user.username }}"
                           data-p-role="{{ user.privilege_role }}"
                           data-is_admin= {% if user.is_superuser %}"yes"{% else %}"no"{% endif %}
-                          data-profile_pic="{{ user.profile_picture.url }}">
+                          data-profile_pic="{% if user.profile_picture %}{{ user.profile_picture.url }}{% endif %}">
                             {% trans "Edit" %} {% trans "User" %}
                           </a>
                           <a class="dropdown-item" onclick="return confirm('Are you sure you want to delete {{ user.username }}?')" 
