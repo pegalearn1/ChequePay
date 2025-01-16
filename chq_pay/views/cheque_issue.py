@@ -306,7 +306,7 @@ def print_cheque(request, cheque_id):
         print("dataaa - ", data)
 
 
-        selected_language = data.get("language", "ar")
+        selected_language = data.get("language", "en")
 
         print("request pst - ", selected_language)
         # Generate the amount in words in the selected language
@@ -324,7 +324,7 @@ def print_cheque(request, cheque_id):
 
     # Handle GET request (initial page load)
     issue_amount_wrd = amount_in_words(
-        cheque_issue.issue_amount, issue_currency, 'ar'
+        cheque_issue.issue_amount, issue_currency, 'en'
     )
     issue_amount_wrd_title = issue_amount_wrd.title()
 
@@ -351,6 +351,7 @@ def print_cheque(request, cheque_id):
     return render(request, 'Cheque_issue/print_cheque.html', context)
 
 
+@login_required
 def approval(request, cheque_id):
 
     additional_value = request.GET.get('additional_value')

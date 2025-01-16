@@ -142,42 +142,87 @@ def template_detail(request, template_id):
 @login_required
 def add_text_to_template(request, template_id):
     template = get_object_or_404(ChequeTemplate, id=template_id)
+
+    text_fields = [
+        'date_x_position', 'date_y_position', 'payee_x_position', 'payee_y_position',
+        'amtwrds_x_position', 'amtwrds_y_position', 'amtnum_x_position', 'amtnum_y_position',
+        'sign_x_position', 'sign_y_position'
+    ]
     
     if request.method == 'POST':
-        ChequeText.objects.update_or_create(
-            template=template,
-            defaults={
-                'date_x_position': request.POST.get('date_x_position', '0'),
-                'date_y_position': request.POST.get('date_y_position', '0'),
-                'payee_x_position': request.POST.get('payee_x_position', '0'),
-                'payee_y_position': request.POST.get('payee_y_position', '0'),
-                'amtwrds_x_position': request.POST.get('amtwrds_x_position', '0'),
-                'amtwrds_y_position': request.POST.get('amtwrds_y_position', '0'),
-                'amtnum_x_position': request.POST.get('amtnum_x_position', '0'),
-                'amtnum_y_position': request.POST.get('amtnum_y_position', '0'),
-                'sign_x_position': request.POST.get('sign_x_position', '0'),
-                'sign_y_position': request.POST.get('sign_y_position', '0'),
+        # Prepare the dictionary for updating or creating
+        valid_data = {}
+
+        for tf in text_fields:
+            value = request.POST.get(tf)
+
+            # Only add the field to valid_data if the value is not None, empty, or invalid (like '0')
+            if value not in [None, '', '0']:
+                try:
+                    valid_data[tf] = float(value)  # Convert the value to float
+                except ValueError:
+                    pass  # Ignore invalid values that cannot be converted to float
+
+        if valid_data:  # Proceed only if there is valid data
+            valid_data.update({
                 'created_by': request.user.id,
                 'created_date': datetime.now(),
                 'modified_by': request.user.id,
                 'modified_date': datetime.now(),
-                
-            }
-        )
-        messages.success(request,('Text position is set.'))
-        return redirect('template_detail',template_id)
+            })
 
+            # Update or create the text object
+            ChequeText.objects.update_or_create(
+                template=template,
+                defaults=valid_data
+            )
+            messages.success(request, 'Text position is set.')
+        else:
+            messages.warning(request, 'No valid positions provided.')
+
+        return redirect('template_detail', template_id)
+
+    # If GET request, retrieve existing data
     text = ChequeText.objects.filter(template=template).first()
     return render(request, 'Cheque_templates/add_text.html', {'template': template, 'text': text})
 
 
 
+
+
 @login_required
 def delete_text(request, text_id, temp_id):
-    text = get_object_or_404(ChequeText, id=text_id)
-    text.delete()
-    messages.warning(request, f"Text attribute-{text} template deleted.")
-    print(f"template id = {temp_id}")
+    if ChequeIssue.objects.filter(issue_template=temp_id).exists():
+        messages.warning(request, "Cheque issued, text can't be deleted")
+    else:
+        text = get_object_or_404(ChequeText, id=text_id)
+        if text:
+            text_atrrb = request.GET.get('text_atrrb')
+
+            print("texttt - ", text_atrrb)
+            
+            if text_atrrb =='Date':
+                text.date_x_position = None
+                text.date_y_position = None
+            
+            elif text_atrrb =='Payee':
+                text.payee_x_position = None
+                text.payee_y_position = None
+            
+            elif text_atrrb =='Amt_Wrds':
+                text.amtwrds_x_position = None
+                text.amtwrds_y_position = None
+            
+            elif text_atrrb =='Amt_Num':
+                text.amtnum_x_position = None
+                text.amtnum_y_position = None
+            
+            elif text_atrrb == 'Sign':
+                text.sign_x_position = None
+                text.sign_y_position = None
+
+            text.save()
+            messages.warning(request, f"Text attribute deleted.")
     return redirect('template_detail',temp_id)
 
 
