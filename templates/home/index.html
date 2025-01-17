@@ -1,5 +1,37 @@
 {% extends 'layouts/base.html' %}
-{% block tiitle %}Index{% endblock tiitle %}
+{% load i18n %}
+{% load static %}
+{% block tiitle %}{% trans "Index" %}{% endblock tiitle %}
+
+{% block stylesheet %}
+
+<style>
+  
+  #currency-transact-pie .apexcharts-legend {
+    overflow: visible !important; /* Ensure no hidden or scrollable legend */
+    display: flex; /* Align items flexibly */
+    flex-wrap: wrap; /* Wrap legend items to avoid horizontal scrolling */
+    justify-content: center; /* Center align the legend items */
+  }
+  
+  
+  #cheque-issue-pie .apexcharts-legend {
+    overflow: visible !important; /* Ensure no hidden or scrollable legend */
+    display: flex; /* Align items flexibly */
+    flex-wrap: wrap; /* Wrap legend items to avoid horizontal scrolling */
+    justify-content: center; /* Center align the legend items */
+  }
+
+  #bank-template-pie .apexcharts-legend {
+    overflow: visible !important; /* Ensure no hidden or scrollable legend */
+    display: flex; /* Align items flexibly */
+    flex-wrap: wrap; /* Wrap legend items to avoid horizontal scrolling */
+    justify-content: center; /* Center align the legend items */
+  }
+</style>
+
+{% endblock stylesheet %}
+
 {% block content %}
 
 
@@ -10,10 +42,10 @@
         <div class="col">
           <!-- Page pre-title -->
           <div class="page-pretitle">
-            Overview
+            {% trans "Overview" %}
           </div>
           <h2 class="page-title">
-            Dashboard
+            {% trans "Dashboard" %}
           </h2>
         </div>
 </div>
@@ -25,15 +57,16 @@
     <div class="container-xl">
       <div class="row row-deck row-cards">
 
-
+    <!-- Master counts -->
         <div class="col-12">
           <div class="row row-cards">
+
             <div class="col-sm-6 col-lg-3">
               <div class="card card-sm">
                 <div class="card-body">
                   <div class="row align-items-center">
                     <div class="col-auto">
-                      <span class="bg-primary text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/currency-dollar -->
+                      <span class="bg-cyan text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/currency-dollar -->
                         <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-building-bank"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 21l18 0" /><path d="M3 10l18 0" /><path d="M5 6l7 -3l7 3" /><path d="M4 10l0 11" /><path d="M20 10l0 11" /><path d="M8 14l0 3" /><path d="M12 14l0 3" /><path d="M16 14l0 3" /></svg>
                       </span>
                     </div>
@@ -42,7 +75,7 @@
                         {{bank_count}}
                       </div>
                       <div class="text-secondary">
-                        Banks Present
+                        {% trans "Banks Present" %}
                       </div>
                     </div>
                   </div>
@@ -54,7 +87,7 @@
                 <div class="card-body">
                   <div class="row align-items-center">
                     <div class="col-auto">
-                      <span class="bg-green text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/shopping-cart -->
+                      <span class="bg-teal text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/shopping-cart -->
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 11l3 3l8 -8" /><path d="M20 12v6a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h9" /></svg>
                       </span>
                     </div>
@@ -63,7 +96,7 @@
                         {{payee_count}}
                       </div>
                       <div class="text-secondary">
-                        Payees Present
+                        {% trans "Payees Present" %}
                       </div>
                     </div>
                   </div>
@@ -75,8 +108,29 @@
                 <div class="card-body">
                   <div class="row align-items-center">
                     <div class="col-auto">
-                      <span class="bg-danger text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/brand-x -->
+                      <span class="bg-pink text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/brand-x -->
                         <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-cash"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 9m0 2a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z" /><path d="M14 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 9v-2a2 2 0 0 0 -2 -2h-10a2 2 0 0 0 -2 2v6a2 2 0 0 0 2 2h2" /></svg>
+                      </span>
+                    </div>
+                    <div class="col">
+                      <div class="font-weight-medium">
+                        {{currency_count}}
+                      </div>
+                      <div class="text-secondary">
+                        {% trans "Currencies Present" %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+              <div class="card card-sm">
+                <div class="card-body">
+                  <div class="row align-items-center">
+                    <div class="col-auto">
+                      <span class="bg-indigo text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/brand-facebook -->
+                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-pencil-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /><path d="M15 19l2 2l4 -4" /></svg>
                       </span>
                     </div>
                     <div class="col">
@@ -84,37 +138,152 @@
                         {{template_count}}
                       </div>
                       <div class="text-secondary">
-                        Cheque Templates
+                        {% trans "Cheque Templates" %}  
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="col-sm-6 col-lg-3">
-              <div class="card card-sm">
-                <div class="card-body">
-                  <div class="row align-items-center">
-                    <div class="col-auto">
-                      <span class="bg-facebook text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/brand-facebook -->
-                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-pencil-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /><path d="M15 19l2 2l4 -4" /></svg>
-                      </span>
-                    </div>
-                    <div class="col">
-                      <div class="font-weight-medium">
-                        {{chq_issue_count}}
-                      </div>
-                      <div class="text-secondary">
-                        Cheques Issued  
-                      </div>
-                    </div>
+
+
+          </div>
+        </div>
+
+    <!-- Master counts -->
+
+    <!-- Cheque counts -->
+    <div class="col-12">
+      <div class="row row-cards">
+
+
+        <div class="col-sm-6 col-lg-3">
+          <div class="card card-sm">
+            <div class="card-body">
+              <div class="row align-items-center">
+                <div class="col-auto">
+                  <span class="bg-azure text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/brand-facebook -->
+                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-pencil-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /><path d="M15 19l2 2l4 -4" /></svg>
+                  </span>
+                </div>
+                <div class="col">
+                  <div class="font-weight-medium">
+                    {{total_cheques}}
+                  </div>
+                  <div class="text-secondary">
+                    {% trans "Total Cheques Issued" %}  
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
+        <div class="col-sm-6 col-lg-3">
+          <div class="card card-sm">
+            <div class="card-body">
+              <div class="row align-items-center">
+                <div class="col-auto">
+                  <span class="bg-green text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/brand-facebook -->
+                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-pencil-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /><path d="M15 19l2 2l4 -4" /></svg>
+                  </span>
+                </div>
+                <div class="col">
+                  <div class="font-weight-medium">
+                    {{approved_cheques}}
+                  </div>
+                  <div class="text-secondary">
+                    {% trans "Approved Cheques" %}  
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-6 col-lg-3">
+          <div class="card card-sm">
+            <div class="card-body">
+              <div class="row align-items-center">
+                <div class="col-auto">
+                  <span class="bg-warning text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/brand-facebook -->
+                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-pencil-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /><path d="M15 19l2 2l4 -4" /></svg>
+                  </span>
+                </div>
+                <div class="col">
+                  <div class="font-weight-medium">
+                    {{pending_cheques}}
+                  </div>
+                  <div class="text-secondary">
+                    {% trans "Pending Cheques" %}  
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-6 col-lg-3">
+          <div class="card card-sm">
+            <div class="card-body">
+              <div class="row align-items-center">
+                <div class="col-auto">
+                  <span class="bg-red text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/brand-facebook -->
+                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-pencil-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /><path d="M15 19l2 2l4 -4" /></svg>
+                  </span>
+                </div>
+                <div class="col">
+                  <div class="font-weight-medium">
+                    {{rejected_cheques}}
+                  </div>
+                  <div class="text-secondary">
+                    {% trans "Rejected Cheques" %}  
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+      
+      
+      </div>
+    </div>
+    <!-- Cheque counts -->
   
+
+        <!-- charts -->
+         
+        <div class="col-lg-6 col-xl-4">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="text-muted">{% trans "Total Transactions via Currencies" %}</h3>
+              <div id="currency-transact-pie"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-6 col-xl-4">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="text-muted">{% trans "Templates via Bank" %}</h3>
+              <div id="bank-template-pie"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-6 col-xl-4">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="text-muted">{% trans "Approved Cheques Issued via Bank" %}</h3>
+              <div id="cheque-issue-pie"></div>
+            </div>
+          </div>
+        </div>
+
+        
+
+        <!-- charts -->
       
       
       
@@ -127,9 +296,156 @@
 
 {% endblock content %}
 
-
 {% block scripts %}
 
+<script>
+
+  //bank-template-pie
+  // @formatter:off
+  document.addEventListener("DOMContentLoaded", function () {
+    window.ApexCharts && (new ApexCharts(document.getElementById('currency-transact-pie'), {
+      chart: {
+        type: "donut",
+        fontFamily: 'inherit',
+        height: 250,
+        sparkline: {
+          enabled: true
+        },
+        animations: {
+          enabled: true
+        },
+      },
+      fill: {
+        opacity: 1,
+      },
+      series: [{% autoescape off %}{{bank_templates}}{% endautoescape %}],
+      labels: {{ currency_char|safe}},
+      tooltip: {
+        theme: 'dark'
+      },
+      grid: {
+        strokeDashArray: 4,
+      },
+      colors: {{currency_trans_color|safe}},
+      legend: {
+        show: true,
+        position: 'left',
+        offsetY: 8,
+        markers: {
+          width: 10,
+          height: 10,
+          radius: 100,
+        },
+        itemMargin: {
+          horizontal: 8,
+          vertical: 8
+        },
+      },
+      tooltip: {
+        fillSeriesColor: false
+      },
+    })).render();
+  });
+  // @formatter:on
+
+
+
+  //bank-template-pie
+  // @formatter:off
+  document.addEventListener("DOMContentLoaded", function () {
+    window.ApexCharts && (new ApexCharts(document.getElementById('bank-template-pie'), {
+      chart: {
+        type: "donut",
+        fontFamily: 'inherit',
+        height: 250,
+        sparkline: {
+          enabled: true
+        },
+        animations: {
+          enabled: true
+        },
+      },
+      fill: {
+        opacity: 1,
+      },
+      series: [{% autoescape off %}{{bank_templates}}{% endautoescape %}],
+      labels: {{ bank_names|safe}},
+      tooltip: {
+        theme: 'dark'
+      },
+      grid: {
+        strokeDashArray: 4,
+      },
+      colors: {{template_color|safe}},
+      legend: {
+        show: true,
+        position: 'left',
+        offsetY: 8,
+        markers: {
+          width: 10,
+          height: 10,
+          radius: 100,
+        },
+        itemMargin: {
+          horizontal: 8,
+          vertical: 8
+        },
+      },
+      tooltip: {
+        fillSeriesColor: false
+      },
+    })).render();
+  });
+  // @formatter:on
+  
+  //cheque-issue-pie
+  // @formatter:off
+  document.addEventListener("DOMContentLoaded", function () {
+    window.ApexCharts && (new ApexCharts(document.getElementById('cheque-issue-pie'), {
+      chart: {
+        type: "donut",
+        fontFamily: 'inherit',
+        height: 250,
+        sparkline: {
+          enabled: true
+        },
+        animations: {
+          enabled: true
+        },
+      },
+      fill: {
+        opacity: 1,
+      },
+      series: [{% autoescape off %}{{cheque_issued}}{% endautoescape %}],
+      labels: {{ bank_names|safe}},
+      tooltip: {
+        theme: 'dark'
+      },
+      grid: {
+        strokeDashArray: 4,
+      },
+      colors: {{cheque_issue_colors|safe}},
+      legend: {
+        show: true,
+        position: 'left',
+        offsetY: 8,
+        markers: {
+          width: 10,
+          height: 10,
+          radius: 100,
+        },
+        itemMargin: {
+          horizontal: 8,
+          vertical: 8
+        },
+      },
+      tooltip: {
+        fillSeriesColor: false
+      },
+    })).render();
+  });
+  // @formatter:on
+</script>
 
 
 

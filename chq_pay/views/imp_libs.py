@@ -23,6 +23,9 @@ from django.contrib.auth import get_user_model
 from django.db.utils import OperationalError
 import json
 from django.core.paginator import Paginator
+from random import randrange #for random range
+
+
 
 
 
