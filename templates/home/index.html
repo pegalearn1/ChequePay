@@ -257,7 +257,7 @@
         <div class="col-lg-6 col-xl-4">
           <div class="card">
             <div class="card-body">
-              <h4 class="text-muted">{% trans "Total Transactions via Currencies" %}</h3>
+              <h4 class="text-muted">{% trans "Total Transactions via Currencies" %}</h4>
               <div id="currency-transact-pie"></div>
             </div>
           </div>
@@ -266,7 +266,7 @@
         <div class="col-lg-6 col-xl-4">
           <div class="card">
             <div class="card-body">
-              <h4 class="text-muted">{% trans "Templates via Bank" %}</h3>
+              <h4 class="text-muted">{% trans "Templates via Bank" %}</h4>
               <div id="bank-template-pie"></div>
             </div>
           </div>
@@ -275,7 +275,7 @@
         <div class="col-lg-6 col-xl-4">
           <div class="card">
             <div class="card-body">
-              <h4 class="text-muted">{% trans "Approved Cheques Issued via Bank" %}</h3>
+              <h4 class="text-muted">{% trans "Approved Cheques Issued via Bank" %}</h4>
               <div id="cheque-issue-pie"></div>
             </div>
           </div>
@@ -300,53 +300,59 @@
 
 <script>
 
-  //bank-template-pie
-  // @formatter:off
-  document.addEventListener("DOMContentLoaded", function () {
-    window.ApexCharts && (new ApexCharts(document.getElementById('currency-transact-pie'), {
-      chart: {
-        type: "donut",
-        fontFamily: 'inherit',
-        height: 250,
-        sparkline: {
-          enabled: true
-        },
-        animations: {
-          enabled: true
-        },
+   //currency-transact-pie
+// @formatter:off
+document.addEventListener("DOMContentLoaded", function () {
+  window.ApexCharts && (new ApexCharts(document.getElementById('currency-transact-pie'), {
+    chart: {
+      type: "donut",
+      fontFamily: 'inherit',
+      height: 250,
+      sparkline: {
+        enabled: true
       },
-      fill: {
-        opacity: 1,
+      animations: {
+        enabled: true
       },
-      series: [{% autoescape off %}{{bank_templates}}{% endautoescape %}],
-      labels: {{ currency_char|safe}},
-      tooltip: {
-        theme: 'dark'
+    },
+    fill: {
+      opacity: 1,
+    },
+    series: [{% autoescape off %}{{currency_transactions}}{% endautoescape %}],
+    labels: {{ currency_char|safe }},
+    tooltip: {
+      theme: 'dark',
+      y: {
+        formatter: function(value) {
+          return value; // Shows exact value without rounding
+        }
+      }
+    },
+    grid: {
+      strokeDashArray: 4,
+    },
+    colors: {{currency_trans_color|safe}},
+    legend: {
+      show: true,
+      position: 'left',
+      offsetY: 8,
+      markers: {
+        width: 10,
+        height: 10,
+        radius: 100,
       },
-      grid: {
-        strokeDashArray: 4,
+      itemMargin: {
+        horizontal: 8,
+        vertical: 8
       },
-      colors: {{currency_trans_color|safe}},
-      legend: {
-        show: true,
-        position: 'left',
-        offsetY: 8,
-        markers: {
-          width: 10,
-          height: 10,
-          radius: 100,
-        },
-        itemMargin: {
-          horizontal: 8,
-          vertical: 8
-        },
-      },
-      tooltip: {
-        fillSeriesColor: false
-      },
-    })).render();
-  });
-  // @formatter:on
+    },
+    tooltip: {
+      fillSeriesColor: false
+    },
+  })).render();
+});
+// @formatter:on
+
 
 
 

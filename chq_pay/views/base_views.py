@@ -1,8 +1,8 @@
-''' The Project 'Cheque Printer' is solely created by Faraz Ahmed Raj - Python Developer
+''' The Project 'Cheque Printer' is solely created by Faraz Ahmed Raj - Python Developeris_selected
 in 2024-2025.'''
 
 from .imp_libs import *
-from chq_pay.models import Banks, Payee, ChequeTemplate, ChequeIssue, Currencies
+from chq_pay.models import Banks, Payee, ChequeTemplate, ChequeIssue, Currencies,Company_Setup
 
 def home(request):
     return render(request, "home/home.html")
@@ -16,14 +16,14 @@ def index(request):
 #for certain counts
     bank_count = Banks.objects.count()
     payee_count = Payee.objects.count()
-    template_count = ChequeTemplate.objects.count()
+    template_count = ChequeTemplate.objects.filter(company__is_selected = True).count()
     currency_count = Currencies.objects.count()
     
 #for cheque counts
-    total_cheques = ChequeIssue.objects.count()
-    approved_cheques = ChequeIssue.objects.filter(issue_is_approved = True).count()
-    pending_cheques = ChequeIssue.objects.filter(issue_is_approved = None).count()
-    rejected_cheques = ChequeIssue.objects.filter(issue_is_approved = False).count()
+    total_cheques = ChequeIssue.objects.filter(company__is_selected = True).count()
+    approved_cheques = ChequeIssue.objects.filter(company__is_selected = True, issue_is_approved = True).count()
+    pending_cheques = ChequeIssue.objects.filter(company__is_selected = True, issue_is_approved = None).count()
+    rejected_cheques = ChequeIssue.objects.filter(company__is_selected = True, issue_is_approved = False).count()
 
 #for cheque issue  pie chart
     #chart cheque issue & bank template labels
@@ -33,7 +33,7 @@ def index(request):
     #chart cheque issue values
     chq_iss = []
     for bnk in banks:
-        iss_chq = ChequeIssue.objects.filter(issue_bank = bnk).filter(issue_is_approved = True).count()
+        iss_chq = ChequeIssue.objects.filter(company__is_selected = True, issue_bank = bnk).filter(issue_is_approved = True).count()
         chq_iss.append(str(iss_chq))
 
     cheque_issued = ','.join(chq_iss)
@@ -50,7 +50,7 @@ def index(request):
     #chart bank template values
     chq_temps = []
     for bnk in banks:
-        bank_temps = ChequeTemplate.objects.filter(bank = bnk).count()
+        bank_temps = ChequeTemplate.objects.filter(company__is_selected = True, bank = bnk).count()
         chq_temps.append(str(bank_temps))
 
     bank_templates = ','.join(chq_temps)
@@ -65,16 +65,22 @@ def index(request):
 
 #for currency-transact-pie  pie chart
     #chart currency-transact labels
-    currencies = Currencies.objects.order_by('currency_char')
-    currency_char = list(currencies.values_list('currency_char', flat=True))
-   
+    currencies = Currencies.objects.order_by('currency_name')
+    currency_char = list(currencies.values_list('currency_name', flat=True))
+
+    
     #chart currency-transact values
     cur_transct = []
     for cur in currencies:
-        currency_transact = ChequeIssue.objects.filter(issue_bank = bnk).filter(issue_currency = cur).values_list('issue_amount', flat=True)
-        cur_transct.append(str(currency_transact))
+        currency_transact = ChequeIssue.objects.filter(company__is_selected = True, issue_currency = cur).values_list('issue_amount', flat=True)
+        cur_transct.append(str(sum(currency_transact)))
+    
+    currency_transactions = ','.join(cur_transct)
 
-    currency_transctions = ','.join(chq_iss)
+    print("CT - ",currency_transactions)
+
+    
+    
 
     #pie chart colors for currency-transact
     currency_trans_color = []
@@ -107,6 +113,7 @@ def index(request):
         'rejected_cheques':rejected_cheques,
         'currency_char':currency_char,
         'currency_trans_color':currency_trans_color,
+        'currency_transactions':currency_transactions,
 
 
 
