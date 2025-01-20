@@ -1,4 +1,6 @@
 {% extends 'layouts/base.html' %}
+{% load i18n %}
+{% load static %}
 {% block tiitle %}Cheque Templates{% endblock tiitle %}
 {% block content %}
 
@@ -29,137 +31,192 @@
       </div>
     </div>
   </div>
-  <!-- Page body -->
-  <div class="page-body">
-    <div class="container-xl">
+ <!-- Page body -->
+ <div class="page-body">
+  <div class="container-xl">
+    <div class="row">
+      <!-- Filters and Search Section -->
+      <div class="col-md-3">
         <div class="card">
-            <div class="card-header">
-              <h3 class="card-title">Template List</h3>
-            </div>
-           <div class="table-responsive" >
-              <table class="table card-table table-vcenter text-nowrap datatable">
-                <thead>
-                  <tr>
-                    <th>Template</th>
-                    <th>Size</th>
-                    <th>Bank</th>
-                    <th>Currency</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% if templates %}
-                  {% for template in templates %}
-                  <tr>
-                    <td>
+          <div class="card-header">
+            <h4 class="card-title">{% trans "Search & Filters" %}</h4>
+          </div>
+          <div class="card-body">
+            <!-- Search Bar -->
+            <form method="get" id="searchForm" class="mb-3">
+              <div class="input-group">
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  name="search" 
+                  id="searchInput" 
+                  placeholder="Search templates" 
+                  value="{{ request.GET.search }}" 
+                  autocomplete="off">
+                <!-- Submit Button inside the input group -->
+                <button type="submit" class="btn btn-primary">
+                  {% trans "Search" %}
+                </button>
+              </div>
+            </form>
+            
 
-                      <div class="d-flex py-1 align-items-center">
-                        <a href="{% url 'template_detail' template.id %}"><span class="avatar me-2" style="background-image: url({{template.background_image.url}})"></span></a>
-                        <div class="flex-fill">
-                          <div class="font-weight-medium"><a href="{% url 'template_detail' template.id %}">{{template.name}}</a></div>
-                          </div>
+            <!-- Filter Form -->
+            <form method="get" id="filterForm">
+              <!-- Currency Filter -->
+              <div class="mb-3">
+                <label for="currencyFilter" class="form-label">{% trans "Currency" %}</label>
+                <select class="form-select" id="currencyFilter" name="currency">
+                  <option value="" {% if not request.GET.currency %}selected{% endif %}>{% trans "All Currencies" %}</option>
+                  {% for currency in currencies %}
+                  <option value="{{ currency }}" {% if request.GET.currency == currency %}selected{% endif %}>
+                    {{ currency }}
+                  </option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <!-- Bank Filter -->
+              <div class="mb-3">
+                <label for="bankFilter" class="form-label">{% trans "Bank" %}</label>
+                <select class="form-select" id="bankFilter" name="bank">
+                  <option value="" {% if not request.GET.bank %}selected{% endif %}>{% trans "All Banks" %}</option>
+                  {% for bank in banks %}
+                  <option value="{{ bank }}" {% if request.GET.bank == bank %}selected{% endif %}>
+                    {{ bank }}
+                  </option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <!-- Submit Button -->
+              <div class="d-grid">
+                <button type="submit" class="btn btn-primary">{% trans "Apply Filters" %}</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <!-- End Filters and Search Section -->
+
+      <!-- Template List Section -->
+      <div class="col-md-9">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Template List</h3>
+          </div>
+          <div class="table-responsive">
+            <table class="table card-table table-vcenter text-nowrap datatable">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Template</th>
+                  <th>Size</th>
+                  <th>Bank</th>
+                  <th>Currency</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% if templates %}
+                {% for template in templates %}
+                <tr>
+                  
+                  <td class="text-start">
+                    <div class="dropdown">
+                      <button class="btn dropdown-toggle align-text-top" data-bs-toggle="dropdown">
+                        Actions
+                      </button>
+                      <div class="dropdown-menu dropdown-menu-end">
+                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editTemplateModal"
+                          data-id="{{ template.id }}" data-name="{{ template.name }}" data-width="{{ template.width }}"
+                          data-height="{{ template.height }}" data-bank-id="{{ template.bank.id }}"
+                          data-currency-id="{{ template.currency.id }}" data-background_image="{{ template.background_image.url }}">
+                          Edit Template
+                        </a>
+                        <a class="dropdown-item"
+                          onclick="if (confirm('Are you sure? Want to delete {{ template.name }}?')) {return true;} else {event.stopPropagation(); event.preventDefault();};"
+                          href="{% url 'delete_template' template.id %}">
+                          Delete Template
+                        </a>
                       </div>
+                    </div>
+                  </td>
 
-
-                    </td>
-                    <td>({{ template.width }}mm x {{ template.height }}mm)</td>
-                    <td>{{template.bank}}</td>
-                    <td>{{template.currency}}</td>
-                    <td class="text-end">
-                      
-                        <div class="dropdown">
-                        <button class="btn dropdown-toggle align-text-top" data-bs-toggle="dropdown">
-                          Actions
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-end">
-                          <a class="dropdown-item" href="#" data-bs-toggle="modal"  
-                          data-bs-target="#editTemplateModal" 
-                          data-id="{{ template.id }}" data-name="{{ template.name }}" data-width="{{ template.width }}" data-height="{{ template.height }} " data-bank-id="{{ template.bank.id }}"  data-currency-id="{{ template.currency.id }}"  data-background_image="{{ template.background_image.url}}">
-                            Edit Template
-                          </a>
-                          <a class="dropdown-item" onclick="if (confirm('Are You sure? Want to delete {{template.name}} ?')){return true;}else{event.stopPropagation(); event.preventDefault();};" href="{% url 'delete_template' template.id %}">
-                            Delete Template
-                          </a>
+                  <td>
+                    <div class="d-flex py-1 align-items-center">
+                      <a href="{% url 'template_detail' template.id %}">
+                        <span class="avatar me-2" style="background-image: url({{ template.background_image.url }})"></span>
+                      </a>
+                      <div class="flex-fill">
+                        <div class="font-weight-medium">
+                          <a href="{% url 'template_detail' template.id %}">{{ template.name }}</a>
                         </div>
                       </div>
+                    </div>
+                  </td>
 
-
-                    </td>
-                  </tr>
-                  {% endfor %}
-          {% else %}
-          <tr>
-              <td colspan="4" class="text-center">No Templates found.</td>
-          </tr>
-          {% endif %}
-                </tbody>
-              </table>
-            </div>
-            <!-- pagination -->
-            <div class="card-footer d-flex align-items-center">
-              <p class="m-0 text-secondary">
-                Showing <span>{{ templates.start_index }}</span> to <span>{{ templates.end_index }}</span> of <span>{{ templates.paginator.count }}</span> entries
-              </p>
-              <ul class="pagination m-0 ms-auto">
-                {% if templates.has_previous %}
-                <li class="page-item">
-                  <a class="page-link" href="?page=1{% if searched %}&searched={{ searched }}{% endif %}{% if company %}&company={{ company }}{% endif %}{% if emp_loc %}&emp_loc={{ emp_loc|join:"," }}{% endif %}{% if emp_department %}&emp_department={{ emp_department|join:"," }}{% endif %}" tabindex="-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                      <path d="M17 6l-6 6l6 6" />
-                      <path d="M11 6l-6 6l6 6" />
-                    </svg>
-                    First
-                  </a>
-                </li>
-                <li class="page-item">
-                  <a class="page-link" href="?page={{ templates.previous_page_number }}{% if searched %}&searched={{ searched }}{% endif %}{% if company %}&company={{ company }}{% endif %}{% if emp_loc %}&emp_loc={{ emp_loc|join:"," }}{% endif %}{% if emp_department %}&emp_department={{ emp_department|join:"," }}{% endif %}">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                      <path d="M15 6l-6 6l6 6" />
-                    </svg>
-                    
-                  </a>
-                </li>
-                {% endif %}
-
-                {% for i in templates.paginator.page_range %}
-                {% if templates.number == i %}
-                <li class="page-item active"><a class="page-link" href="#">{{ i }}</a></li>
-                {% elif i > templates.number|add:'-3' and i < templates.number|add:'3' %}
-                <li class="page-item"><a class="page-link" href="?page={{ i }}{% if searched %}&searched={{ searched }}{% endif %}{% if company %}&company={{ company }}{% endif %}{% if emp_loc %}&emp_loc={{ emp_loc|join:"," }}{% endif %}{% if emp_department %}&emp_department={{ emp_department|join:"," }}{% endif %}">{{ i }}</a></li>
-                {% endif %}
+                  <td>({{ template.width }}mm x {{ template.height }}mm)</td>
+                  <td>{{ template.bank }}</td>
+                  <td>{{ template.currency }}</td>
+                 
+                </tr>
                 {% endfor %}
-
-                {% if templates.has_next %}
-                <li class="page-item">
-                  <a class="page-link" href="?page={{ templates.next_page_number }}{% if searched %}&searched={{ searched }}{% endif %}{% if company %}&company={{ company }}{% endif %}{% if emp_loc %}&emp_loc={{ emp_loc|join:"," }}{% endif %}{% if emp_department %}&emp_department={{ emp_department|join:"," }}{% endif %}">
-                    
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                      <path d="M9 6l6 6l-6 6" />
-                    </svg>
-                  </a>
-                </li>
-                <li class="page-item">
-                  <a class="page-link" href="?page={{ templates.paginator.num_pages }}{% if searched %}&searched={{ searched }}{% endif %}{% if company %}&company={{ company }}{% endif %}{% if emp_loc %}&emp_loc={{ emp_loc|join:"," }}{% endif %}{% if emp_department %}&emp_department={{ emp_department|join:"," }}{% endif %}">
-                    Last
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                      <path d="M7 6l6 6l-6 6" />
-                      <path d="M13 6l6 6l-6 6" />
-                    </svg>
-                  </a>
-                </li>
+                {% else %}
+                <tr>
+                  <td colspan="5" class="text-center">No Templates found.</td>
+                </tr>
                 {% endif %}
-              </ul>
-            </div>
-            <!-- pagination -->
+              </tbody>
+            </table>
           </div>
+          <!-- Pagination -->
+          <div class="card-footer d-flex align-items-center">
+            <p class="m-0 text-secondary">
+              Showing <span>{{ templates.start_index }}</span> to <span>{{ templates.end_index }}</span> of <span>{{ templates.paginator.count }}</span> entries
+            </p>
+            <ul class="pagination m-0 ms-auto">
+              {% if templates.has_previous %}
+              <li class="page-item">
+                <a class="page-link" href="?page=1{% if request.GET.currency %}&currency={{ request.GET.currency }}{% endif %}{% if request.GET.bank %}&bank={{ request.GET.bank }}{% endif %}" tabindex="-1">
+                  First
+                </a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="?page={{ templates.previous_page_number }}{% if request.GET.currency %}&currency={{ request.GET.currency }}{% endif %}{% if request.GET.bank %}&bank={{ request.GET.bank }}{% endif %}">
+                  Previous
+                </a>
+              </li>
+              {% endif %}
+              {% for i in templates.paginator.page_range %}
+              {% if templates.number == i %}
+              <li class="page-item active"><a class="page-link" href="#">{{ i }}</a></li>
+              {% elif i > templates.number|add:'-3' and i < templates.number|add:'3' %}
+              <li class="page-item"><a class="page-link"
+                  href="?page={{ i }}{% if request.GET.currency %}&currency={{ request.GET.currency }}{% endif %}{% if request.GET.bank %}&bank={{ request.GET.bank }}{% endif %}">{{ i }}</a>
+              </li>
+              {% endif %}
+              {% endfor %}
+              {% if templates.has_next %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ templates.next_page_number }}{% if request.GET.currency %}&currency={{ request.GET.currency }}{% endif %}{% if request.GET.bank %}&bank={{ request.GET.bank }}{% endif %}">
+                  Next
+                </a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="?page={{ templates.paginator.num_pages }}{% if request.GET.currency %}&currency={{ request.GET.currency }}{% endif %}{% if request.GET.bank %}&bank={{ request.GET.bank }}{% endif %}">
+                  Last
+                </a>
+              </li>
+              {% endif %}
+            </ul>
+          </div>
+          <!-- End Pagination -->
+        </div>
       </div>
+      <!-- End Template List Section -->
     </div>
-
-
+  </div>
+</div>
 
 
 

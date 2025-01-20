@@ -1,5 +1,7 @@
 {% extends 'layouts/base.html' %}
-{% block tiitle %}Payees{% endblock tiitle %}
+{% load i18n %}
+{% load static %}
+{% block tiitle %}{% trans "Payees" %}{% endblock tiitle %}
 {% block content %}
 
 
@@ -9,7 +11,7 @@
       <div class="row g-2 align-items-center">
         <div class="col">
           <h2 class="page-title">
-            Payees
+            {% trans "Payees" %}
           </h2>
         </div>
         <!-- Page title actions -->
@@ -18,7 +20,7 @@
              <a href="#" class="btn btn-primary d-none d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#addPayeeModal">
                 <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
-                Create new Payee
+                {% trans "Create new Payee" %}
               </a>
               <a href="#" class="btn btn-primary d-sm-none btn-icon" data-bs-toggle="modal" data-bs-target="#addPayeeModal" aria-label="addPayeeModalLabel">
                 <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
@@ -34,54 +36,64 @@
     <div class="container-xl">
         <div class="card">
             <div class="card-header">
-              <h3 class="card-title">Payee List</h3>
+              <h3 class="card-title">{% trans "Payee List" %}</h3>
             </div>
            <div class="table-responsive" >
               <table class="table card-table table-vcenter text-nowrap datatable">
                 <thead>
                   <tr>
-                    <th>Payee Name</th>
-                    <th>Mobile Number</th>
-                    <th>Email</th>
                     <th></th>
+                    <th>{% trans "Payee Name" %}</th>
+                    <th>{% trans "Mobile Number" %}</th>
+                    <th>{% trans "Email" %}</th>
+                    <th>{% trans "Address" %}</th>
+                    
                   </tr>
                 </thead>
                 <tbody>
                     {% if payees %}
                         {% for payee in payees %}
                   <tr>
+
+                    <td class="text-start">
+                      
+                      <div class="dropdown">
+                      <button class="btn dropdown-toggle align-text-top" data-bs-toggle="dropdown">
+                        {% trans "Actions" %}
+                      </button>
+                      <div class="dropdown-menu dropdown-menu-end">
+                        <a class="dropdown-item" href="#" data-bs-toggle="modal"  
+                        data-bs-target="#editPayeeModal" 
+                        data-id="{{ payee.id }}" 
+                        data-payee-name="{{ payee.payee_name }}" 
+                        data-mobile-no="{{ payee.mobile_no }}" 
+                        data-email="{{ payee.email }}"
+                        data-address="{{ payee.address }}">
+                          {% trans "Edit Payee" %}
+                        </a>
+                        <a class="dropdown-item" onclick="return confirm('Are you sure you want to delete {{ payee.payee_name }}?')" 
+                        href="{% url 'delete_payee' payee.id %}">
+                          {% trans "Delete Payee" %}
+                        </a>
+                      </div>
+                    </div>
+
+                  </td>
+                  
                     <td>{{ payee.payee_name }}</td>
                     <td>{{ payee.mobile_no }}</td>
                     <td>{{ payee.email }}</td>
-                    <td class="text-end">
-                      
-                        <div class="dropdown">
-                        <button class="btn dropdown-toggle align-text-top" data-bs-toggle="dropdown">
-                          Actions
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-end">
-                          <a class="dropdown-item" href="#" data-bs-toggle="modal"  
-                          data-bs-target="#editPayeeModal" 
-                          data-id="{{ payee.id }}" 
-                          data-payee-name="{{ payee.payee_name }}" 
-                          data-mobile-no="{{ payee.mobile_no }}" 
-                          data-email="{{ payee.email }}">
-                            Edit Payee
-                          </a>
-                          <a class="dropdown-item" onclick="return confirm('Are you sure you want to delete {{ payee.payee_name }}?')" 
-                          href="{% url 'delete_payee' payee.id %}">
-                            Delete Payee
-                          </a>
-                        </div>
-                      </div>
-
-
+                    <td>
+                      {% if payee.address %}
+                      {{payee.address}}
+                      {% endif %}
                     </td>
+                    
                   </tr>
                   {% endfor %}
           {% else %}
           <tr>
-              <td colspan="4" class="text-center">No Payees found.</td>
+              <td colspan="4" class="text-center">{% trans "No Payees found" %}</td>
           </tr>
           {% endif %}
                 </tbody>
@@ -90,7 +102,7 @@
             <!-- pagination -->
             <div class="card-footer d-flex align-items-center">
               <p class="m-0 text-secondary">
-                Showing <span>{{ payees.start_index }}</span> to <span>{{ payees.end_index }}</span> of <span>{{ payees.paginator.count }}</span> entries
+                {% trans "Showing" %} <span>{{ payees.start_index }}</span> {% trans "to" %} <span>{{ payees.end_index }}</span> of <span>{{ payees.paginator.count }}</span> {% trans "entries" %}
               </p>
               <ul class="pagination m-0 ms-auto">
                 {% if payees.has_previous %}
@@ -101,7 +113,7 @@
                       <path d="M17 6l-6 6l6 6" />
                       <path d="M11 6l-6 6l6 6" />
                     </svg>
-                    First
+                    {% trans "First" %}
                   </a>
                 </li>
                 <li class="page-item">
@@ -135,7 +147,7 @@
                 </li>
                 <li class="page-item">
                   <a class="page-link" href="?page={{ payees.paginator.num_pages }}{% if searched %}&searched={{ searched }}{% endif %}{% if company %}&company={{ company }}{% endif %}{% if emp_loc %}&emp_loc={{ emp_loc|join:"," }}{% endif %}{% if emp_department %}&emp_department={{ emp_department|join:"," }}{% endif %}">
-                    Last
+                    {% trans "Last" %}
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
                       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                       <path d="M7 6l6 6l-6 6" />
@@ -160,7 +172,7 @@
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="addPayeeModalLabel">Add New Payee</h5>
+          <h5 class="modal-title" id="addPayeeModalLabel">{% trans "Add New Payee" %}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -168,20 +180,25 @@
           <form id="addPayeeForm" method="POST" action="{% url 'add_payee' %}">
             {% csrf_token %}
             <div class="form-group mb-2">
-                <label for="payee_name" class="form-label">Payee Name</label>
+                <label for="payee_name" class="form-label">{% trans "Payee Name" %}</label>
                 <input type="text" class="form-control" id="payee_name" name="payee_name" required>
             </div>
             <div class="form-group mb-2">
-                <label for="payee_mobile_no" class="form-label">Mobile Number</label>
+                <label for="payee_mobile_no" class="form-label">{% trans "Mobile Number" %}</label>
                 <input type="text" class="form-control" id="payee_mobile_no" name="payee_mobile_no" required>
             </div>
             <div class="form-group mb-2">
-                <label for="payee_email" class="form-label">Email</label>
+                <label for="payee_email" class="form-label">{% trans "Email" %}</label>
                 <input type="email" class="form-control" id="payee_email" name="payee_email">
             </div>
+            <div class="form-group mb-2">
+              <label for="payee_address" class="form-label">{% trans "Address" %}</label>
+              <textarea name="payee_address" class="form-control" id="payee_address"></textarea>
+            </div>
+            
             <div class="modal-footer">
-            <button type="button" class="btn me-auto" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <button type="button" class="btn me-auto" data-bs-dismiss="modal">{% trans "Close" %}</button>
+            <button type="submit" class="btn btn-primary">{% trans "Save Changes" %}</button>
             </div>
         </form>
         </div>
@@ -197,7 +214,7 @@
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="editPayeeModalLabel">Edit Payee</h5>
+          <h5 class="modal-title" id="editPayeeModalLabel">{% trans "Edit Payee" %}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
             </button>
         </div>
@@ -207,20 +224,25 @@
             {% csrf_token %}
             <input type="hidden" id="edit_payee_id" name="payee_id">
             <div class="form-group mb-2">
-                <label for="edit_payee_name" class="form-label">Payee Name</label>
+                <label for="edit_payee_name" class="form-label">{% trans "Payee Name" %}</label>
                 <input type="text" class="form-control" id="edit_payee_name" name="payee_name" required>
             </div>
             <div class="form-group mb-2">
-                <label for="edit_payee_mobile_no" class="form-label">Mobile Number</label>
+                <label for="edit_payee_mobile_no" class="form-label">{% trans "Mobile Number" %}</label>
                 <input type="text" class="form-control" id="edit_payee_mobile_no" name="payee_mobile_no" required>
             </div>
             <div class="form-group mb-2">
-                <label for="edit_payee_email" class="form-label">Email</label>
+                <label for="edit_payee_email" class="form-label">{% trans "Email" %}</label>
                 <input type="email" class="form-control" id="edit_payee_email" name="payee_email" required>
             </div>
+            <div class="form-group mb-2">
+              <label for="payee_address" class="form-label">{% trans "Address" %}</label>
+              <textarea name="payee_address" class="form-control" id="edit_payee_address"></textarea>
+            </div>
+
             <div class="modal-footer">
-              <button type="button" class="btn me-auto" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Update</button>
+              <button type="button" class="btn me-auto" data-bs-dismiss="modal">{% trans "Close" %}</button>
+            <button type="submit" class="btn btn-primary">{% trans "Update" %}</button>
           </div>
           </form>
         </div>
@@ -248,12 +270,14 @@
         const payeeName = button.data('payee-name');
         const mobileNo = button.data('mobile-no');
         const email = button.data('email');
+        const address = button.data('address');
 
         const modal = $(this);
         modal.find('#edit_payee_id').val(id);
         modal.find('#edit_payee_name').val(payeeName);
         modal.find('#edit_payee_mobile_no').val(mobileNo);
         modal.find('#edit_payee_email').val(email);
+        modal.find('#edit_payee_address').val(address);
     });
 
     // Handle Edit Payee Form Submission

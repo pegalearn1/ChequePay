@@ -40,7 +40,7 @@ def index(request):
 
     #pie chart colors for cheque issue
     cheque_issue_color = []
-    for chq_color in range(approved_cheques):
+    for chq_color in range(template_count):
         random_color = (randrange(255), randrange(255), randrange(255))
         cheque_issue_color.append(f'rgb({random_color[0]}, {random_color[1]}, {random_color[2]})')
 

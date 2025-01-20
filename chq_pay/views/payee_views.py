@@ -11,6 +11,7 @@ def add_payee(request):
         payee_name = request.POST.get("payee_name")
         mobile_no = request.POST.get("payee_mobile_no")
         email = request.POST.get("payee_email")
+        address = request.POST.get("payee_address")
         
         payee_exist = Payee.objects.filter(payee_name = payee_name)
 
@@ -30,6 +31,10 @@ def add_payee(request):
                 modified_date = datetime.now()
 
             )
+
+            if address:
+                payee.address = address
+                payee.save()
             messages.success(request,('Payee Created Successfully!!!'))
             return JsonResponse({"success": True})
     return JsonResponse({"success": False})
@@ -64,6 +69,7 @@ def edit_payee(request):
         payee_name = request.POST.get("payee_name")
         mobile_no = request.POST.get("payee_mobile_no")
         email = request.POST.get("payee_email")
+        address = request.POST.get("payee_address")
         print("payeee = ",payee_id)
         
         # Update the bank in the database
@@ -74,6 +80,9 @@ def edit_payee(request):
             payee.email = email
             payee.modified_by = request.user.id
             payee.modified_date = datetime.now()
+
+            if address:
+                payee.address = address
             
             payee_exist = Payee.objects.filter(payee_name = payee_name).exclude(id=payee_id)
 

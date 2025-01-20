@@ -1,4 +1,6 @@
 {% extends 'layouts/base.html' %}
+{% load i18n %}  
+{% load static %}
 {% block tiitle %}Banks{% endblock tiitle %}
 {% block content %}
 
@@ -9,8 +11,7 @@
       <div class="row g-2 align-items-center">
         <div class="col">
           <h2 class="page-title">
-            Banks
-            <div draggable="true" class="box">A</div>
+            {% trans "Banks" %}
           </h2>
         </div>
         <!-- Page title actions -->
@@ -19,7 +20,7 @@
              <a href="#" class="btn btn-primary d-none d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#addBankModal">
                 <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
-                Create new Bank
+                {% trans "Create new Bank" %}
               </a>
               <a href="#" class="btn btn-primary d-sm-none btn-icon" data-bs-toggle="modal" data-bs-target="#addBankModal" aria-label="addBankModalLabel">
                 <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
@@ -35,24 +36,42 @@
     <div class="container-xl">
         <div class="card">
             <div class="card-header">
-              <h3 class="card-title">Bank List</h3>
+              <h3 class="card-title">{% trans "Bank List" %}</h3>
             </div>
            <div class="table-responsive" >
               <table class="table card-table table-vcenter text-nowrap datatable">
                 <thead>
                   <tr>
-                    <th>Bank Char</th>
-                    <th>Bank Name E</th>
-                    <th>Bank Name L</th>
-                    <th>Telephone</th>
-                    <th>Address</th>
                     <th></th>
+                    <th>{% trans "Bank Char" %}</th>
+                    <th>{% trans "Bank Name E" %}</th>
+                    <th>{% trans "Bank Name L" %}</th>
+                    <th>{% trans "Telephone" %}</th>
+                    <th>{% trans "Address" %}</th>
                   </tr>
                 </thead>
                 <tbody>
                     {% if banks %}
                     {% for bank in banks %}
                   <tr>
+
+                    <td class="text-start">
+                      <div class="dropdown">
+                        <button class="btn dropdown-toggle align-text-top" data-bs-toggle="dropdown">
+                          {% trans "Actions" %}
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end">
+                          <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editBankModal" data-id="{{ bank.id }}" data-bank_char="{{ bank.bank_char }}" data-bank_name_e="{{ bank.bank_name_e }}" data-bank_name_l="{{ bank.bank_name_l }}" data-tel_no="{{ bank.tel_no }}" data-address="{{ bank.address }}">
+                            {% trans "Edit Bank" %}
+                          </a>
+                          <a class="dropdown-item" onclick="if (confirm('Are You sure? Want to delete {{bank.bank_name_e}} ?')){return true;}else{event.stopPropagation(); event.preventDefault();};" href="{% url 'delete_bank' bank.id %}">
+                            {% trans "Delete Bank" %}
+                          </a>
+                        </div>
+                      </div>
+                      
+                    </td>
+
                     <td>
                         {{bank.bank_char}}
                       </td>
@@ -68,28 +87,12 @@
                       <td>
                         {{bank.address}}
                       </td>
-                    <td class="text-end">
-                      <div class="dropdown">
-                        <button class="btn dropdown-toggle align-text-top" data-bs-toggle="dropdown">
-                          Actions
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-end">
-                          <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editBankModal" data-id="{{ bank.id }}" data-bank_char="{{ bank.bank_char }}" data-bank_name_e="{{ bank.bank_name_e }}" data-bank_name_l="{{ bank.bank_name_l }}" data-tel_no="{{ bank.tel_no }}" data-address="{{ bank.address }}">
-                            Edit Bank
-                          </a>
-                          <a class="dropdown-item" onclick="if (confirm('Are You sure? Want to delete {{bank.bank_name_e}} ?')){return true;}else{event.stopPropagation(); event.preventDefault();};" href="{% url 'delete_bank' bank.id %}">
-                            Delete Bank
-                          </a>
-                        </div>
-                      </div>
-
-
-                    </td>
+                    
                   </tr>
                   {% endfor %}
           {% else %}
           <tr>
-              <td colspan="4" class="text-center">No Banks found.</td>
+              <td colspan="4" class="text-center">{% trans "No Banks found" %}</td>
           </tr>
           {% endif %}
                 </tbody>
@@ -98,7 +101,7 @@
             <!-- pagination -->
             <div class="card-footer d-flex align-items-center">
               <p class="m-0 text-secondary">
-                Showing <span>{{ banks.start_index }}</span> to <span>{{ banks.end_index }}</span> of <span>{{ banks.paginator.count }}</span> entries
+                {% trans "Showing" %} <span>{{ banks.start_index }}</span> {% trans "to" %} <span>{{ banks.end_index }}</span> of <span>{{ banks.paginator.count }}</span> {% trans "entries" %}
               </p>
               <ul class="pagination m-0 ms-auto">
                 {% if banks.has_previous %}
@@ -109,7 +112,7 @@
                       <path d="M17 6l-6 6l6 6" />
                       <path d="M11 6l-6 6l6 6" />
                     </svg>
-                    First
+                    {% trans "First" %}
                   </a>
                 </li>
                 <li class="page-item">
@@ -143,7 +146,7 @@
                 </li>
                 <li class="page-item">
                   <a class="page-link" href="?page={{ banks.paginator.num_pages }}{% if searched %}&searched={{ searched }}{% endif %}{% if company %}&company={{ company }}{% endif %}{% if emp_loc %}&emp_loc={{ emp_loc|join:"," }}{% endif %}{% if emp_department %}&emp_department={{ emp_department|join:"," }}{% endif %}">
-                    Last
+                    {% trans "Last" %}
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
                       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                       <path d="M7 6l6 6l-6 6" />
@@ -168,7 +171,7 @@
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="addBankModalLabel">Add New Bank</h5>
+          <h5 class="modal-title" id="addBankModalLabel">{% trans "Add New Bank" %}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -176,28 +179,28 @@
           <form id="addBankForm" method="POST" action="{% url 'add_bank' %}">
             {% csrf_token %}
             <div class="form-group mb-2">
-              <label for="bank_char" class="form-label">Bank Char</label>
+              <label for="bank_char" class="form-label">{% trans "Bank Char" %}</label>
               <input type="text" class="form-control" id="bank_char" name="bank_char" required>
             </div>
             <div class="form-group mb-2">
-              <label for="bank_name_e" class="form-label">Bank Name (English)</label>
+              <label for="bank_name_e" class="form-label">{% trans "Bank Name (English)" %}</label>
               <input type="text" class="form-control" id="bank_name_e" name="bank_name_e" required>
             </div>
             <div class="form-group mb-2">
-              <label for="bank_name_l" class="form-label">Bank Name (Local)</label>
+              <label for="bank_name_l" class="form-label">{% trans "Bank Name (Local)" %}</label>
               <input type="text" class="form-control" id="bank_name_l" name="bank_name_l">
             </div>
             <div class="form-group mb-2">
-              <label for="tel_no" class="form-label">Telephone</label>
+              <label for="tel_no" class="form-label">{% trans "Telephone" %}</label>
               <input type="text" class="form-control" id="tel_no" name="tel_no" required>
             </div>
             <div class="form-group mb-2">
-              <label for="address" class="form-label">Address</label>
+              <label for="address" class="form-label">{% trans "Address" %}</label>
               <textarea class="form-control" id="address" name="address" required></textarea>
             </div>
             <div class="modal-footer">
-            <button type="button" class="btn me-auto" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <button type="button" class="btn me-auto" data-bs-dismiss="modal">{% trans "Close" %}</button>
+            <button type="submit" class="btn btn-primary">{% trans "Save Changes" %}</button>
             </div>
         </form>
         </div>
@@ -213,7 +216,7 @@
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="editBankModalLabel">Edit Bank</h5>
+          <h5 class="modal-title" id="editBankModalLabel">{% trans "Edit Bank" %}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
             </button>
         </div>
@@ -223,28 +226,28 @@
             {% csrf_token %}
             <input type="hidden" id="edit_bank_id" name="bank_id">
             <div class="form-group mb-2">
-              <label for="edit_bank_char" class="form-label">Bank Char</label>
+              <label for="edit_bank_char" class="form-label">{% trans "Bank Char" %}</label>
               <input type="text" class="form-control" id="edit_bank_char" name="bank_char" required>
             </div>
             <div class="form-group mb-2">
-              <label for="edit_bank_name_e" class="form-label">Bank Name (English)</label>
+              <label for="edit_bank_name_e" class="form-label">{% trans "Bank Name (English)" %}</label>
               <input type="text" class="form-control" id="edit_bank_name_e" name="bank_name_e" required>
             </div>
             <div class="form-group mb-2">
-              <label for="edit_bank_name_l" class="form-label">Bank Name (Local)</label>
+              <label for="edit_bank_name_l" class="form-label">{% trans "Bank Name (Local)" %}</label>
               <input type="text" class="form-control" id="edit_bank_name_l" name="bank_name_l">
             </div>
             <div class="form-group mb-2">
-              <label for="edit_tel_no" class="form-label">Telephone</label>
+              <label for="edit_tel_no" class="form-label">{% trans "Telephone" %}</label>
               <input type="text" class="form-control" id="edit_tel_no" name="tel_no" required>
             </div>
             <div class="form-group mb-2">
-              <label for="edit_address" class="form-label">Address</label>
+              <label for="edit_address" class="form-label">{% trans "Address" %}</label>
               <textarea class="form-control" id="edit_address" name="address" required></textarea>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn me-auto" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Update</button>
+              <button type="button" class="btn me-auto" data-bs-dismiss="modal">{% trans "Close" %}</button>
+            <button type="submit" class="btn btn-primary">{% trans "Update" %}</button>
           </div>
           </form>
         </div>

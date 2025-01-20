@@ -1,4 +1,6 @@
 {% extends 'layouts/base.html' %}
+{% load i18n %}
+{% load static %}
 {% block tiitle %}Cheque Issue{% endblock tiitle %}
 {% block stylesheet %}{% endblock stylesheet %}
 {% block content %}
@@ -10,7 +12,7 @@
       <div class="row g-2 align-items-center">
         <div class="col">
           <h2 class="page-title">
-            Cheque Issue
+            {% trans "Cheque Issue" %}
           </h2>
         </div>
         <!-- Page title actions -->
@@ -19,7 +21,7 @@
              <a href="#" class="btn btn-primary d-none d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#addChequeModal">
                 <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
-                Issue new Cheque
+                {% trans "Issue new Cheque" %}
               </a>
               <a href="#" class="btn btn-primary d-sm-none btn-icon" data-bs-toggle="modal" data-bs-target="#addChequeModal" aria-label="addChequeModalLabel">
                 <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
@@ -33,23 +35,113 @@
   <!-- Page body -->
   <div class="page-body">
     <div class="container-xl">
+      <div class="row">
+        <!-- Filters and Search Section -->
+        <div class="col-md-3">
+          <div class="card">
+            <div class="card-header">
+              <h4 class="card-title">{% trans "Search & Filters" %}</h4>
+            </div>
+            <div class="card-body">
+              <!-- Search Bar -->
+              <form method="get" id="searchForm" class="mb-3">
+                <div class="input-group">
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    name="search" 
+                    id="searchInput" 
+                    placeholder="Search cheques" 
+                    value="{{ search }}" 
+                    autocomplete="off">
+                  <button type="submit" class="btn btn-primary">
+                    {% trans "Search" %}
+                  </button>
+                </div>
+              </form>
+              
+  
+              <!-- Filter Form -->
+              <form method="get" id="filterForm">
+                <!-- Bank Filter -->
+                <div class="mb-3">
+                  <label for="bankFilter">{% trans "Bank" %}</label>
+                  <select class="form-control" name="bank" id="bankFilter">
+                    <option value="">{% trans "Select Bank" %}</option>
+                    {% for bank in banks %}
+                      <option value="{{ bank.id }}" {% if bank.id == request.GET.bank %}selected{% endif %}>{{ bank.bank_name_e }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+  
+                <!-- Currency Filter -->
+                <div class="mb-3">
+                  <label for="currencyFilter">{% trans "Currency" %}</label>
+                  <select class="form-control" name="currency" id="currencyFilter">
+                    <option value="">{% trans "Select Currency" %}</option>
+                    {% for currency in currencies %}
+                      <option value="{{ currency.id }}" {% if currency.id == request.GET.currency %}selected{% endif %}>{{ currency.currency_name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+
+                 <!-- Approval Filter -->
+                <div class="mb-3">
+                  <label for="approvalFilter">{% trans "Approval Status" %}</label>
+                  <select class="form-control" name="approval" id="approvalFilter">
+                    <option value="">{% trans "Select Approval Status" %}</option>
+                    <option value="approved" {% if approval == 'approved' %}selected{% endif %}>{% trans "Approved" %}</option>
+                    <option value="pending" {% if approval == 'pending' %}selected{% endif %}>{% trans "Pending" %}</option>
+                    <option value="rejected" {% if approval == 'rejected' %}selected{% endif %}>{% trans "Rejected" %}</option>
+                  </select>
+                </div>
+
+                <!-- Date Range Filter -->
+                <div class="mb-3">
+                  <label class="mb-2" for="start_date">{% trans "Cheque Date Range" %}</label>
+                  <!-- From Date -->
+                  <div class="mb-2">
+                    <label for="start_date">{% trans "From" %}</label>
+                    <input type="date" class="form-control" name="start_date" value="{{ start_date }}">
+                  </div>
+                  <!-- To Date -->
+                  <div>
+                    <label for="end_date">{% trans "To" %}</label>
+                    <input type="date" class="form-control" name="end_date" value="{{ end_date }}">
+                  </div>
+                </div>
+  
+                <!-- Submit Button -->
+                <div class="d-grid">
+                  <button type="submit" class="btn btn-primary">{% trans "Apply Filters" %}</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- End Filters and Search Section -->
+
+        <!-- Template List Section -->
+      <div class="col-md-9">
+
         <div class="card">
             <div class="card-header">
-              <h3 class="card-title">Cheque Issue List</h3>
+              <h3 class="card-title">{% trans "Cheque Issue List" %}</h3>
             </div>
            <div class="table-responsive" >
               <table class="table card-table table-vcenter text-nowrap datatable">
                 <thead>
                   <tr>
                     <th></th>
-                    <th>Template</th>
-                    <th>Bank</th>
-                    <th>Payee</th>
-                    <th>Cheque Date</th>
-                    <th>Cheque Amount</th>
-                    <th>Issue Date</th>
-                    <th>Approval</th>
-                    <th>Approved/Rejected By</th>
+                    <th>{% trans "Template" %}</th>
+                    <th>{% trans "Bank" %}</th>
+                    <th>{% trans "Account Number" %}</th>
+                    <th>{% trans "Payee" %}</th>
+                    <th>{% trans "Cheque Date" %}</th>
+                    <th>{% trans "Cheque Amount" %}</th>
+                    <th>{% trans "Issue Date" %}</th>
+                    <th>{% trans "Approval" %}</th>
+                    <th>{% trans "Approved/Rejected By" %}</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -57,61 +149,60 @@
                   {% if cheques %}
                   {% for cheque in cheques %}
                   <tr>
-                    <td class="budget">
-                      <input type="checkbox" name="" id="">
-                    </td>
+                    <td class="text-start">
+                      
+                        
+                      <div class="dropdown">
+                         <button class="btn dropdown-toggle align-text-top" data-bs-toggle="dropdown">
+                           {% trans "Actions" %}
+                         </button>
+                         <div class="dropdown-menu dropdown-menu-end">
+                           {% if cheque.issue_is_approved %}
+                           <a class="dropdown-item" href="{% url 'print_cheque' cheque.id %}" target="_blank"> {% trans "Preview & Print Cheque" %}</a>
+                           {% endif %}
+                           
+                           {% if user.is_superuser %}
+                           <a class="dropdown-item" onclick="if (confirm('Are You sure? Want to delete cheque to {{cheque.issue_payee}} on {{cheque.issue_cheque_date}} ?')){return true;}else{event.stopPropagation(); event.preventDefault();};" href="{% url 'delete_chequeissue' cheque.id %}">
+                           {% trans "Delete Issued Cheque" %}
+                           </a>
+                           {% endif %}
+ 
+                           {% if user.is_superuser %}
+                           
+                           {% if  cheque.issue_is_approved is None or cheque.issue_is_approved  == False  %}
+                           <a class="dropdown-item" onclick="if (confirm('Are You sure? Want to approve the cheque to {{cheque.issue_payee}} on {{cheque.issue_cheque_date}} ?')){return true;}else{event.stopPropagation(); event.preventDefault();};" href="{% url 'approval' cheque.id %}?additional_value=True">
+                           {% trans "Approve Cheque" %}  
+                           </a>
+                           {% endif %}
+ 
+                           {% if  cheque.issue_is_approved is None or cheque.issue_is_approved  == True  %}
+                           <a class="dropdown-item" onclick="if (confirm('Are You sure? Want to reject the cheque to {{cheque.issue_payee}} on {{cheque.issue_cheque_date}} ?')){return true;}else{event.stopPropagation(); event.preventDefault();};" href="{% url 'approval' cheque.id %}?additional_value=False">
+                           {% trans "Reject Cheque" %}  
+                           </a>
+                           {% endif %}
+ 
+                           {% endif %}
+                         </div>
+                       </div>
+ 
+                     </td>
+
+
                     <td>{{cheque.issue_template}}</td>
                     <td>{{cheque.issue_bank}}</td>
+                    <td>{{cheque.issue_accountnum}}</td>
                     <td>{{cheque.issue_payee}}</td>
                     <td>{{cheque.issue_cheque_date}}</td>
                     <td>{{cheque.issue_amount}} {{cheque.issue_currency}}</td>
                     <td>{{cheque.issue_issue_date}}</td>
-                    <td>{% if cheque.issue_is_approved %}Approved{% elif cheque.issue_is_approved is None %}Pending{% else %}Rejected{% endif %}</td>
+                    <td>{% if cheque.issue_is_approved %}{% trans "Approved" %}{% elif cheque.issue_is_approved is None %}{% trans "Pending" %}{% else %}{% trans "Rejected" %}{% endif %}</td>
                     <td> {{cheque.app_rej_by}}</td>
-                    <td class="text-end">
-                      
-                        
-                     <div class="dropdown">
-                        <button class="btn dropdown-toggle align-text-top" data-bs-toggle="dropdown">
-                          Actions
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-end">
-                          {% if cheque.issue_is_approved %}
-                          <a class="dropdown-item" href="{% url 'print_cheque' cheque.id %}" target="_blank"> Preview & Print Cheque</a>
-                          {% endif %}
-                          
-                          {% if user.is_superuser %}
-                          <a class="dropdown-item" onclick="if (confirm('Are You sure? Want to delete cheque to {{cheque.issue_payee}} on {{cheque.issue_cheque_date}} ?')){return true;}else{event.stopPropagation(); event.preventDefault();};" href="{% url 'delete_chequeissue' cheque.id %}">
-                          Delete Issued Cheque
-                          </a>
-                          {% endif %}
-
-                          {% if user.is_superuser %}
-                          
-                          {% if  cheque.issue_is_approved is None or cheque.issue_is_approved  == False  %}
-                          <a class="dropdown-item" onclick="if (confirm('Are You sure? Want to approve the cheque to {{cheque.issue_payee}} on {{cheque.issue_cheque_date}} ?')){return true;}else{event.stopPropagation(); event.preventDefault();};" href="{% url 'approval' cheque.id %}?additional_value=True">
-                          Approve Cheque  
-                          </a>
-                          {% endif %}
-
-                          {% if  cheque.issue_is_approved is None or cheque.issue_is_approved  == True  %}
-                          <a class="dropdown-item" onclick="if (confirm('Are You sure? Want to reject the cheque to {{cheque.issue_payee}} on {{cheque.issue_cheque_date}} ?')){return true;}else{event.stopPropagation(); event.preventDefault();};" href="{% url 'approval' cheque.id %}?additional_value=False">
-                          Reject Cheque  
-                          </a>
-                          {% endif %}
-
-                          {% endif %}
-                        </div>
-                      </div>
                     
-
-
-                    </td>
                   </tr>
                   {% endfor %}
           {% else %}
           <tr>
-              <td colspan="12" class="text-center">No Cheques Issued.</td>
+              <td colspan="12" class="text-center">{% trans "No Cheques Issued" %}</td>
           </tr>
           {% endif %}
                 </tbody>
@@ -121,43 +212,41 @@
             <!-- pagination -->
             <div class="card-footer d-flex align-items-center">
               <p class="m-0 text-secondary">
-                Showing <span>{{ cheques.start_index }}</span> to <span>{{ cheques.end_index }}</span> of <span>{{ cheques.paginator.count }}</span> entries
+                {% trans "Showing" %} <span>{{ cheques.start_index }}</span> {% trans "to" %} <span>{{ cheques.end_index }}</span> {% trans "of" %} <span>{{ cheques.paginator.count }}</span> {% trans "entries" %}
               </p>
               <ul class="pagination m-0 ms-auto">
                 {% if cheques.has_previous %}
                 <li class="page-item">
-                  <a class="page-link" href="?page=1{% if searched %}&searched={{ searched }}{% endif %}{% if company %}&company={{ company }}{% endif %}{% if emp_loc %}&emp_loc={{ emp_loc|join:"," }}{% endif %}{% if emp_department %}&emp_department={{ emp_department|join:"," }}{% endif %}" tabindex="-1">
+                  <a class="page-link" href="?page=1{% if searched %}&searched={{ searched }}{% endif %}{% if bank %}&bank={{ bank }}{% endif %}{% if currency %}&currency={{ currency }}{% endif %}{% if approval %}&approval={{ approval }}{% endif %}{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}" tabindex="-1">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
                       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                       <path d="M17 6l-6 6l6 6" />
                       <path d="M11 6l-6 6l6 6" />
                     </svg>
-                    First
+                    {% trans "First" %}
                   </a>
                 </li>
                 <li class="page-item">
-                  <a class="page-link" href="?page={{ cheques.previous_page_number }}{% if searched %}&searched={{ searched }}{% endif %}{% if company %}&company={{ company }}{% endif %}{% if emp_loc %}&emp_loc={{ emp_loc|join:"," }}{% endif %}{% if emp_department %}&emp_department={{ emp_department|join:"," }}{% endif %}">
+                  <a class="page-link" href="?page={{ cheques.previous_page_number }}{% if searched %}&searched={{ searched }}{% endif %}{% if bank %}&bank={{ bank }}{% endif %}{% if currency %}&currency={{ currency }}{% endif %}{% if approval %}&approval={{ approval }}{% endif %}{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
                       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                       <path d="M15 6l-6 6l6 6" />
                     </svg>
-                    
                   </a>
                 </li>
                 {% endif %}
-            
+
                 {% for i in cheques.paginator.page_range %}
                 {% if cheques.number == i %}
                 <li class="page-item active"><a class="page-link" href="#">{{ i }}</a></li>
                 {% elif i > cheques.number|add:'-3' and i < cheques.number|add:'3' %}
-                <li class="page-item"><a class="page-link" href="?page={{ i }}{% if searched %}&searched={{ searched }}{% endif %}{% if company %}&company={{ company }}{% endif %}{% if emp_loc %}&emp_loc={{ emp_loc|join:"," }}{% endif %}{% if emp_department %}&emp_department={{ emp_department|join:"," }}{% endif %}">{{ i }}</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ i }}{% if searched %}&searched={{ searched }}{% endif %}{% if bank %}&bank={{ bank }}{% endif %}{% if currency %}&currency={{ currency }}{% endif %}{% if approval %}&approval={{ approval }}{% endif %}{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}">{{ i }}</a></li>
                 {% endif %}
                 {% endfor %}
-            
+
                 {% if cheques.has_next %}
                 <li class="page-item">
-                  <a class="page-link" href="?page={{ cheques.next_page_number }}{% if searched %}&searched={{ searched }}{% endif %}{% if company %}&company={{ company }}{% endif %}{% if emp_loc %}&emp_loc={{ emp_loc|join:"," }}{% endif %}{% if emp_department %}&emp_department={{ emp_department|join:"," }}{% endif %}">
-                    
+                  <a class="page-link" href="?page={{ cheques.next_page_number }}{% if searched %}&searched={{ searched }}{% endif %}{% if bank %}&bank={{ bank }}{% endif %}{% if currency %}&currency={{ currency }}{% endif %}{% if approval %}&approval={{ approval }}{% endif %}{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
                       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                       <path d="M9 6l6 6l-6 6" />
@@ -165,8 +254,8 @@
                   </a>
                 </li>
                 <li class="page-item">
-                  <a class="page-link" href="?page={{ cheques.paginator.num_pages }}{% if searched %}&searched={{ searched }}{% endif %}{% if company %}&company={{ company }}{% endif %}{% if emp_loc %}&emp_loc={{ emp_loc|join:"," }}{% endif %}{% if emp_department %}&emp_department={{ emp_department|join:"," }}{% endif %}">
-                    Last
+                  <a class="page-link" href="?page={{ cheques.paginator.num_pages }}{% if searched %}&searched={{ searched }}{% endif %}{% if bank %}&bank={{ bank }}{% endif %}{% if currency %}&currency={{ currency }}{% endif %}{% if approval %}&approval={{ approval }}{% endif %}{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}">
+                    {% trans "Last" %}
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
                       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                       <path d="M7 6l6 6l-6 6" />
@@ -177,7 +266,11 @@
                 {% endif %}
               </ul>
             </div>
-            <!-- pagination -->
+            <!-- End Pagination -->
+
+          </div>
+        </div>
+        <!-- End Template List Section -->
             
           </div>
       </div>
@@ -192,7 +285,7 @@
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="addChequeModalLabel">Issue New Cheque</h5>
+          <h5 class="modal-title" id="addChequeModalLabel">{% trans "Issue New Cheque" %}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -200,41 +293,45 @@
           <form id="addChequeForm" method="POST" action="{% url 'cheque_issue' %}" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-group mb-2">
-              <label for="template" class="form-label">Template</label>
+              <label for="template" class="form-label">{% trans "Template" %}</label>
               <select class="form-control" name="chq_template" id="chq_template" required>
-                <option value="" disabled>Select Template</option>
+                <option value="" disabled>{% trans "Select Template" %}</option>
                 {% for template in templates %}
                 <option value="{{template.id}}">{{template.name}}</option>
                 {% endfor %}
               </select>
             </div>
             <div class="form-group mb-2">
-              <label for="chq_no" class="form-label">Cheque Number</label>
+              <label for="chq_no" class="form-label">{% trans "Account Number" %}</label>
+              <input type="text" class="form-control" id="chq_no" name="acc_no" required>
+            </div>
+            <div class="form-group mb-2">
+              <label for="chq_no" class="form-label">{% trans "Cheque Number" %}</label>
               <input type="text" class="form-control" id="chq_no" name="chq_no" required>
             </div>
             <div class="form-group mb-2">
-              <label for="chq_date" class="form-label">Cheque Date</label>
+              <label for="chq_date" class="form-label">{% trans "Cheque Date" %}</label>
               <input type="date" class="form-control" id="chq_date" name="chq_date" required>
             </div>
             <div class="form-group mb-2">
-              <label for="template" class="form-label">Payee</label>
+              <label for="template" class="form-label">{% trans "Payee" %}</label>
               <select class="form-control" name="chq_payee" id="chq_payee" required>
-                <option value="" disabled>Select Payee</option>
+                <option value="" disabled>{% trans "Select Payee" %}</option>
                 {% for payee in payees %}
                 <option value="{{payee.id}}">{{payee.payee_name}}</option>
                 {% endfor %}
               </select>
             </div>
             <div class="form-group mb-2">
-              <label for="chq_date" class="form-label">Cheque Amount</label>
+              <label for="chq_date" class="form-label">{% trans "Cheque Amount" %}</label>
               <input type="text" class="form-control" id="chq_amt" name="chq_amt" required>
             </div>
             <div class="form-group mb-2">
-              <label for="chq_date" class="form-label">Cheque Narration</label>
+              <label for="chq_date" class="form-label">{% trans "Cheque Narration" %}</label>
               <textarea class="form-control" id="chq_narration" name="chq_narration" required></textarea>
             </div>
             <div class="form-group mb-2">
-              <label for="chq_sign" class="form-label">Cheque Issue Sign</label>
+              <label for="chq_sign" class="form-label">{% trans "Cheque Issue Sign" %}</label>
               <input type="file" name="chq_sign" id="chq_sign" class="form-control-file" style="max-width: 400px; width: 100%;" accept="image/*" onchange="previewImage(event)">
               <!-- Image Preview -->
               <div id="image-preview" class="mt-3">

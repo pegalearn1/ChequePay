@@ -57,6 +57,22 @@ def template_list(request):
     banks = Banks.objects.all()
     currencies = Currencies.objects.all()
 
+    # Filter by search term if provided
+    search = request.GET.get('search', '')
+    if search:
+        templates = templates.filter(Q(name__icontains=search)|Q(currency__currency_char=search)|Q(bank__bank_name_e=search))
+
+    # Fetch filter parameters
+    selected_bank = request.GET.get('bank')
+    selected_currency = request.GET.get('currency')
+
+   
+    # Apply filters if provided
+    if selected_bank:
+        templates = templates.filter(bank__bank_name_e=selected_bank)
+    if selected_currency:
+        templates = templates.filter(currency__currency_char=selected_currency)
+    
     #pagination
     per_page = 25
     paginator = Paginator(templates, per_page)
@@ -66,7 +82,9 @@ def template_list(request):
 
     context = {'templates': temp_list,
                'banks':banks,
-               'currencies':currencies}
+               'currencies':currencies,
+              
+               }
     return render(request, 'Cheque_templates/template_list.html', context )
 
 
@@ -109,12 +127,18 @@ def edit_template(request):
             template.width = width
             template.height = height
             template.bank = get_object_or_404(Banks, id=bank)
-            template.currency = get_object_or_404(Currencies, id=currency)
             template.modified_by = request.user.id
             template.modified_date = datetime.now()
 
             if background_image:
                 template.background_image = background_image
+
+            if ChequeIssue.objects.filter(issue_template = template).exists():
+                messages.warning(request,("Currency Can't Be Edited After A Cheque Has Been Issued."))
+            else:
+                template.currency = get_object_or_404(Currencies, id=currency)
+
+
 
             template_exist = ChequeTemplate.objects.filter(name=name).exclude(id=template_id)
 

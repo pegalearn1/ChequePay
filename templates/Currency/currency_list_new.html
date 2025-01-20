@@ -1,4 +1,6 @@
 {% extends 'layouts/base.html' %}
+{% load i18n %}
+{% load static %}
 {% block tiitle %}Currencies{% endblock tiitle %}
 {% block content %}
 
@@ -9,7 +11,7 @@
       <div class="row g-2 align-items-center">
         <div class="col">
           <h2 class="page-title">
-            Currencies
+            {% trans "Currencies" %}
           </h2>
         </div>
         <!-- Page title actions -->
@@ -18,7 +20,7 @@
              <a href="#" class="btn btn-primary d-none d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#addCurrencyModal">
                 <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
-                Create new Currency
+                {% trans "Create new Currency" %}
               </a>
               <a href="#" class="btn btn-primary d-sm-none btn-icon" data-bs-toggle="modal" data-bs-target="#addCurrencyModal" aria-label="addCurrencyModalLabel">
                 <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
@@ -34,51 +36,53 @@
     <div class="container-xl">
         <div class="card">
             <div class="card-header">
-              <h3 class="card-title">Currency List</h3>
+              <h3 class="card-title">{% trans "Currency List" %}</h3>
             </div>
            <div class="table-responsive" >
               <table class="table card-table table-vcenter text-nowrap datatable">
                 <thead>
                   <tr>
-                    <th>Currency Char</th>
-                    <th>Currency Name</th>
                     <th></th>
+                    <th>{% trans "Currency Char" %}</th>
+                    <th>{% trans "Currency Name" %}</th>
+                    
                   </tr>
                 </thead>
                 <tbody>
                     {% if currencies %}
                             {% for currency in currencies %}
                   <tr>
+                    <td class="text-start">
+                      
+                      <div class="dropdown">
+                      <button class="btn dropdown-toggle align-text-top" data-bs-toggle="dropdown">
+                        {% trans "Actions" %}
+                      </button>
+                      <div class="dropdown-menu dropdown-menu-end">
+                        <a class="dropdown-item" href="#" data-bs-toggle="modal"  
+                        data-bs-target="#editCurrencyModal" 
+                        data-id="{{ currency.id }}" 
+                        data-currency-char="{{ currency.currency_char }}" 
+                        data-currency-name="{{ currency.currency_name }}">
+                          {% trans "Edit Currency" %}
+                        </a>
+                        <a class="dropdown-item" onclick="return confirm('Are you sure you want to delete {{ currency.currency_name }}?')" 
+                        href="{% url 'delete_currency' currency.id %}">
+                          {% trans "Delete Currency" %}
+                        </a>
+                      </div>
+                    </div>
+
+                  </td>
+
                     <td>{{ currency.currency_char }}</td>
                     <td>{{ currency.currency_name }}</td>
-                    <td class="text-end">
-                      
-                        <div class="dropdown">
-                        <button class="btn dropdown-toggle align-text-top" data-bs-toggle="dropdown">
-                          Actions
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-end">
-                          <a class="dropdown-item" href="#" data-bs-toggle="modal"  
-                          data-bs-target="#editCurrencyModal" 
-                          data-id="{{ currency.id }}" 
-                          data-currency-char="{{ currency.currency_char }}" 
-                          data-currency-name="{{ currency.currency_name }}">
-                            Edit Currency
-                          </a>
-                          <a class="dropdown-item" onclick="return confirm('Are you sure you want to delete {{ currency.currency_name }}?')" 
-                          href="{% url 'delete_currency' currency.id %}">
-                            Delete Currency
-                          </a>
-                        </div>
-                      </div>
-
-
-                    </td>
+                    
                   </tr>
                   {% endfor %}
           {% else %}
           <tr>
-              <td colspan="4" class="text-center">No Currencies found.</td>
+              <td colspan="4" class="text-center">{% trans "No Currencies found" %}</td>
           </tr>
           {% endif %}
                 </tbody>
@@ -87,7 +91,7 @@
             <!-- pagination -->
             <div class="card-footer d-flex align-items-center">
               <p class="m-0 text-secondary">
-                Showing <span>{{ currencies.start_index }}</span> to <span>{{ currencies.end_index }}</span> of <span>{{ currencies.paginator.count }}</span> entries
+                {% trans "Showing" %} <span>{{ currencies.start_index }}</span> {% trans "to" %} <span>{{ currencies.end_index }}</span> of <span>{{ currencies.paginator.count }}</span> {% trans "entries" %}
               </p>
               <ul class="pagination m-0 ms-auto">
                 {% if currencies.has_previous %}
@@ -98,7 +102,7 @@
                       <path d="M17 6l-6 6l6 6" />
                       <path d="M11 6l-6 6l6 6" />
                     </svg>
-                    First
+                    {% trans "First" %}
                   </a>
                 </li>
                 <li class="page-item">
@@ -132,7 +136,7 @@
                 </li>
                 <li class="page-item">
                   <a class="page-link" href="?page={{ currencies.paginator.num_pages }}{% if searched %}&searched={{ searched }}{% endif %}{% if company %}&company={{ company }}{% endif %}{% if emp_loc %}&emp_loc={{ emp_loc|join:"," }}{% endif %}{% if emp_department %}&emp_department={{ emp_department|join:"," }}{% endif %}">
-                    Last
+                    {% trans "Last" %}
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
                       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                       <path d="M7 6l6 6l-6 6" />
@@ -157,7 +161,7 @@
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="addCurrencyModalLabel">Add New Currency</h5>
+          <h5 class="modal-title" id="addCurrencyModalLabel">{% trans "Add New Currency" %}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -165,17 +169,17 @@
           <form id="addCurrencyForm" method="POST" action="{% url 'add_currency' %}">
             {% csrf_token %}
             <div class="form-group mb-2">
-                <label for="currency_char" class="form-label">Currency Char</label>
+                <label for="currency_char" class="form-label">{% trans "Currency Char" %}</label>
                 <input type="text" class="form-control" id="currency_char" name="currency_char" required>
             </div>
             
             <div class="form-group mb-2">
-                <label for="currency_name" class="form-label">Currency Name</label>
+                <label for="currency_name" class="form-label">{% trans "Currency Name" %}</label>
                 <input type="text" class="form-control" id="currency_name" name="currency_name" required>
             </div>
             <div class="modal-footer">
-            <button type="button" class="btn me-auto" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <button type="button" class="btn me-auto" data-bs-dismiss="modal">{% trans "Close" %}</button>
+            <button type="submit" class="btn btn-primary">{% trans "Save Changes" %}</button>
             </div>
         </form>
         </div>
@@ -191,7 +195,7 @@
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="editCurrencyModalLabel">Edit Currency</h5>
+          <h5 class="modal-title" id="editCurrencyModalLabel">{% trans "Edit Currency" %}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
             </button>
         </div>
@@ -201,16 +205,16 @@
             {% csrf_token %}
             <input type="hidden" id="edit_currency_id" name="currency_id">
             <div class="form-group mb-2">
-                <label for="edit_currency_char" class="form-label">Currency Char</label>
+                <label for="edit_currency_char" class="form-label">{% trans "Currency Char" %}</label>
                 <input type="text" class="form-control" id="edit_currency_char" name="currency_char" required>
             </div>
             <div class="form-group mb-2">
-                <label for="edit_currency_name" class="form-label">Currency Name</label>
+                <label for="edit_currency_name" class="form-label">{% trans "Currency Name" %}</label>
                 <input type="text" class="form-control" id="edit_currency_name" name="currency_name" required>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn me-auto" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Update</button>
+              <button type="button" class="btn me-auto" data-bs-dismiss="modal">{% trans "Close" %}</button>
+            <button type="submit" class="btn btn-primary">{% trans "Update" %}</button>
           </div>
           </form>
         </div>
