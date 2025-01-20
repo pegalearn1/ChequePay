@@ -1,7 +1,7 @@
 {% extends 'layouts/base.html' %}
 {% load i18n %}  
 {% load static %}
-{% block tiitle %}Banks{% endblock tiitle %}
+{% block tiitle %}{% trans "Banks" %}{% endblock tiitle %}
 {% block content %}
 
 
@@ -17,6 +17,7 @@
         <!-- Page title actions -->
         <div class="col-auto ms-auto d-print-none">
             <div class="btn-list">
+              <!-- Add New -->
              <a href="#" class="btn btn-primary d-none d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#addBankModal">
                 <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
@@ -26,6 +27,19 @@
                 <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
               </a>
+              <!-- Add New -->
+
+              <!-- Excel Upload -->
+              <a href="#" class="btn btn-success d-none d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#excelBankModal">
+                <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+                {% trans "Excel Upload" %}
+              </a>
+              <a href="#" class="btn btn-success d-sm-none btn-icon" data-bs-toggle="modal" data-bs-target="#excelBankModal" aria-label="excelBankModalLabel">
+                <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+              </a>
+              <!-- Excel Upload -->
             </div>
           </div>
       </div>
@@ -259,6 +273,63 @@
   
   <!--edit bank Modal -->
 
+
+
+
+
+<!-- Excel Upload Bank Modal -->
+<div class="modal modal-blur fade" id="excelBankModal" tabindex="-1" role="dialog" aria-labelledby="excelBankModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="excelBankModalLabel">{% trans "Upload Excel Bank" %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="excelBankForm" method="POST" action="{% url 'excel_upload_bank' %}" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="file" class="form-label">{% trans "Choose Excel File" %}</label>
+            <input type="file" class="form-control" id="file" name="file" accept=".xls,.xlsx,.csv" required>
+          </div>
+          
+          <div class="mb-3">
+            <button type="button" class="btn btn-info" onclick="downloadSample()">Download Sample</button>
+          </div>
+
+          <!-- Table to display uploaded data or errors -->
+          <table id="uploadResultTable" class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>{% trans "Bank Char" %}</th>
+                <th>{% trans "Bank Name (English)" %}</th>
+                <th>{% trans "Bank Name (Local)" %}</th>
+                <th>{% trans "Tel No" %}</th>
+                <th>{% trans "Address" %}</th>
+                <th>{% trans "Status" %}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Rows will be added dynamically after file validation -->
+            </tbody>
+          </table>
+
+          <div class="modal-footer">
+            <button type="button" class="btn me-auto" data-bs-dismiss="modal">{% trans "Close" %}</button>
+            <button type="submit" class="btn btn-primary">{% trans "Upload Data" %}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Excel Upload Bank Modal -->
+
+
+
+
+
+
 {% endblock content %}
 
 
@@ -349,6 +420,60 @@
       .catch(error => console.error("Error:", error));
     });
   
+    
+    
+  //for excel upload
+
+    // Function to download the sample file
+    function downloadSample() {
+    window.location.href = "{% url 'download_sample_bank' %}";
+  }
+
+  // Submit form using AJAX for file upload and update table dynamically
+  document.getElementById('excelBankForm').onsubmit = function(event) {
+    event.preventDefault();  // Prevent the default form submission
+
+    let formData = new FormData(this);
+
+    // Perform the file upload via AJAX
+    fetch("{% url 'excel_upload_bank' %}", {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      let tableBody = document.querySelector('#uploadResultTable tbody');
+      tableBody.innerHTML = ''; // Clear previous table data
+
+      if (data.status === 'error') {
+        data.errors.forEach(error => {
+          let row = `<tr>
+            <td>${error.row}</td>
+            <td colspan="4">${error.message}</td>
+            <td>${error.status}</td>
+          </tr>`;
+          tableBody.insertAdjacentHTML('beforeend', row);
+        });
+      } else {
+        data.valid_rows.forEach(row => {
+          let rowHTML = `<tr>
+            <td>${row.bank_char}</td>
+            <td>${row.bank_name_e}</td>
+            <td>${row.bank_name_l}</td>
+            <td>${row.tel_no}</td>
+            <td>${row.address}</td>
+            <td>${row.status}</td>
+          </tr>`;
+          tableBody.insertAdjacentHTML('beforeend', rowHTML);
+        });
+      }
+    })
+    .catch(error => {
+      alert("Error uploading file.");
+    });
+  };
+    
+    
     </script>
 
 

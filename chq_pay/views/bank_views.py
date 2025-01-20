@@ -92,3 +92,85 @@ def edit_bank(request):
         except Banks.DoesNotExist:
             return JsonResponse({"success": False, "error": "Bank not found"})
     return JsonResponse({"success": False, "error": "Invalid request"})
+
+
+
+@login_required
+def excel_upload_bank(request):
+    if request.method == 'POST' and request.FILES.get('file'):
+        file = request.FILES['file']
+        
+        try:
+            # Read the file (Excel/CSV/XLSX)
+            if file.name.endswith('.xls') or file.name.endswith('.xlsx'):
+                df = pd.read_excel(file)
+            elif file.name.endswith('.csv'):
+                df = pd.read_csv(file)
+            else:
+                raise ValidationError("Invalid file format. Please upload an Excel or CSV file.")
+            
+            # Validation and processing
+            errors = []
+            valid_rows = []
+            for idx, row in df.iterrows():
+                bank_char = row.get('bank_char')
+                bank_name_e = row.get('bank_name_e')
+                bank_name_l = row.get('bank_name_l')
+                tel_no = row.get('tel_no')
+                address = row.get('address')
+
+                # Simple validation (You can customize it further)
+                if not bank_char or not bank_name_e or not bank_name_l or not tel_no or not address:
+                    errors.append({'row': idx + 1, 'status': 'Error', 'message': 'Missing data'})
+                else:
+                    valid_rows.append({
+                        'bank_char': bank_char,
+                        'bank_name_e': bank_name_e,
+                        'bank_name_l': bank_name_l,
+                        'tel_no': tel_no,
+                        'address': address,
+                        'status': 'Valid'
+                    })
+            
+            # If errors exist, return error messages
+            if errors:
+                return JsonResponse({'status': 'error', 'errors': errors})
+
+            # Save valid rows to the database
+            for row in valid_rows:
+                Banks.objects.create(
+                    bank_char=row['bank_char'],
+                    bank_name_e=row['bank_name_e'],
+                    bank_name_l=row['bank_name_l'],
+                    tel_no=row['tel_no'],
+                    address=row['address'],
+                    created_by=request.user.id,
+                    created_date=datetime.now(),
+                    modified_by=request.user.id,
+                    modified_date=datetime.now(),
+                )
+
+            messages.success(request, 'Data uploaded successfully.')
+            return redirect('excel_upload_bank')  # Redirect to the same page after successful upload
+        
+        except Exception as e:
+            messages.error(request, f"An error occurred: {str(e)}")
+            return redirect('excel_upload_bank')
+    
+    return render(request, 'bank_list_new.html')
+
+
+@login_required
+def download_sample_bank(request):
+    # Provide a downloadable sample file (CSV for simplicity)
+    sample_data = [
+        ['bank_char', 'bank_name_e', 'bank_name_l', 'tel_no', 'address'],
+        ['B001', 'Bank One', 'बैंक एक', '1234567890', 'Address 1'],
+        ['B002', 'Bank Two', 'बैंक दो', '0987654321', 'Address 2'],
+        # Add more sample data as needed
+    ]
+    
+    df = pd.DataFrame(sample_data)
+    response = HttpResponse(df.to_csv(index=False), content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="sample_bank_data.csv"'
+    return response

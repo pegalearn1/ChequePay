@@ -54,6 +54,8 @@ urlpatterns = [
     path('bank_list/', bank_views.bank_list, name = "bank_list"),
     path('edit-bank/', bank_views.edit_bank, name='edit_bank'),
     path('delete_bank/<int:bank_id>/', bank_views.delete_bank, name='delete_bank'),
+    path('excel_upload_bank/', bank_views.excel_upload_bank, name='excel_upload_bank'),
+    path('download_sample_bank/', bank_views.download_sample_bank, name='download_sample_bank'),
 
     #payee urls
     path('add_payee/', payee_views.add_payee, name='add_payee'),

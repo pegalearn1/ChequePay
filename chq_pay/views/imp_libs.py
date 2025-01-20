@@ -24,6 +24,8 @@ from django.db.utils import OperationalError
 import json
 from django.core.paginator import Paginator
 from random import randrange #for random range
+import pandas as pd
+from django.core.exceptions import ValidationError
 
 
 
