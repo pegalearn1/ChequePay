@@ -106,7 +106,7 @@
                   {% endfor %}
           {% else %}
           <tr>
-              <td colspan="4" class="text-center">{% trans "No Banks found" %}</td>
+              <td colspan="8" class="text-center">{% trans "No Banks found" %}</td>
           </tr>
           {% endif %}
                 </tbody>
@@ -279,51 +279,53 @@
 
 <!-- Excel Upload Bank Modal -->
 <div class="modal modal-blur fade" id="excelBankModal" tabindex="-1" role="dialog" aria-labelledby="excelBankModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="excelBankModalLabel">{% trans "Upload Excel Bank" %}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form id="excelBankForm" method="POST" action="{% url 'excel_upload_bank' %}" enctype="multipart/form-data">
-          {% csrf_token %}
-          <div class="mb-3">
-            <label for="file" class="form-label">{% trans "Choose Excel File" %}</label>
-            <input type="file" class="form-control" id="file" name="file" accept=".xls,.xlsx,.csv" required>
-          </div>
-          
-          <div class="mb-3">
-            <button type="button" class="btn btn-info" onclick="downloadSample()">Download Sample</button>
-          </div>
+        <div class="mb-3">
+          <form id="excelBankForm" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="fileInput" class="form-label">{% trans "Upload File" %}</label>
+            <input type="file" id="fileInput" name="file" class="form-control mb-3" accept=".xlsx, .xls, .csv" required>
+          </form>
 
-          <!-- Table to display uploaded data or errors -->
-          <table id="uploadResultTable" class="table table-bordered table-striped">
-            <thead>
-              <tr>
-                <th>{% trans "Bank Char" %}</th>
-                <th>{% trans "Bank Name (English)" %}</th>
-                <th>{% trans "Bank Name (Local)" %}</th>
-                <th>{% trans "Tel No" %}</th>
-                <th>{% trans "Address" %}</th>
-                <th>{% trans "Status" %}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Rows will be added dynamically after file validation -->
-            </tbody>
-          </table>
+          <button class="btn btn-info" id="validateButton">{% trans "Validate Data" %}</button>
+          <button class="btn btn-yellow" onclick="downloadSample()">{% trans "Sample Download" %}</button>
+          <button class="btn btn-success d-none" id="saveButton">{% trans "Save Valid Data" %}</button>
 
-          <div class="modal-footer">
-            <button type="button" class="btn me-auto" data-bs-dismiss="modal">{% trans "Close" %}</button>
-            <button type="submit" class="btn btn-primary">{% trans "Upload Data" %}</button>
+          <!-- Table to display uploaded data -->
+          <div id="dataTableBankContainer" class="mt-3 d-none">
+            <h6>{% trans "Validation Results" %}</h6>
+            <div style="max-height: 600px; overflow-y: auto;">
+            <table class="table table-bordered" id="bankDataTable">
+              <thead>
+                <tr>
+                  <th>{% trans "Bank Char" %}</th>
+                  <th>{% trans "Bank Name English" %}</th>
+                  <th>{% trans "Bank Name Local" %}</th>
+                  <th>{% trans "Telephone No." %}</th>
+                  <th>{% trans "Address" %}</th>
+                  <th>{% trans "Status" %}</th>
+                  <th>{% trans "Message" %}</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+            </div>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   </div>
 </div>
-<!-- End Excel Upload Bank Modal -->
+</div>
+
+<!-- Excel Upload Bank Modal -->
 
 
 
@@ -336,6 +338,7 @@
 {% block scripts %}
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
 <script>
 
@@ -424,54 +427,112 @@
     
   //for excel upload
 
-    // Function to download the sample file
-    function downloadSample() {
-    window.location.href = "{% url 'download_sample_bank' %}";
+  // Function to download the sample file
+  function downloadSample() {
+    window.location.href = "{% url 'download_sample_bank' %}";}
+
+  
+
+  // For Excel upload and validation
+  document.getElementById('validateButton').addEventListener('click', function () {
+  const fileInput = document.getElementById('fileInput');
+  if (!fileInput.files[0]) {
+    alert("{% trans 'Please select a file to validate.' %}");
+    return;
   }
 
-  // Submit form using AJAX for file upload and update table dynamically
-  document.getElementById('excelBankForm').onsubmit = function(event) {
-    event.preventDefault();  // Prevent the default form submission
+  const formData = new FormData();
+  formData.append('file', fileInput.files[0]);
+  formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
 
-    let formData = new FormData(this);
+  fetch("{% url 'validate_excel_bank' %}", {
+    method: 'POST',
+    body: formData,
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      const tableContainer = document.getElementById('dataTableBankContainer');
+      const tableBody = document.querySelector('#bankDataTable tbody');
 
-    // Perform the file upload via AJAX
-    fetch("{% url 'excel_upload_bank' %}", {
-      method: 'POST',
-      body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-      let tableBody = document.querySelector('#uploadResultTable tbody');
-      tableBody.innerHTML = ''; // Clear previous table data
+      tableBody.innerHTML = ''; // Clear any previous data
+      tableContainer.classList.remove('d-none'); // Show the table
 
-      if (data.status === 'error') {
-        data.errors.forEach(error => {
-          let row = `<tr>
-            <td>${error.row}</td>
-            <td colspan="4">${error.message}</td>
-            <td>${error.status}</td>
-          </tr>`;
-          tableBody.insertAdjacentHTML('beforeend', row);
-        });
-      } else {
-        data.valid_rows.forEach(row => {
-          let rowHTML = `<tr>
-            <td>${row.bank_char}</td>
-            <td>${row.bank_name_e}</td>
-            <td>${row.bank_name_l}</td>
-            <td>${row.tel_no}</td>
-            <td>${row.address}</td>
-            <td>${row.status}</td>
-          </tr>`;
-          tableBody.insertAdjacentHTML('beforeend', rowHTML);
-        });
+      const rows = [];
+      data.results.forEach((row) => {
+        rows.push([
+          row.bank_char || '',
+          row.bank_name_e || '',
+          row.bank_name_l || '',
+          row.tel_no || '',
+          row.address || '',
+          row.status || '',
+          row.error_message || '',
+        ]);
+      });
+
+      // Clear and add rows to DataTable
+      const table = $('#bankDataTable').DataTable();
+      table.clear(); // Clear previous data
+      table.rows.add(rows); // Add new rows in the same order
+      table.draw(); // Redraw the table
+
+      // Show the "Save Valid Data" button if there are valid rows
+      if (data.has_valid) {
+        document.getElementById('saveButton').classList.remove('d-none');
       }
     })
-    .catch(error => {
-      alert("Error uploading file.");
+    .catch((error) => {
+      alert("{% trans 'An error occurred while validating the file.' %}");
+      console.error(error);
     });
-  };
+});
+
+// For saving valid data
+document.getElementById('saveButton').addEventListener('click', function () {
+  fetch("{% url 'save_valid_data_bank' %}", {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': '{{ csrf_token }}',
+    },
+    body: JSON.stringify({}),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        location.reload(); // Reload the page
+      } else {
+        alert("{% trans 'Failed to save data.' %}");
+      }
+    })
+    .catch((error) => {
+      alert("{% trans 'An error occurred while saving the data.' %}");
+      console.error(error);
+    });
+});
+
+// Initialize DataTable on page load
+document.addEventListener('DOMContentLoaded', function () {
+  $('#bankDataTable').DataTable({
+    paging: true, // Enable pagination
+    pageLength: 10, // Number of rows per page
+    lengthChange: true, // Allow changing number of rows per page
+    searching: false, // Disable search (optional, if not needed)
+    ordering: true, // Enable column sorting
+    order: [], // Disable initial ordering
+    info: true, // Show info about current page and total rows
+    language: {
+      paginate: {
+        previous: "{% trans 'Previous' %}",
+        next: "{% trans 'Next' %}",
+      },
+      info: "{% trans 'Showing _START_ to _END_ of _TOTAL_ entries' %}",
+      lengthMenu: "{% trans 'Show _MENU_ entries' %}",
+    },
+  });
+});
+
+
     
     
     </script>

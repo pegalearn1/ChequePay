@@ -24,9 +24,14 @@ from django.db.utils import OperationalError
 import json
 from django.core.paginator import Paginator
 from random import randrange #for random range
-import pandas as pd
 from django.core.exceptions import ValidationError
 
+#for csv and pdfs
+import pandas as pd
+import openpyxl
+from openpyxl.utils import get_column_letter
+from openpyxl.styles import Font, PatternFill
+from openpyxl.worksheet.table import Table, TableStyleInfo #operations for exporting sample in excel
 
 
 

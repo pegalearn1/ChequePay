@@ -54,7 +54,8 @@ urlpatterns = [
     path('bank_list/', bank_views.bank_list, name = "bank_list"),
     path('edit-bank/', bank_views.edit_bank, name='edit_bank'),
     path('delete_bank/<int:bank_id>/', bank_views.delete_bank, name='delete_bank'),
-    path('excel_upload_bank/', bank_views.excel_upload_bank, name='excel_upload_bank'),
+    path('excel_upload_bank/validate/', bank_views.validate_excel_bank, name='validate_excel_bank'),
+    path('excel_upload_bank/save/', bank_views.save_valid_data_bank, name='save_valid_data_bank'),
     path('download_sample_bank/', bank_views.download_sample_bank, name='download_sample_bank'),
 
     #payee urls
@@ -62,6 +63,9 @@ urlpatterns = [
     path('payee_list/', payee_views.payee_list, name = "payee_list"),
     path('edit_payee/', payee_views.edit_payee, name='edit_payee'),
     path('delete_payee/<int:payee_id>/', payee_views.delete_payee, name='delete_payee'),
+    path('excel_upload_payee/validate/', payee_views.validate_excel_payee, name='validate_excel_payee'),
+    path('excel_upload_payee/save/', payee_views.save_valid_data_payee, name='save_valid_data_payee'),
+    path('download_sample_payee/', payee_views.download_sample_payee, name='download_sample_payee'),
 
 
     #currency urls
