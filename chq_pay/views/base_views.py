@@ -26,13 +26,15 @@ def index(request):
     rejected_cheques = ChequeIssue.objects.filter(company__is_selected = True, issue_is_approved = False).count()
 
 #for cheque issue  pie chart
-    #chart cheque issue & bank template labels
-    banks = Banks.objects.order_by('bank_name_e')
-    bank_names = list(banks.values_list('bank_name_e', flat=True))
+    #chart cheque issue bank template labels
+    cheque_issue = ChequeIssue.objects.values_list("issue_bank", flat=True)
+    banks_cheque = Banks.objects.filter(id__in=cheque_issue).distinct().order_by('bank_name_e')
+
+    bank_names_issue = list(banks_cheque.values_list('bank_name_e', flat=True))
    
     #chart cheque issue values
     chq_iss = []
-    for bnk in banks:
+    for bnk in banks_cheque:
         iss_chq = ChequeIssue.objects.filter(company__is_selected = True, issue_bank = bnk).filter(issue_is_approved = True).count()
         chq_iss.append(str(iss_chq))
 
@@ -47,9 +49,15 @@ def index(request):
 
 
 #for bank template pie chart
+    #chart cheque issue bank template labels
+    cheque_tem = ChequeTemplate.objects.values_list("bank", flat=True)
+    banks_tem = Banks.objects.filter(id__in=cheque_issue).distinct().order_by('bank_name_e')
+
+    bank_names_temp = list(banks_tem.values_list('bank_name_e', flat=True))
+
     #chart bank template values
     chq_temps = []
-    for bnk in banks:
+    for bnk in banks_tem:
         bank_temps = ChequeTemplate.objects.filter(company__is_selected = True, bank = bnk).count()
         chq_temps.append(str(bank_temps))
 
@@ -102,7 +110,8 @@ def index(request):
         'template_count':template_count,
         'currency_count':currency_count,
         'chq_issue_count':approved_cheques,
-        'bank_names':bank_names,
+        'bank_names_issue':bank_names_issue,
+        'bank_names_temp':bank_names_temp,
         'cheque_issued':cheque_issued,
         'cheque_issue_colors':cheque_issue_color,
         'bank_templates':bank_templates,
