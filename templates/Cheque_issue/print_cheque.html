@@ -122,7 +122,7 @@
             </div>
 
             <div style="margin-left: 20px; margin-top: 20px;">
-                <select name="" id="" style="margin-right: 20px;">
+                <select name="" id="language-dropdown" style="margin-right: 20px;">
                     <option value="en">English</option>
                     {% if issue_currency == 'KWD' or issue_currency == 'AED' or issue_currency == 'SAR' %}
                     <option value="ar">Arabic</option>
@@ -163,8 +163,8 @@
     {% if positions.sign.0 is not None %}
     <!-- Signature -->
     {% if sign_url %}
-    <div class="cheque-sign" style="left: {{ positions.sign.0 }}mm; top: {{ positions.sign.1 }}mm;">
-        <img src="{{ sign_url }}" alt="Signature">
+    <div class="cheque-sign" style="position: absolute; left: {{ positions.sign.0 }}mm; top: {{ positions.sign.1 }}mm;">
+        <img src="{{ sign_url }}"  alt="Signature">
     </div>
     {% endif %}
     {% endif %}
@@ -190,33 +190,63 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const languageDropdown = document.querySelector("select");
+        console.log("DOMContentLoaded event fired");
+    
+        // Get the dropdown and target span element
+        const languageDropdown = document.querySelector("select#language-dropdown");
         const amountWordSpan = document.querySelector(".cheque-text[data-type='amount-word']");
-
+    
+        // Check if elements are found
+        if (!languageDropdown) {
+            console.error("Language dropdown not found.");
+            return;
+        }
+        if (!amountWordSpan) {
+            console.error("Amount word span not found.");
+            return;
+        }
+    
+        console.log("Adding event listener to the language dropdown");
+    
+        // Add the change event listener
         languageDropdown.addEventListener("change", function () {
+            console.log("Language dropdown changed");
+    
             const selectedLanguage = languageDropdown.value;
-
-            // Send the selected language to the backend
+            console.log("Selected language:", selectedLanguage);
+    
+            // Perform a fetch request to update the amount in words dynamically
             fetch("{% url 'print_cheque' cheque_id=cheque_id %}", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "X-CSRFToken": "{{ csrf_token }}",
+                    "X-CSRFToken": "{{ csrf_token }}", // CSRF token from Django template
                 },
                 body: JSON.stringify({ language: selectedLanguage }),
             })
-            .then(response => response.json())
+            .then(response => {
+                console.log("Response received:", response);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json(); // Parse JSON response
+            })
             .then(data => {
+                console.log("Parsed response data:", data);
                 if (data.success) {
-                    // Update the "amount in words" field dynamically
+                    // Update the "amount in words" span with the new value
                     amountWordSpan.textContent = data.amount_word;
+                    console.log("Amount in words updated:", data.amount_word);
                 } else {
                     alert("Failed to update the amount in words.");
                 }
             })
-            .catch(error => console.error("Error:", error));
+            .catch(error => {
+                console.error("Error during fetch request:", error);
+            });
         });
     });
+    
 </script>
 
 {% endblock scripts %}

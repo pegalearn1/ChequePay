@@ -370,25 +370,18 @@ def print_cheque(request, cheque_id):
     issue_currency = cheque_issue.issue_currency.currency_char
 
     if request.method == "POST":
-        # Process language selection
-        data = json.loads(request.body)
+        try:
+            data = json.loads(request.body)
+            selected_language = data.get("language", "en")
+            issue_amount_wrd = amount_in_words(cheque_issue.issue_amount, issue_currency, selected_language)
+            issue_amount_wrd_title = issue_amount_wrd.title()
 
-        print("dataaa - ", data)
-
-
-        selected_language = data.get("language", "en")
-
-        print("request pst - ", selected_language)
-        # Generate the amount in words in the selected language
-        issue_amount_wrd = amount_in_words(cheque_issue.issue_amount, issue_currency, selected_language)
-        issue_amount_wrd_title = issue_amount_wrd.title()
-
-        
-        # Return only the updated "amount in words"
-        return JsonResponse({
-            "success": True,
-            "amount_word": '*' + '*' + issue_amount_wrd_title + '*' + '*',
-        })
+            return JsonResponse({
+                "success": True,
+                "amount_word": '*' + '*' + issue_amount_wrd_title + '*' + '*',
+            })
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)}, status=400)
     
         
 

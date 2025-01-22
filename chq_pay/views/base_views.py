@@ -51,7 +51,7 @@ def index(request):
 #for bank template pie chart
     #chart cheque issue bank template labels
     cheque_tem = ChequeTemplate.objects.values_list("bank", flat=True)
-    banks_tem = Banks.objects.filter(id__in=cheque_issue).distinct().order_by('bank_name_e')
+    banks_tem = Banks.objects.filter(id__in=cheque_tem).distinct().order_by('bank_name_e')
 
     bank_names_temp = list(banks_tem.values_list('bank_name_e', flat=True))
 
