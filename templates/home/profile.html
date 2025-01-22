@@ -21,9 +21,16 @@
     <div class="col-xl-4">
       <div class="card">
         <div class="card-body text-center">
+          
           <div class="profile-picture mb-3">
-            <img src="{{ request.user.profile_picture.url }}" alt="Profile Picture" class="rounded-circle img-fluid" style="width: 150px; height: 150px;">
+            <!-- Display the profile image -->
+            <img id="profile-picture"  src="{{ request.user.profile_picture.url }}" alt="Profile Picture" 
+                 class="rounded-circle img-fluid" style="width: 150px; height: 150px; cursor: pointer;" 
+                 onclick="document.getElementById('profile-picture-input').click();">
+            <!-- Hidden input to change the profile picture -->
+            <input type="file" form="profile_form" name = "profile_picture" id="profile-picture-input" style="display: none;" onchange="updateProfilePicture(event)">
           </div>
+          
           <h5 class="h3">{{ request.user.first_name }} {{ request.user.last_name }}</h5>
           <p class="text-muted">{{ request.user.privilege_role }}</p>
           <p><i class="ni education_hat mr-2"></i>User since {{ request.user.date_joined|date:"F Y" }}</p>
@@ -31,13 +38,27 @@
       </div>
     </div>
 
+    <!-- for profile picture -->
+    <script>
+      // Function to handle profile picture update and display the new image
+      function updateProfilePicture(event) {
+        var reader = new FileReader();
+        reader.onload = function () {
+          var profileImage = document.getElementById('profile-picture');
+          profileImage.src = reader.result; // Update the profile picture to the selected image
+        };
+        reader.readAsDataURL(event.target.files[0]); // Read the file as a data URL
+      }
+    </script>
+    <!-- for profile picture -->
+
     <div class="col-xl-8">
       <div class="card">
         <div class="card-header">
           <h3 class="mb-0">Profile Information</h3>
         </div>
         <div class="card-body">
-          <form method="post">
+          <form method="post" id="profile_form" enctype="multipart/form-data">
             {% csrf_token %}
 
             <h6 class="heading-small text-muted">Personal Details</h6>
@@ -46,7 +67,7 @@
                 <div class="col-md-6">
                   <div class="form-group">
                     <label for="input-username">Username</label>
-                    <input type="text" id="input-username" name="username" class="form-control" value="{{ request.user.username }}" disabled>
+                    <input type="text" id="input-username" name="username" class="form-control" value="{{ request.user.username }}" readonly>
                   </div>
                 </div>
                 <div class="col-md-6">
@@ -58,36 +79,36 @@
               </div>
             </div>
 
-            <h6 class="heading-small text-muted mt-4">Contact Information</h6>
-            <div class="pl-lg-4">
+            <div class="pl-lg-4 mt-3">
               <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-6">
                   <div class="form-group">
-                    <label for="input-address">Address</label>
-                    <input type="text" id="input-address" name="address" class="form-control" placeholder="Home Address" value="{{ user_profile.address }}">
+                    <label for="input-username">First Name</label>
+                    <input type="text" id="input-fname" name="first_name" class="form-control" value="{{ request.user.first_name }}" >
                   </div>
                 </div>
                 <div class="col-md-6">
-                  <div class="form-group mt-3">
-                    <label for="input-city">City</label>
-                    <input type="text" id="input-city" name="city" class="form-control" placeholder="City" value="{{ user_profile.city }}">
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group mt-3">
-                    <label for="input-country">Country</label>
-                    <input type="text" id="input-country" name="country" class="form-control" placeholder="Country" value="{{ user_profile.country }}">
+                  <div class="form-group">
+                    <label for="input-email">Last Name</label>
+                    <input type="text" id="input-lname" name="last_name" class="form-control" value="{{ request.user.last_name }}">
                   </div>
                 </div>
               </div>
             </div>
 
-            <h6 class="heading-small text-muted mt-3">About Me</h6>
-            <div class="pl-lg-4">
-              <div class="form-group">
-                <textarea rows="4" name="about" class="form-control" placeholder="Tell us a little about yourself">{{ user_profile.about }}</textarea>
+            <div class="pl-lg-4 mt-3">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="input-password">Password</label>
+                    <input type="password" id="input-pasword" name="password" class="form-control" value="{{ request.user.password }}" >
+                  </div>
+                </div>
+               
               </div>
             </div>
+
+            
 
             <div class="text-right mt-3 ">
               <button type="submit" class="btn btn-primary">Save Changes</button>

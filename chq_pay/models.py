@@ -144,7 +144,7 @@ class ChequeIssue(models.Model):
     issue_cheque_date = models.DateField()
     issue_payee = models.ForeignKey(Payee, on_delete=models.CASCADE)
     issue_bank = models.ForeignKey(Banks, on_delete=models.CASCADE)
-    issue_amount = models.DecimalField(max_digits=30, decimal_places=2)
+    issue_amount = models.DecimalField(max_digits=30, decimal_places=3)
     issue_naration = models.CharField(max_length=200)
     issue_issue_date = models.DateField()
     issue_sign = models.ImageField(upload_to='Signatures/', null=True, blank= True)
@@ -154,36 +154,6 @@ class ChequeIssue(models.Model):
     created_date = models.DateTimeField()
     modified_by = models.IntegerField()
     modified_date = models.DateTimeField()
-
-
-    def save(self, *args, **kwargs):
-        # Define the list of currencies that should use 3 decimal places
-        currencies_with_3_decimal_places = ['KWD', 'BHD', 'IQD', 'JOD', 'GHS', 'LYD', 'OMR', 'TND']
-
-        # Get the currency_char for the selected currency
-        currency_char = self.issue_currency.currency_char
-
-        # Set the decimal places based on the currency
-        if currency_char in currencies_with_3_decimal_places:
-            allowed_decimal_places = 3
-        else:
-            allowed_decimal_places = 2
-
-        # Convert the issue_amount to a Decimal object and truncate
-        truncated_amount = Decimal(str(self.issue_amount)).quantize(
-            Decimal(f"1.{'0' * allowed_decimal_places}"), rounding=ROUND_DOWN
-        )
-
-        # Assign the truncated amount back to issue_amount
-        self.issue_amount = truncated_amount
-
-        # Call the original save method to save the instance
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return f"Cheque Issue {self.issue_cheque_no}"
-
-
 
 
 ##########################################################################################################################################################################################################################################################

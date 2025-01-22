@@ -131,12 +131,25 @@ def edit_template(request):
             template.modified_date = datetime.now()
 
             if background_image:
-                template.background_image = background_image
+                if ChequeIssue.objects.filter(issue_template=template).exists():
+                    # If a cheque is already issued, prevent updating the background image
+                    messages.warning(request, "Template can't be updated after a cheque has been issued.")
+                else:
+                    # No cheques have been issued, allow updating the background image
+                    template.background_image = background_image
 
-            if ChequeIssue.objects.filter(issue_template = template).exists():
-                messages.warning(request,("Currency Can't Be Edited After A Cheque Has Been Issued."))
-            else:
-                template.currency = get_object_or_404(Currencies, id=currency)
+            if currency:
+                if ChequeIssue.objects.filter(issue_template=template).exists():
+                    # Check if the currency is the same as the existing one
+                    if template.currency.id != int(currency):
+                        messages.warning(request, "Currency can't be edited after a cheque has been issued.")
+                    else:
+                        # No change in currency; update the template currency
+                        template.currency = get_object_or_404(Currencies, id=currency)
+                else:
+                    # No cheques have been issued; update the currency
+                    template.currency = get_object_or_404(Currencies, id=currency)
+                    
 
 
 

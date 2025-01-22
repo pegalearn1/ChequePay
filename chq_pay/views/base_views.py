@@ -3,6 +3,10 @@ in 2024-2025.'''
 
 from .imp_libs import *
 from chq_pay.models import Banks, Payee, ChequeTemplate, ChequeIssue, Currencies,Company_Setup
+from django.contrib.auth.hashers import check_password
+
+# Get the custom user model
+User = get_user_model()
 
 def home(request):
     return render(request, "home/home.html")
@@ -135,5 +139,54 @@ def index(request):
 
 
 def profile(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        password = request.POST.get('password')
+        profile_picture = request.FILES.get('profile_picture')
+
+       
+        print("POST values:")
+        print("Username: ", username)
+        print("Email: ", email)
+        print("First Name: ", first_name)
+        print("Last Name: ", last_name)
+        print("Password: ", password)
+        
+
+        try:
+            usr = get_object_or_404(User, username = username)
+
+            usr.email = email
+            usr.first_name = first_name
+            usr.last_name = last_name
+
+            if profile_picture:
+                usr.profile_picture = profile_picture
+
+            # Check if a password was provided
+            if password:
+                # Check if the provided password is already hashed
+                if not password.startswith(('pbkdf2_sha256$', 'bcrypt', 'sha1$', 'argon2$')):  # Check for common hash identifiers
+                    # If it's plain text, hash it before saving
+                    usr.set_password(password)
+                else:
+                    # If the password is already hashed, do nothing
+                    print("Password is already hashed, no need to rehash.")
+
+            usr.save()
+            messages.success(request, "Profile Updated Successfully")
+
+        except Exception as e:
+
+            print("ussr error - ", str(e))
+
+
+        
+
+
+
     return render(request, "home/profile.html")
 
