@@ -34,8 +34,6 @@ from openpyxl.styles import Font, PatternFill
 from openpyxl.worksheet.table import Table, TableStyleInfo #operations for exporting sample in excel
 
 
-
-
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 print(BASE_DIR)
@@ -60,6 +58,41 @@ api_call_site = "https://www.pegasustech.net"
 api_call_site2 = "http://74.208.235.72/pegasus"
 
 # global variable for site for apis
+
+
+
+
+#to write he database setting ton the settings file
+def update_settings_file(database_name, reg_code):
+    base_dir = Path(__file__).resolve().parent.parent.parent
+    print("chhhqqqq - ", base_dir)
+    proj_folder = os.path.join(base_dir, 'ChequePay')
+    settings_file_path = os.path.join(proj_folder, 'db_config.py')
+
+    with open(settings_file_path, 'r') as f:
+        lines = f.readlines()
+
+    with open(settings_file_path, 'r+') as f:
+        database_exists = False  # Flag to check if the database name exists in the file
+        for line in lines:
+            if line.startswith('DATABASES = {'):
+                f.write(line)
+                if not database_exists:
+                    # Write the database details only if the database name doesn't exist
+                    if not any(line.startswith(f"    '{reg_code}'") for line in lines):
+                        f.write(f"    '{reg_code}': {{\n")
+                        f.write(f"        'ENGINE': 'django.db.backends.sqlite3',\n")
+                        f.write(f"        'NAME': '{database_name}',\n")
+                        
+                        f.write(f"    }},\n")
+                        f.write("")
+                        database_exists = True
+            else:
+                f.write(line)
+
+
+
+
 
 @csrf_exempt
 def check_reg_update_sett(request):
@@ -159,6 +192,8 @@ def check_reg_update_sett(request):
             #     "database" : dtbs
             # }
             # print(param_data)
+
+            update_settings_file(f"chqpaydb_{reg_code}.sqlite3", reg_code)
 
             return JsonResponse({"status": "success", "message": "Data processed and stored."})
         

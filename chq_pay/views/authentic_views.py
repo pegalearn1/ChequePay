@@ -10,12 +10,12 @@ from datetime import datetime
 User = get_user_model()
 
 
-def check_table_exists():
+def check_table_exists(reg_code):
     """
-    Checks if a specific table exists in the database.
+    Checks if a specific table exists in the specified database.
     Returns True if table exists, otherwise False.
     """
-    connection = connections['default']
+    connection = connections[reg_code]
     try:
         with connection.cursor() as cursor:
             cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='chq_pay_chqpayuser';")
@@ -25,33 +25,54 @@ def check_table_exists():
 
 def create_user_if_needed(reg_code, email, password, name, license_key, cust_id, country_id, country_name, allowed_templates, company, phone, address):
     """
-    If the table doesn't exist, apply migrations to create it.
+    If the table doesn't exist in the specified database, apply migrations to create it.
     Then create a new user if the table was successfully created.
     """
-    # Check if the table exists
-    if not check_table_exists():
-        # Run migrations to create the table
-        executor = MigrationExecutor(connections['default'])
+    connection = connections[reg_code]
+
+    # Check if the table exists in the specified database
+    if not check_table_exists(reg_code):
+        # Run migrations to create the table in the target database
+        executor = MigrationExecutor(connection)
         executor.migrate(executor.loader.graph.leaf_nodes())
 
         # After migration, create the user
-        # Replace this with your user creation logic, for example:
-        AppUser.objects.create(reg_code = reg_code, license_key = license_key, name=name, email=email, cust_id=cust_id, country_id=country_id, country_name=country_name, allowed_templates=allowed_templates)
-        Company_Setup.objects.create(registration_id = reg_code, company_name = company, is_selected = True, tel_no = phone, email = email, address = address, created_by = 1,created_date = datetime.now(), modified_by = 1, modified_date = datetime.now())
-        
-        user = User.objects.create_user(
-            username=email, 
-            password=password, 
+        AppUser.objects.using(connection.alias).create(
+            reg_code=reg_code,
+            license_key=license_key,
+            name=name,
             email=email,
-            first_name = name,
-            privilege_role = 'SuperAdmin',
+            cust_id=cust_id,
+            country_id=country_id,
+            country_name=country_name,
+            allowed_templates=allowed_templates
+        )
+        
+        Company_Setup.objects.using(connection.alias).create(
+            registration_id=reg_code,
+            company_name=company,
+            is_selected=True,
+            tel_no=phone,
+            email=email,
+            address=address,
+            created_by=1,
+            created_date=datetime.now(),
+            modified_by=1,
+            modified_date=datetime.now()
+        )
+
+        user = User.objects.using(reg_code).create_user(
+            username=email,
+            password=password,
+            email=email,
+            first_name=name,
+            privilege_role='SuperAdmin',
             is_superuser=True,
             is_staff=True
         )
         
         return user
-    
-        
+
     return None
 
 
@@ -91,6 +112,8 @@ def user_login(request):
                 
                 print("code matched")
                 if expiry_dt_time >= datetime.now():
+
+                    request.session['database_name'] = f'chqpaydb_{sess_reg_code}.sqlite3'
                     
                     user = create_user_if_needed(sess_reg_code, sess_email, sess_password, sess_name, sess_license_key, sess_cust_id, sess_country_id, sess_country_name, sess_allowed_templates, sess_company, sess_phone, sess_address)
 

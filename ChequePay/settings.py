@@ -95,12 +95,17 @@ WSGI_APPLICATION = 'ChequePay.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'chqpaydb.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'chqpaydb.sqlite3',
+#     }
+# }
+
+
+from ChequePay.db_config import DATABASES
+
+DATABASES = DATABASES
 
 
 # Password validation
