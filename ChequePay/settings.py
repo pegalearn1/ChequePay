@@ -61,10 +61,15 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'ChequePay.middlewares.AttachRequestToDBRouterMiddleware', #user middleware
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
 ]
+
+
+
 
 ROOT_URLCONF = 'ChequePay.urls'
 
@@ -155,3 +160,6 @@ MEDIA_URL = "media/"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+DATABASE_ROUTERS = ['chq_pay.routers.SessionDatabaseRouter']

@@ -33,6 +33,8 @@ from openpyxl.utils import get_column_letter
 from openpyxl.styles import Font, PatternFill
 from openpyxl.worksheet.table import Table, TableStyleInfo #operations for exporting sample in excel
 
+from django.contrib.auth.hashers import make_password
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -65,7 +67,6 @@ api_call_site2 = "http://74.208.235.72/pegasus"
 #to write he database setting ton the settings file
 def update_settings_file(database_name, reg_code):
     base_dir = Path(__file__).resolve().parent.parent.parent
-    print("chhhqqqq - ", base_dir)
     proj_folder = os.path.join(base_dir, 'ChequePay')
     settings_file_path = os.path.join(proj_folder, 'db_config.py')
 
@@ -82,7 +83,7 @@ def update_settings_file(database_name, reg_code):
                     if not any(line.startswith(f"    '{reg_code}'") for line in lines):
                         f.write(f"    '{reg_code}': {{\n")
                         f.write(f"        'ENGINE': 'django.db.backends.sqlite3',\n")
-                        f.write(f"        'NAME': '{database_name}',\n")
+                        f.write(f"        'NAME': BASE_DIR/'{database_name}',\n")
                         
                         f.write(f"    }},\n")
                         f.write("")
@@ -163,6 +164,8 @@ def check_reg_update_sett(request):
             templates_api = res2['result'][0]['param_value']
             
             # Save or process the data as required
+
+            request.session['reg_code'] = registcode
 
             request.session['license_data'] =  {
                 "expiry_date": expdt,

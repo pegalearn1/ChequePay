@@ -22,6 +22,19 @@ def check_table_exists(reg_code):
             return bool(cursor.fetchone())
     except OperationalError:
         return False
+    
+
+def apply_migrations_to_db(connection):
+    """
+    Apply all migrations to the specified database connection.
+    """
+    try:
+        executor = MigrationExecutor(connection)
+        executor.migrate(executor.loader.graph.leaf_nodes())
+        print(f"Migrations applied to database: {connection.alias}")
+    except Exception as e:
+        print(f"Migration error: {e}")
+
 
 def create_user_if_needed(reg_code, email, password, name, license_key, cust_id, country_id, country_name, allowed_templates, company, phone, address):
     """
@@ -29,49 +42,74 @@ def create_user_if_needed(reg_code, email, password, name, license_key, cust_id,
     Then create a new user if the table was successfully created.
     """
     connection = connections[reg_code]
+    print(f"Using database: {connection.alias}")
 
     # Check if the table exists in the specified database
     if not check_table_exists(reg_code):
-        # Run migrations to create the table in the target database
-        executor = MigrationExecutor(connection)
-        executor.migrate(executor.loader.graph.leaf_nodes())
-
-        # After migration, create the user
-        AppUser.objects.using(connection.alias).create(
-            reg_code=reg_code,
-            license_key=license_key,
-            name=name,
-            email=email,
-            cust_id=cust_id,
-            country_id=country_id,
-            country_name=country_name,
-            allowed_templates=allowed_templates
-        )
+        print("Table does not exist. Applying migrations...")
+        try:
+            apply_migrations_to_db(connection)
+        except Exception as e:
+            print("migration error - ", str(e) )
         
-        Company_Setup.objects.using(connection.alias).create(
-            registration_id=reg_code,
-            company_name=company,
-            is_selected=True,
-            tel_no=phone,
-            email=email,
-            address=address,
-            created_by=1,
-            created_date=datetime.now(),
-            modified_by=1,
-            modified_date=datetime.now()
-        )
+        # After migrations, recheck the table existence
+        if check_table_exists(reg_code):
+            print("Table created successfully.")
 
-        user = User.objects.using(reg_code).create_user(
-            username=email,
-            password=password,
-            email=email,
-            first_name=name,
-            privilege_role='SuperAdmin',
-            is_superuser=True,
-            is_staff=True
-        )
+
+            AppUser.objects.using(connection.alias).create(
+                reg_code=reg_code,
+                license_key=license_key,
+                name=name,
+                email=email,
+                cust_id=cust_id,
+                country_id=country_id,
+                country_name=country_name,
+                allowed_templates=allowed_templates
+            )
+            print("App User Updated")
+            
+            Company_Setup.objects.using(connection.alias).create(
+                registration_id=reg_code,
+                company_name=company,
+                is_selected=True,
+                tel_no=phone,
+                email=email,
+                address=address,
+                created_by=1,
+                created_date=datetime.now(),
+                modified_by=1,
+                modified_date=datetime.now()
+            )
+
+            print("Company Created")
+
+            user = User.objects.using(connection.alias).create(
+                username=email,
+                password=make_password(password),
+                email=email,
+                first_name=name,
+                privilege_role='SuperAdmin',
+                is_superuser=True,
+                is_staff=True
+            )
+            print("User Created")
+
+            user = User.objects.create_user(
+                username=email,
+                password=password,
+                email=email,
+                first_name=name,
+                privilege_role='SuperAdmin',
+                is_superuser=True,
+                is_staff=True
+            )
+            print("User Created")
+            
+            return user
         
-        return user
+        else:
+            print("Table creation failed after migrations.")
 
     return None
 
@@ -80,6 +118,7 @@ def create_user_if_needed(reg_code, email, password, name, license_key, cust_id,
 
 def user_login(request):
 
+    
     if request.method == "POST":
         #getting values from template
         reg_code = request.POST.get('login_reg_code')
@@ -113,22 +152,29 @@ def user_login(request):
                 print("code matched")
                 if expiry_dt_time >= datetime.now():
 
-                    request.session['database_name'] = f'chqpaydb_{sess_reg_code}.sqlite3'
-                    
                     user = create_user_if_needed(sess_reg_code, sess_email, sess_password, sess_name, sess_license_key, sess_cust_id, sess_country_id, sess_country_name, sess_allowed_templates, sess_company, sess_phone, sess_address)
 
-                    user = authenticate(request, username=username, password=password)
-                
-                    if user:
-                        if 'license_data' in request.session:
-                            del request.session['license_data']
-                            print("license_data removed from session")
-                        else:
-                            print("license_data not found in session")
+                    User = get_user_model()
+
+                    try:
+                        user = User.objects.using(sess_reg_code).get(username=username)
                         
-                        login(request, user)
-                        return redirect('index')
-                    else:
+
+                        if user.check_password(password):
+                            print("user existss")
+                            
+                            login(request, user)
+
+                            if 'license_data' in request.session:
+                                del request.session['license_data']
+                                print("license_data removed from session")
+                            else:
+                                print("license_data not found in session")
+
+                            return redirect('index')
+                        else:
+                            messages.error(request, 'Invalid login credentials!!')
+                    except User.DoesNotExist:
                         messages.error(request, 'Invalid login credentials!!')
                 else:
                     messages.error(request, 'License expired, please renew or upgrade the license.')
