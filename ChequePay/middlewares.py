@@ -1,18 +1,23 @@
+import threading
+
+_thread_locals = threading.local()
+
 class AttachRequestToDBRouterMiddleware:
+    """
+    Middleware to attach the request object to thread-local storage.
+    """
+
     def __init__(self, get_response):
         self.get_response = get_response
 
     def __call__(self, request):
-        from django.db.models.base import ModelBase
-
-        print("Attaching request to ModelBase._hints")  # Debugging output
-
-        def custom_hints(model, **kwargs):
-            return {'request': request}
-
-        ModelBase._hints = custom_hints
-
+        # Store the request in thread-local storage
+        _thread_locals.request = request
         response = self.get_response(request)
-
-        del ModelBase._hints
         return response
+
+def get_current_request():
+    """
+    Helper function to retrieve the current request object from thread-local storage.
+    """
+    return getattr(_thread_locals, 'request', None)

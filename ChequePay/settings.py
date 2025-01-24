@@ -57,11 +57,11 @@ SESSION_COOKIE_AGE = 1209600  # (2 weeks) Time in seconds until cookie expires
 
 
 MIDDLEWARE = [
+    'ChequePay.middlewares.AttachRequestToDBRouterMiddleware', #user middleware
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'ChequePay.middlewares.AttachRequestToDBRouterMiddleware', #user middleware
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',

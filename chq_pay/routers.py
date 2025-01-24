@@ -1,5 +1,6 @@
 from django.conf import settings
 import logging
+from ChequePay.middlewares import get_current_request  # Import the helper function
 
 logger = logging.getLogger(__name__)
 
@@ -12,9 +13,9 @@ class SessionDatabaseRouter:
         """
         Route read operations to the appropriate database.
         """
-        request = hints.get('request')
+        request = get_current_request()
         if not request:
-            logger.warning("No request provided; defaulting to 'default' database.")
+            logger.warning("No request found; defaulting to 'default' database.")
             return 'default'
 
         db_key = request.session.get('reg_code', 'default')
@@ -29,9 +30,9 @@ class SessionDatabaseRouter:
         """
         Route write operations to the appropriate database.
         """
-        request = hints.get('request')
+        request = get_current_request()
         if not request:
-            logger.warning("No request provided; defaulting to 'default' database.")
+            logger.warning("No request found; defaulting to 'default' database.")
             return 'default'
 
         db_key = request.session.get('reg_code', 'default')
