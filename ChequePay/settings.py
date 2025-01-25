@@ -18,6 +18,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 TEMPLATES_DIR = os.path.join(BASE_DIR,'templates')
 STATIC_DIRS =  os.path.join(BASE_DIR, 'static')
 MEDIA_DIR = os.path.join(BASE_DIR, 'media')
+STATIC_FILES =  os.path.join(BASE_DIR, 'staticfiles')
 
 
 
@@ -28,7 +29,7 @@ MEDIA_DIR = os.path.join(BASE_DIR, 'media')
 SECRET_KEY = 'django-insecure-+k2%t3r3uacwpmncdyog6v+3v9cks2p2zj=6yp61oy#dk%ekos'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -65,6 +66,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     
 ]
 
@@ -148,13 +150,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 #static directory
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
 STATICFILES_DIRS = [STATIC_DIRS,] #Added by User
+STATIC_ROOT = STATIC_FILES #By user for production
 
 
 #Media directory
 MEDIA_ROOT = MEDIA_DIR
-MEDIA_URL = "media/"
+MEDIA_URL = "/media/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

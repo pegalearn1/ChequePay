@@ -143,7 +143,7 @@
                         console.log("Reg code entered:", value); // Log the input
                         if (value.length >= 4) {
                           try {
-                            const response = await fetch('/check_reg_update_sett/', {
+                            const response = await fetch('{% url "check_reg_update_sett" %}', {
                               method: 'POST',
                               headers: {
                                 'Content-Type': 'application/json',
