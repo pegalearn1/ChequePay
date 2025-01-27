@@ -3,7 +3,7 @@ in 2024-2025.'''
 
 from .imp_libs import *
 from django.db.migrations.executor import MigrationExecutor
-from chq_pay.models import AppUser, Company_Setup
+from chq_pay.models import AppUser, Company_Setup, Banks, Payee, Currencies
 from datetime import datetime
 
 # Get the custom user model
@@ -197,6 +197,7 @@ def user_login(request):
                     User = get_user_model()
 
                     try:
+
                         user = User.objects.using(registcode).get(username=username)
 
                         if user.check_password(password):
@@ -206,7 +207,7 @@ def user_login(request):
 
                             logger.info(f"Logged In with {user}.")
 
-                            return redirect('index')
+                            return redirect('setup_wizard')
                         else:
                             logger.info("Invalid login credentials: Incorrect password.")
                             messages.error(request, 'Invalid login credentials!!')

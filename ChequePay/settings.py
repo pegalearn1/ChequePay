@@ -29,7 +29,7 @@ STATIC_FILES =  os.path.join(BASE_DIR, 'staticfiles')
 SECRET_KEY = 'django-insecure-+k2%t3r3uacwpmncdyog6v+3v9cks2p2zj=6yp61oy#dk%ekos'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -77,7 +77,7 @@ ROOT_URLCONF = 'ChequePay.urls'
 
 AUTH_USER_MODEL = 'chq_pay.ChqpayUser'
 
-LOGIN_URL = '/login'
+LOGIN_URL = '/Chequepay/login/'
 
 TEMPLATES = [
     {
