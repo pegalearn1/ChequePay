@@ -2,10 +2,12 @@
 __pycache__/
 
 # Django-specific
-chqpaydb.sqlite3
+*.sqlite3
 *.log
 
 # VS Code
 .vscode/
 
-media/
+# Ignore media and staticfiles directories
+/media/
+/staticfiles/

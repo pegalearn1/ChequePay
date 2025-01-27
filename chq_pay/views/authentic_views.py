@@ -105,76 +105,123 @@ def create_user_if_needed(reg_code, email, password, name, license_key, cust_id,
 
 
 
-
+@csrf_exempt
 def user_login(request):
-
-    
     if request.method == "POST":
-        #getting values from template
+        # Getting values from template
         reg_code = request.POST.get('login_reg_code')
         username = request.POST.get('login_email')
         password = request.POST.get('login_password')
 
-        license_data = request.session.get('license_data', {})
-        sess_reg_code = license_data.get('registration_code', None)
-        sess_email = license_data.get('email', None)
-        sess_password = license_data.get('password', None)
-        sess_name = license_data.get('name', None)
-        sess_license_key = license_data.get('license_key', None)
-        sess_cust_id = license_data.get('customer_id', None)
-        sess_country_id = license_data.get('country_id', None)
-        sess_country_name = license_data.get('country_name', None)
-        sess_allowed_templates = license_data.get('allowed_templates', None)
-        sess_expiry_date = license_data.get('expiry_date', None)
-        sess_company = license_data.get('company', None)
-        sess_phone = license_data.get('phone', None)
-        sess_address = license_data.get('address', None)
-        expiry_dt_time = datetime.strptime( sess_expiry_date, "%Y-%m-%d %H:%M:%S") #setting to right fromat to compare expiry date
+        if not reg_code or len(reg_code) < 4:
+            logger.info("Invalid registration code: %s", reg_code)
+            
 
-        if not all([sess_reg_code, sess_email, sess_password, sess_name, sess_expiry_date]):
-            print("incomplete session data")
+        # Fetch data from the APIs
+        logger.info("Preparing API calls...")
         
-        
-       
+        payload = {"lic_code": reg_code, "master_product_id": "865"}
+        logger.info("Payload prepared: %s", payload)
+
+        logger.info("Making API call to URL1...")
+        response1 = requests.post(url1, data=payload)
+        logger.info("Response from URL1: Status %d", response1.status_code)
+
+        logger.info("Making API call to URL2...")
+        response2 = requests.post(url2, data=payload)
+        logger.info("Response from URL2: Status %d", response2.status_code)
+
+        # Parse responses
+        logger.info("Parsing responses...")
+        response1.raise_for_status()
+        res1 = response1.json()
+        logger.info("Response from URL1 parsed: %s", res1)
+
+        response2.raise_for_status()
+        res2 = response2.json()
+        logger.info("Response from URL2 parsed: %s", res2)
+
+        if res1['status'] is True:
+            logger.info("API status is True for res1. Extracting data...")
+
+            expdt = res1['result']['expiry_date']
+            license_key = res1['result']['license_key']
+            registcode = res1['result']['registration_code']
+            eml = res1['result']['email']
+            cust_id = res1['result']['customer_id']
+            nme = res1['result']['name']
+            cmpny = res1['result']['company_name']
+            phn = res1['result']['phone']
+            licnse_type = res1['result']['product_type']
+            cntry_id = res1['result']['country_id']
+            dtbs = res1['result']['database']
+            addrs = res1['result']['address']
+            cty = res1['result']['city']
+            currency = res1['result']['currency_symbol']
+            country_name = res1['result']['country']
+            passw = res1['result']['password']
+
+        if res2['status'] is True:
+            logger.info("API status is True for res2. Extracting data...")
+
+            templates_api = res2['result'][0]['param_value']
+
+
         try:
-            if reg_code == sess_reg_code:
-                
-                print("code matched")
-                if expiry_dt_time >= datetime.now():
+            logger.info("Saving registration code to session.")
+            request.session['reg_code'] = registcode
+            request.session.modified = True
+            logger.info("Registration code saved to session successfully.")
+        except Exception as e:
+            logger.error("Error saving registration code to session: %s", e)
 
-                    user = create_user_if_needed(sess_reg_code, sess_email, sess_password, sess_name, sess_license_key, sess_cust_id, sess_country_id, sess_country_name, sess_allowed_templates, sess_company, sess_phone, sess_address)
+        try:
+            expiry_dt_time = datetime.strptime(expdt, "%Y-%m-%d %H:%M:%S")
+        except Exception as e:
+            logger.info("Error parsing expiry date: %s", str(e))
+            return redirect('login')
+
+        try:
+            if reg_code == registcode:
+                logger.info("Registration code matched.")
+
+                if expiry_dt_time >= datetime.now():
+                    logger.info("License is valid.")
+
+                    user = create_user_if_needed(
+                        registcode, eml, passw, nme,
+                        license_key, cust_id, cntry_id, nme,
+                        templates_api, cmpny, phn, addrs
+                    )
 
                     User = get_user_model()
 
                     try:
-                        user = User.objects.using(sess_reg_code).get(username=username)
-                        
+                        user = User.objects.using(registcode).get(username=username)
 
                         if user.check_password(password):
-                            print("user existss")
-                            
+                            logger.info("User exists and password is correct.")
+
                             login(request, user)
 
-                            if 'license_data' in request.session:
-                                del request.session['license_data']
-                                print("license_data removed from session")
-                            else:
-                                print("license_data not found in session")
+                            logger.info(f"Logged In with {user}.")
 
                             return redirect('index')
                         else:
+                            logger.info("Invalid login credentials: Incorrect password.")
                             messages.error(request, 'Invalid login credentials!!')
                     except User.DoesNotExist:
+                        logger.info("Invalid login credentials: User does not exist.")
                         messages.error(request, 'Invalid login credentials!!')
                 else:
+                    logger.info("License expired.")
                     messages.error(request, 'License expired, please renew or upgrade the license.')
-            
             else:
+                logger.info("Invalid registration code.")
                 messages.error(request, 'Invalid Registration Code!!')
         except Exception as e:
-            print('login exception', str(e))
+            logger.info("Exception during login: %s", str(e))
             return redirect('login')
-    
 
     return render(request, "Login/login.html")
 
