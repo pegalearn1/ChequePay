@@ -57,7 +57,67 @@
     {% block stylesheet %}{% endblock stylesheet %}
    
   </head>
-  <body  >
+  <body>
+
+    <div id="loader">
+      {% include 'loader/loader.html' %}
+    </div>
+    
+    
+  <!-- loader script -->
+  <script>
+    //for class based loader
+  document.addEventListener("DOMContentLoaded", function () {
+    const loader = document.getElementById("loader");
+
+    // Ensure the loader is hidden initially
+    if (loader) loader.style.display = "none";
+
+    // Add click event listener to all elements with the 'site-loader' class
+    document.addEventListener("click", function (e) {
+        const target = e.target.closest(".site-loader"); // Check if the clicked element or its ancestor has the 'site-loader' class
+        if (target && loader) {
+            loader.style.display = "flex"; // Show the loader
+        }
+    });
+
+    // Ensure the loader hides when the page finishes loading
+    window.addEventListener("load", function () {
+        if (loader) {
+            loader.style.display = "none"; // Hide the loader
+        }
+    });
+});
+
+//for form submission loader
+
+document.addEventListener("DOMContentLoaded", function () {
+    const loader = document.getElementById("loader");
+
+    // Ensure the loader is hidden initially
+    if (loader) loader.style.display = "none";
+
+    // Add event listener to handle all form submissions
+    document.addEventListener("submit", function (e) {
+        if (loader) {
+            loader.style.display = "flex"; // Show the loader
+        }
+    });
+
+    // Ensure the loader hides when the page finishes loading
+    window.addEventListener("load", function () {
+        if (loader) {
+            loader.style.display = "none"; // Hide the loader
+        }
+    });
+});
+
+
+  </script>
+
+  <!-- loader script -->
+
+
     <script src="/static/tabler/dist/js/demo-theme.min4f79.js?1735606190"></script>
     <div class="page">
       <!-- Navbar -->
@@ -199,14 +259,14 @@
                 </div>
               </a>
               <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                <a href="{% url "profile" %}" class="dropdown-item">{% trans "Profile" %}</a>
+                <a href="{% url "profile" %}" class="dropdown-item site-loader">{% trans "Profile" %}</a>
                 {% if user.is_superuser %}
-                <a href="{% url "company_list" %}" class="dropdown-item">{% trans "Companies" %}</a>
+                <a href="{% url "company_list" %}" class="dropdown-item site-loader">{% trans "Companies" %}</a>
                 {% endif %}
                 
                 {% comment %} <a href="settings.html" class="dropdown-item">Settings</a> {% endcomment %}
                 {% if user.is_superuser %}
-                <a href="{% url "users_list" %}" class="dropdown-item">{% trans "Users" %}</a>
+                <a href="{% url "users_list" %}" class="dropdown-item site-loader">{% trans "Users" %}</a>
                 {% endif %}
                 <div class="dropdown-divider"></div>
                 <a href="{% url "logout" %}" class="dropdown-item">{% trans "Logout" %}</a>
@@ -222,8 +282,8 @@
               <div class="row flex-fill align-items-center">
                 <div class="col">
                   <ul class="navbar-nav">
-                    <li class="nav-item {% if 'index/' in request.path  %}active{% endif %}">
-                      <a class="nav-link" href="{% url "index" %}" >
+                    <li class="nav-item {% if 'index/' in request.path  %}active{% endif %} ">
+                      <a class="nav-link site-loader" href="{% url "index" %}" >
                         <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l-2 0l9 -9l9 9l-2 0" /><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" /><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" /></svg>
                         </span>
@@ -233,7 +293,7 @@
                       </a>
                     </li>
                     <li class="nav-item {% if 'bank_list/' in request.path  %}active{% endif %}">
-                        <a class="nav-link" href="{% url "bank_list" %}" >
+                        <a class="nav-link site-loader" href="{% url "bank_list" %}" >
                           <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
                             <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-building-bank"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 21l18 0" /><path d="M3 10l18 0" /><path d="M5 6l7 -3l7 3" /><path d="M4 10l0 11" /><path d="M20 10l0 11" /><path d="M8 14l0 3" /><path d="M12 14l0 3" /><path d="M16 14l0 3" /></svg>
                           </span>
@@ -243,7 +303,7 @@
                         </a>
                       </li>
                     <li class="nav-item {% if 'payee_list/' in request.path  %}active{% endif %}">
-                      <a class="nav-link" href="{% url "payee_list" %}" >
+                      <a class="nav-link site-loader" href="{% url "payee_list" %}" >
                         <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/checkbox -->
                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 11l3 3l8 -8" /><path d="M20 12v6a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h9" /></svg>
                         </span>
@@ -253,7 +313,7 @@
                       </a>
                     </li>
                     <li class="nav-item {% if 'currency_list/' in request.path  %}active{% endif %}">
-                        <a class="nav-link" href="{% url "currency_list" %}" >
+                        <a class="nav-link site-loader" href="{% url "currency_list" %}" >
                           <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
                             <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-currency-dollar"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M16.7 8a3 3 0 0 0 -2.7 -2h-4a3 3 0 0 0 0 6h4a3 3 0 0 1 0 6h-4a3 3 0 0 1 -2.7 -2" /><path d="M12 3v3m0 12v3" /></svg>
                           </span>
@@ -263,7 +323,7 @@
                         </a>
                       </li>
                       <li class="nav-item {% if 'template_list/' in request.path  %}active{% endif %}">
-                        <a class="nav-link" href="{% url "template_list" %}" >
+                        <a class="nav-link site-loader" href="{% url "template_list" %}" >
                           <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
                             <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-cash"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 9m0 2a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z" /><path d="M14 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 9v-2a2 2 0 0 0 -2 -2h-10a2 2 0 0 0 -2 2v6a2 2 0 0 0 2 2h2" /></svg>
                           </span>
@@ -273,7 +333,7 @@
                         </a>
                       </li>
                     <li class="nav-item {% if 'cheque_issue_list/' in request.path  %}active{% endif %}">
-                      <a class="nav-link" href="{% url "cheque_issue_list" %}" >
+                      <a class="nav-link site-loader" href="{% url "cheque_issue_list" %}" >
                         <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/ghost -->
                           <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-pencil-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /><path d="M15 19l2 2l4 -4" /></svg>
                         </span>

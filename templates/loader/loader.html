@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loader</title>
+    <style>
+        /* Body styling */
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh; /* Ensure the body takes full height */
+        }
+
+        /* Loader styles */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0); /* Transparent background */
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px); /* Apply blur to the background behind the loader */
+        }
+
+        /* Loader image size */
+        #loader img {
+            width: 100px; /* Adjust size of the loader image */
+            height: 100px;
+        }
+
+        /* Ensure background behind the loader is blurred */
+        body {
+            overflow: hidden; /* Prevent scrolling when loader is visible */
+        }
+    </style>
+</head>
+<body>
+    <div id="loader">
+        <!-- Using Lottie player -->
+        <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+        <dotlottie-player src="https://lottie.host/c4dc5a02-a216-4399-a323-53ab5418609e/zKhvFjqvLs.lottie" background="transparent" speed="1" style="width: 200px; height: 200px" loop autoplay></dotlottie-player>
+    </div>
+
+    
+</body>
+</html>
