@@ -123,7 +123,30 @@
           <div class="col-lg">
             <div class="container-tight">
               <div class="text-center mb-4">
-                <a href="error-404.html" class="navbar-brand navbar-brand-autodark"><img src="/static/tabler/static/logo.svg" height="36" alt=""></a>
+                <a href="{% url "login" %}" class="navbar-brand navbar-brand-autodark">
+                  <img id="logo" src="{% static "/tabler/static/logo/Cheque-Pay-Logo-light.png" %}" height="36" alt="">
+                
+                <!-- to change the logo image based on theme -->
+                <script>
+                  // The key used in localStorage
+                  const themeKey = "tablerTheme";
+          
+                  // Retrieve the value from localStorage
+                  const currentTheme = localStorage.getItem(themeKey);
+          
+                  // Reference to the image element
+                  const logo = document.getElementById("logo");
+          
+                  // Logic to change the logo based on the theme
+                  if (currentTheme === "dark") {
+                      logo.src = "{% static "/tabler/static/logo/Cheque-Pay-Logo-dark.png" %}"; // Path to the dark mode logo
+                  } else {
+                      logo.src = "{% static "/tabler/static/logo/Cheque-Pay-Logo-light.png" %}"; // Path to the light mode logo
+                  }
+              </script>
+              <!-- to change the logo image based on theme -->
+                
+                </a>
               </div>
               <div class="card card-md">
                 <div class="card-body">

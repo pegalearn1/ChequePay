@@ -69,7 +69,7 @@
           <div class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
             <a href="{% url "index" %}">
               
-                <img id="logo" src="/static/tabler/static/logo/Cheque-Pay-Logo-light.png" alt="Logo" width="200" class="navbar-brand">
+                <img id="logo" src="{% static "/tabler/static/logo/Cheque-Pay-Logo-light.png" %}" alt="Logo" width="200" class="navbar-brand">
 
                 <!-- to change the logo image based on theme -->
                 <script>
@@ -84,9 +84,9 @@
             
                     // Logic to change the logo based on the theme
                     if (currentTheme === "dark") {
-                        logo.src = "/static/tabler/static/logo/Cheque-Pay-Logo-dark.png"; // Path to the dark mode logo
+                        logo.src = "{% static "/tabler/static/logo/Cheque-Pay-Logo-dark.png" %}"; // Path to the dark mode logo
                     } else {
-                        logo.src = "/static/tabler/static/logo/Cheque-Pay-Logo-light.png"; // Path to the light mode logo
+                        logo.src = "{% static "/tabler/static/logo/Cheque-Pay-Logo-light.png" %}"; // Path to the light mode logo
                     }
                 </script>
                 <!-- to change the logo image based on theme -->

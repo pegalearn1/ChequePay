@@ -80,26 +80,32 @@ def update_settings_file(database_name, reg_code):
     proj_folder = os.path.join(base_dir, 'ChequePay')
     settings_file_path = os.path.join(proj_folder, 'db_config.py')
 
+    # Read the file and check if the database already exists
     with open(settings_file_path, 'r') as f:
         lines = f.readlines()
 
+    database_exists = any(f"'{reg_code}':" in line for line in lines)
+
+    if database_exists:
+        logger.info(f"Settings for {reg_code} already exist. No changes made.")
+        print(f"Settings for {reg_code} already exist. No changes made.")
+        return False  # Indicate no changes were made
+
+    # Update the file only if the database setting does not exist
     with open(settings_file_path, 'r+') as f:
-        database_exists = False  # Flag to check if the database name exists in the file
+        f.seek(0)
         for line in lines:
+            f.write(line)
             if line.startswith('DATABASES = {'):
-                f.write(line)
-                if not database_exists:
-                    # Write the database details only if the database name doesn't exist
-                    if not any(line.startswith(f"    '{reg_code}'") for line in lines):
-                        f.write(f"    '{reg_code}': {{\n")
-                        f.write(f"        'ENGINE': 'django.db.backends.sqlite3',\n")
-                        f.write(f"        'NAME': BASE_DIR/'{database_name}',\n")
-                        
-                        f.write(f"    }},\n")
-                        f.write("")
-                        database_exists = True
-            else:
-                f.write(line)
+                f.write(f"    '{reg_code}': {{\n")
+                f.write(f"        'ENGINE': 'django.db.backends.sqlite3',\n")
+                f.write(f"        'NAME': BASE_DIR/'{database_name}',\n")
+                f.write(f"    }},\n")
+        f.truncate()
+    logger.info(f"Settings for {reg_code} added successfully.")
+    print(f"Settings for {reg_code} added successfully.")
+    return True  # Indicate changes were made
+
 
 
 @csrf_exempt
@@ -144,9 +150,13 @@ def check_reg_update_sett(request):
             logger.info("API status is True. Extracting data...")
 
             logger.info("Updating settings file...")
-            update_settings_file(f"chqpaydb_{reg_code}.sqlite3", reg_code)
-            logger.info("Settings file updated successfully.")
+            settings_updated = update_settings_file(f"chqpaydb_{reg_code}.sqlite3", reg_code)
 
+            if not settings_updated:
+                logger.info(f"No changes made to settings. Skipping reload.")
+                return JsonResponse({"status": "success", "message": "Settings already exist. No reload required."})
+
+            logger.info("Settings file updated successfully.")
             return JsonResponse({"status": "success", "message": "Data processed and stored."})
         else:
             logger.warning("API status is False.")
