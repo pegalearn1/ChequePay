@@ -2,7 +2,7 @@
 in 2024-2025.'''
 
 from .imp_libs import *
-from chq_pay.models import Currencies, Company_Setup
+from chq_pay.models import Currencies, Company_Setup, ChequeTemplate
 
 @login_required
 def add_currency(request):
@@ -13,7 +13,7 @@ def add_currency(request):
         currency_exist = Currencies.objects.filter(Q(currency_name=currency_name) | Q(currency_char=currency_char))
 
         if currency_exist:
-            messages.error(request,('Currency Already Exits!!'))
+            messages.warning(request,('Currency Already Exits!!'))
         else:
             # Save to the database
             currency = Currencies.objects.create(
@@ -46,10 +46,17 @@ def currency_list(request):
 
 @login_required
 def delete_currency(request, currency_id):
-    currency = get_object_or_404(Currencies, id=currency_id)
-    currency.delete()
-    messages.error(request,('Currency Deleted Successfully!!!'))
-    return redirect('currency_list')
+    
+    currency_exist = ChequeTemplate.objects.filter(issue_currency = currency_id).exists()
+
+    if not currency_exist:
+        currency = get_object_or_404(Currencies, id=currency_id)
+        currency.delete()
+        messages.success(request,('Currency Deleted Successfully!!!'))
+        return redirect('currency_list')
+    else:
+        messages.error(request,('Cannot delete this currency, a template exists with this currency.!!'))
+        return redirect('currency_list')
 
 
 @login_required
@@ -72,7 +79,7 @@ def edit_currency(request):
             currency_exist = Currencies.objects.filter(Q(currency_name=currency_name) | Q(currency_char=currency_char)).exclude(id=currency_id)
 
             if currency_exist:
-                messages.error(request,('Currency with same name or Currency Char already exits!!'))
+                messages.warning(request,('Currency with same name or Currency Char already exits!!'))
 
             else:
                 currency.save()

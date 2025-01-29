@@ -84,14 +84,11 @@ def index(request):
     #chart currency-transact values
     cur_transct = []
     for cur in currencies:
-        currency_transact = ChequeIssue.objects.filter(company__is_selected = True, issue_currency = cur).values_list('issue_amount', flat=True)
-        cur_transct.append(str(sum(currency_transact)))
+        currency_transact = ChequeIssue.objects.filter(company__is_selected = True, issue_currency = cur, issue_is_approved = True).values_list('issue_amount', flat=True)
+        if currency_transact: cur_transct.append(str(sum(currency_transact)))
     
     currency_transactions = ','.join(cur_transct)
 
-    print("CT - ",currency_transactions)
-
-    
     
 
     #pie chart colors for currency-transact

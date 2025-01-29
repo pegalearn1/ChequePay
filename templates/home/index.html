@@ -254,32 +254,42 @@
 
         <!-- charts -->
          
-        <div class="col-lg-6 col-xl-4">
-          <div class="card">
-            <div class="card-body">
-              <h4 class="text-muted">{% trans "Total Transactions via Currencies" %}</h4>
-              <div id="currency-transact-pie"></div>
-            </div>
+       <!-- Total Transactions via Currencies -->
+      {% if currency_transactions %}
+      <div class="col-lg-6 col-xl-4">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="text-muted">{% trans "Total Transactions via Currencies" %}</h4>
+            <div id="currency-transact-pie"></div>
           </div>
         </div>
+      </div>
+      {% endif %}
 
-        <div class="col-lg-6 col-xl-4">
-          <div class="card">
-            <div class="card-body">
-              <h4 class="text-muted">{% trans "Templates via Bank" %}</h4>
-              <div id="bank-template-pie"></div>
-            </div>
+      <!-- Templates via Bank -->
+      {% if bank_templates %}
+      <div class="col-lg-6 col-xl-4">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="text-muted">{% trans "Templates via Bank" %}</h4>
+            <div id="bank-template-pie"></div>
           </div>
         </div>
+      </div>
+      {% endif %}
 
-        <div class="col-lg-6 col-xl-4">
-          <div class="card">
-            <div class="card-body">
-              <h4 class="text-muted">{% trans "Approved Cheques Issued via Bank" %}</h4>
-              <div id="cheque-issue-pie"></div>
-            </div>
+      <!-- Approved Cheques Issued via Bank -->
+      {% if cheque_issued %}
+      <div class="col-lg-6 col-xl-4">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="text-muted">{% trans "Approved Cheques Issued via Bank" %}</h4>
+            <div id="cheque-issue-pie"></div>
           </div>
         </div>
+      </div>
+      {% endif %}
+
 
         
 

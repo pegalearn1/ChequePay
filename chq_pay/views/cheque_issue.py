@@ -161,7 +161,7 @@ def cheque_issue(request):
             cheque_issued = ChequeIssue.objects.filter(issue_payee=issue_payee, issue_cheque_no=issue_cheque_no,issue_cheque_date=issue_cheque_date)
 
             if cheque_issued:
-                messages.error(request,('Cheque Already Issued!!'))
+                messages.warning(request,('Cheque Already Issued!!'))
             else:
                 cheque_issue_new.save()
                 messages.success(request,('Cheque Issued Successfully!!!'))
@@ -313,7 +313,7 @@ def edit_cheque_issue(request):
             cheque_issued = ChequeIssue.objects.filter(issue_payee=issue_payee, issue_cheque_no=issue_cheque_no,issue_cheque_date=issue_cheque_date)
 
             if cheque_issued:
-                messages.error(request,('Cheque Already Issued!!'))
+                messages.warning(request,('Cheque Already Issued!!'))
             else:
                 cheque_issue_new.save()
                 messages.success(request,('Cheque Issued Successfully!!!'))
@@ -427,28 +427,28 @@ def approval(request, cheque_id):
         cheque_issue.issue_approv_rejectby = request.user.id
         cheque_issue.modified_by = request.user.id
         cheque_issue.modified_date = datetime.now()
-        messages.success(request, 'Cheque is Approved.')
+        messages.success(request, f'Cheque to {cheque_issue.issue_payee.payee_name} of Cheque Number - {cheque_issue.issue_cheque_no} is Approved.')
     
     elif cheque_issue.issue_is_approved is None and additional_value == "False":
         cheque_issue.issue_is_approved = False
         cheque_issue.issue_approv_rejectby = request.user.id
         cheque_issue.modified_by = request.user.id
         cheque_issue.modified_date = datetime.now()
-        messages.success(request, 'Cheque is Rejected.')
+        messages.success(request, f'Cheque to {cheque_issue.issue_payee.payee_name} of Cheque Number - {cheque_issue.issue_cheque_no} is Rejected.')
     
     elif cheque_issue.issue_is_approved == False:
         cheque_issue.issue_is_approved = True
         cheque_issue.issue_approv_rejectby = request.user.id
         cheque_issue.modified_by = request.user.id
         cheque_issue.modified_date = datetime.now()
-        messages.success(request, 'Cheque is Approved.')
+        messages.success(request, f'Rejected Cheque to {cheque_issue.issue_payee.payee_name} of Cheque Number - {cheque_issue.issue_cheque_no} is Approved.')
     
     elif cheque_issue.issue_is_approved == True:
         cheque_issue.issue_is_approved = False
         cheque_issue.issue_approv_rejectby = request.user.id
         cheque_issue.modified_by = request.user.id
         cheque_issue.modified_date = datetime.now()
-        messages.error(request, 'Cheque is Rejected.')
+        messages.error(request, f'Approved Cheque to {cheque_issue.issue_payee.payee_name} of Cheque Number - {cheque_issue.issue_cheque_no} is Rejected.')
 
     cheque_issue.save()
 

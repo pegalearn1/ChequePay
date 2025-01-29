@@ -2,7 +2,7 @@
 in 2024-2025.'''
 
 from .imp_libs import *
-from chq_pay.models import Banks, Company_Setup
+from chq_pay.models import Banks, Company_Setup, ChequeIssue, ChequeTemplate
 
 @login_required
 def add_bank(request):
@@ -18,7 +18,7 @@ def add_bank(request):
        
 
         if bank_exist:
-            messages.error(request,('Bank Already Exits!!'))
+            messages.warning(request,('Bank Already Exits!!'))
         else:
             # Save to the database
             bank = Banks.objects.create(
@@ -52,10 +52,17 @@ def bank_list(request):
 
 @login_required
 def delete_bank(request, bank_id):
-    bank = get_object_or_404(Banks, id=bank_id)
-    bank.delete()
-    messages.error(request,('Bank Deleted Successfully!!!'))
-    return redirect('bank_list')
+    bank_exists = ChequeTemplate.objects.filter(bank=bank_id).exists()
+    
+    if not bank_exists:
+        bank = get_object_or_404(Banks, id=bank_id)
+        bank.delete()
+        messages.success(request,('Bank Deleted Successfully!!!'))
+        return redirect('bank_list')
+    else:
+        messages.error(request,('Cannot delete this bank, a template exists with this bank.!!'))
+        return redirect('bank_list')
+
 
 @login_required
 def edit_bank(request):
@@ -66,7 +73,7 @@ def edit_bank(request):
         bank_name_l = request.POST.get("bank_name_l")
         tel_no = request.POST.get("tel_no")
         address = request.POST.get("address")
-        print("bccbcbcbcb = ",bank_char)
+        
         
         # Update the bank in the database
         try:
@@ -82,7 +89,7 @@ def edit_bank(request):
             bank_exist = Banks.objects.filter(Q(bank_name_e=bank_name_e) | Q(bank_char=bank_char)).exclude(id=bank_id)
 
             if bank_exist:
-                messages.error(request,('Bank with same name or bank char already exits!!'))
+                messages.warning(request,('Bank with same name or bank char already exits!!'))
 
             else:
                 
@@ -90,6 +97,7 @@ def edit_bank(request):
                 messages.success(request,('Bank Details Updated Successfully!!!'))
                 return JsonResponse({"success": True})
         except Banks.DoesNotExist:
+            messages.error(request,('Error in Bank Updation!!'))
             return JsonResponse({"success": False, "error": "Bank not found"})
     return JsonResponse({"success": False, "error": "Invalid request"})
 
@@ -219,6 +227,7 @@ def save_valid_data_bank(request):
             messages.success(request,"Banks Uploaded Successfully")
             return JsonResponse({'success': True})
         except Exception as e:
+            messages.error(request,"Bank Upload Failed!!")
             return JsonResponse({'success': False, 'error': str(e)})
     return JsonResponse({'success': False, 'error': 'Invalid request method'})
 

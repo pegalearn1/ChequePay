@@ -2,7 +2,7 @@
 in 2024-2025.'''
 
 from .imp_libs import *
-from chq_pay.models import Payee, Company_Setup
+from chq_pay.models import Payee, Company_Setup, ChequeIssue
 
 
 @login_required
@@ -17,7 +17,7 @@ def add_payee(request):
 
         
         if payee_exist:
-            messages.error(request,('Payee Already Exits!!'))
+            messages.warning(request,('Payee Already Exits!!'))
 
         else:
             # Save to the database
@@ -56,10 +56,16 @@ def payee_list(request):
 
 @login_required
 def delete_payee(request, payee_id):
-    payee = get_object_or_404(Payee, id=payee_id)
-    payee.delete()
-    messages.error(request,('Payee Deleted Successfully!!!'))
-    return redirect('payee_list')
+    payee_exists = ChequeIssue.objects.filter(issue_payee = payee_id).exists()
+
+    if not payee_exists:
+        payee = get_object_or_404(Payee, id=payee_id)
+        payee.delete()
+        messages.success(request,('Payee Deleted Successfully!!!'))
+        return redirect('payee_list')
+    else:
+        messages.error(request,('Cannot delete as a cheque has been already issued for the payee. '))
+        return redirect('payee_list')
 
 
 @login_required
@@ -87,7 +93,7 @@ def edit_payee(request):
             payee_exist = Payee.objects.filter(payee_name = payee_name).exclude(id=payee_id)
 
             if payee_exist:
-                messages.error(request,('Payee with the name already exits!!'))
+                messages.warning(request,('Payee with the name already exits!!'))
 
             else:
                 payee.save()

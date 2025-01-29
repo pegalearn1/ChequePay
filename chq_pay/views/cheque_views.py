@@ -40,7 +40,7 @@ def upload_template(request):
                 template_exist = ChequeTemplate.objects.filter(name=name)
 
                 if template_exist:
-                    messages.error(request,('Template Already Exits!!'))
+                    messages.warning(request,('Template Already Exits!!'))
                 else:
                     cheque_template.save()
                     messages.success(request,('Template Created Successfully!!!'))
@@ -95,7 +95,7 @@ def delete_template(request, template_id):
     template = get_object_or_404(ChequeTemplate, id=template_id)
     
     if issued_templ:
-        messages.warning(request,("Can't be deleted, Cheque has been issued with the template"))
+        messages.error(request,("Can't be deleted, Cheque has been issued with the template"))
     else:
         if cheque_txt:
             cheque_txt.delete()
@@ -156,7 +156,7 @@ def edit_template(request):
             template_exist = ChequeTemplate.objects.filter(name=name).exclude(id=template_id)
 
             if template_exist:
-                messages.error(request,('Template with same name or Currency Char already exits!!'))
+                messages.warning(request,('Template with same name already exits!!'))
 
             else:
                 template.save()
@@ -259,7 +259,7 @@ def delete_text(request, text_id, temp_id):
                 text.sign_y_position = None
 
             text.save()
-            messages.warning(request, f"Text attribute deleted.")
+            messages.success(request, f"Text attribute deleted.")
     return redirect('template_detail',temp_id)
 
 
