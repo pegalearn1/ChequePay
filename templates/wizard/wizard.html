@@ -6,53 +6,14 @@
 {% block stylesheet %}
 
 <style>
-/* Styling for the welcome card */
-.welcome-card {
-    max-width: 500px;
-    margin: 50px auto;
-    background-color: #fff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
-
-.welcome-card h1 {
-    font-size: 32px;
-    color: #333;
-    margin-bottom: 20px;
-}
-
-.welcome-card p {
-    font-size: 18px;
-    color: #666;
-    margin-bottom: 30px;
-}
-
-.welcome-card .btn-start {
-    padding: 15px 30px;
-    background-color: #4CAF50;
-    color: white;
-    font-size: 18px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    text-transform: uppercase;
-    font-weight: bold;
-}
-
-.welcome-card .btn-start:hover {
-    background-color: #45a049;
-}
-
-/* Keep the wizard form styling */
+/* Keep your form styling as requested */
 .wizard-form {
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
+/* Step Styling */
 .wizard-step {
     display: flex;
     flex-direction: column;
@@ -99,20 +60,65 @@
 .btn-next:hover {
     background-color: #45a049;
 }
+
+/* Welcome Modal Styling */
+.welcome-modal .modal-content {
+    text-align: center;
+    padding: 20px;
+}
+
+.welcome-modal h1 {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.welcome-modal p {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.btn-start {
+    padding: 12px 20px;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-start:hover {
+    background-color: #0056b3;
+}
 </style>
 
 {% endblock stylesheet %}
 
 {% block content %}
-<!-- Welcome Page in a Beautiful Card -->
-<div class="welcome-card">
-    <h1>{% trans "Welcome to the Setup Wizard!" %}</h1>
-    <p>{% trans "This wizard will guide you through the setup process. Please follow the steps to add important initial information like Banks, Currencies, and Payees." %}</p>
-    <p>{% trans "Once you are ready, click 'Start' to begin the setup." %}</p>
-    <button class="btn-start" onclick="startWizard()">{% trans "Start Setup" %}</button>
+
+<!-- Welcome Modal -->
+<div class="modal modal-blur fade welcome-modal" id="welcomeModal" tabindex="-1" role="dialog" aria-labelledby="welcomeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans "Welcome to the Setup Wizard" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h1>{% trans "Let's Get Started!" %}</h1>
+                <p>{% trans "This wizard will guide you through the necessary setup steps for your application," %}</p>
+                <p>{% trans "which is adding neccessary values like bank, currency and payee." %}</p>
+                <p>{% trans "Click 'Start Setup' to begin." %}</p>
+                <button class="btn-start" onclick="startWizard()">{% trans "Start Setup" %}</button>
+            </div>
+        </div>
+    </div>
 </div>
 
-<!-- Modal (Theme Modal Classes) -->
+<!-- Wizard Modal -->
 <div class="modal modal-blur fade" id="wizardModal" tabindex="-1" role="dialog" aria-labelledby="wizardModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -120,7 +126,7 @@
                 <h5 class="modal-title" id="wizardModalLabel">
                     Add {{ wizard.steps.current }} <!-- Dynamic Step Title -->
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="closeModal()"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="closeWizard()"></button>
             </div>
             <div class="modal-body">
                 <form method="post" class="wizard-form">
@@ -135,7 +141,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn me-auto" data-bs-dismiss="modal" onclick="closeModal()">{% trans "Close" %}</button>
+                <button type="button" class="btn me-auto" data-bs-dismiss="modal" onclick="closeWizard()">{% trans "Close" %}</button>
             </div>
         </div>
     </div>
@@ -145,22 +151,40 @@
 
 {% block scripts %}
 <script>
-    // Function to open the modal when the user clicks the "Start Setup" button
+    document.addEventListener("DOMContentLoaded", function () {
+        // Check if the welcome modal has already been shown in this session
+        if (!sessionStorage.getItem("welcomeShown")) {
+            const welcomeModal = new bootstrap.Modal(document.getElementById('welcomeModal'), {
+                keyboard: false
+            });
+            welcomeModal.show(); // Show welcome modal
+        } else {
+            // Directly open the wizard modal if welcome was already shown in this session
+            const wizardModal = new bootstrap.Modal(document.getElementById('wizardModal'));
+            wizardModal.show();
+        }
+    });
+    
+    // Function to start the wizard
     function startWizard() {
-        // Hide the welcome page
-        document.querySelector('.welcome-card').style.display = 'none';
-
-        // Show the wizard modal
-        const modal = new bootstrap.Modal(document.getElementById('wizardModal'), {
-            keyboard: false
-        });
-        modal.show(); // Open the modal
+        // Store in sessionStorage that the welcome modal has been seen
+        sessionStorage.setItem("welcomeShown", "true");
+    
+        const welcomeModalEl = document.getElementById('welcomeModal');
+        const welcomeModal = bootstrap.Modal.getInstance(welcomeModalEl);
+        welcomeModal.hide(); // Close the welcome modal
+    
+        setTimeout(() => { // Small delay for a smooth transition
+            const wizardModal = new bootstrap.Modal(document.getElementById('wizardModal'));
+            wizardModal.show(); // Open the wizard modal
+        }, 500);
     }
-
-    // Function to close the modal
-    function closeModal() {
-        const modal = new bootstrap.Modal(document.getElementById('wizardModal'));
-        modal.hide(); // Close the modal
+    
+    // Function to close the wizard modal
+    function closeWizard() {
+        const wizardModal = new bootstrap.Modal(document.getElementById('wizardModal'));
+        wizardModal.hide(); // Close the modal
     }
+    
 </script>
 {% endblock scripts %}

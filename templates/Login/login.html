@@ -49,6 +49,67 @@
     </style>
   </head>
   <body  class=" d-flex flex-column">
+
+    <div id="loader">
+      {% include 'loader/loader.html' %}
+    </div>
+
+    <!-- loader script -->
+  <script>
+    //for class based loader
+  document.addEventListener("DOMContentLoaded", function () {
+    const loader = document.getElementById("loader");
+
+    // Ensure the loader is hidden initially
+    if (loader) loader.style.display = "none";
+
+    // Add click event listener to all elements with the 'site-loader' class
+    document.addEventListener("click", function (e) {
+        const target = e.target.closest(".site-loader"); // Check if the clicked element or its ancestor has the 'site-loader' class
+        if (target && loader) {
+            loader.style.display = "flex"; // Show the loader
+        }
+    });
+
+    // Ensure the loader hides when the page finishes loading
+    window.addEventListener("load", function () {
+        if (loader) {
+            loader.style.display = "none"; // Hide the loader
+        }
+    });
+});
+
+//for form submission loader
+
+document.addEventListener("DOMContentLoaded", function () {
+    const loader = document.getElementById("loader");
+
+    // Ensure the loader is hidden initially
+    if (loader) loader.style.display = "none";
+
+    // Add event listener to handle all form submissions
+    document.addEventListener("submit", function (e) {
+        if (loader) {
+            loader.style.display = "flex"; // Show the loader
+        }
+    });
+
+    // Ensure the loader hides when the page finishes loading
+    window.addEventListener("load", function () {
+        if (loader) {
+            loader.style.display = "none"; // Hide the loader
+        }
+    });
+});
+
+
+  </script>
+
+  <!-- loader script -->
+
+
+
+
     <script src="/static/tabler/dist/js/demo-theme.min4f79.js?1735606190"></script>
 
     <!-- messages -->
