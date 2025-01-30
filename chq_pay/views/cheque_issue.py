@@ -127,7 +127,7 @@ def cheque_issue(request):
         issue_currency = get_object_or_404(Currencies, id = cheque_issue_temp.currency.id)
         issue_currency_char = issue_currency.currency_char
         issue_amount_wrd = amount_in_words(issue_amount, issue_currency_char, 'en')
-        issue_amount_wrd_title = issue_amount_wrd.title()
+        
 
         print(issue_amount_wrd)
 
