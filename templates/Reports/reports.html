@@ -1,0 +1,129 @@
+{% extends 'layouts/base.html' %}
+{% load i18n %}
+{% load static %}
+{% block tiitle %}Cheque Issue{% endblock tiitle %}
+{% block stylesheet %}{% endblock stylesheet %}
+{% block content %}
+
+<!-- Page header -->
+<div class="page-header d-print-none">
+    <div class="container-xl">
+      <div class="row g-2 align-items-center">
+        <div class="col">
+          <h2 class="page-title">
+            {% trans "Reports" %}
+          </h2>
+        </div>
+    </div>
+</div>
+
+<!-- Page body -->
+<div class="page-body">
+    <div class="container-xl">
+        <div class="row">
+            <!-- Filters and Search Section -->
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">{% trans "Filters" %}</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="get" id="filterForm">
+                            <!-- Bank Filter -->
+                            <div class="mb-3">
+                                <label for="bankFilter">{% trans "Bank" %}</label>
+                                <select class="form-control" name="bank" id="bankFilter">
+                                    <option value="">{% trans "Select Bank" %}</option>
+                                    <option value="All" {% if 'All' == request.GET.bank %}selected{% endif %}>All</option>
+                                    {% for bank in banks %}
+                                    <option value="{{ bank.id }}" {% if bank.id == request.GET.bank %}selected{% endif %}>{{ bank.bank_name_e }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <!-- Account Filter -->
+                            <div class="mb-3">
+                                <label for="accountFilter">{% trans "Accounts" %}</label>
+                                <select class="form-control" name="account" id="accountFilter">
+                                    <option value="">{% trans "Select Account" %}</option>
+                                    <option value="All" {% if 'All' == request.GET.account %}selected{% endif %}>All</option>
+                                    {% for account in accounts %}
+                                    <option value="{{ account }}" {% if account == request.GET.account %}selected{% endif %}>{{ account }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <!-- Approval Filter -->
+                            <div class="mb-3">
+                                <label for="approvalFilter">{% trans "Approval Status" %}</label>
+                                <select class="form-control" name="approval" id="approvalFilter">
+                                    <option value="">{% trans "Select Approval Status" %}</option>
+                                    <option value="All" {% if approval == 'All' %}selected{% endif %}>All</option>
+                                    <option value="approved" {% if approval == 'approved' %}selected{% endif %}>{% trans "Approved" %}</option>
+                                    <option value="pending" {% if approval == 'pending' %}selected{% endif %}>{% trans "Pending" %}</option>
+                                    <option value="rejected" {% if approval == 'rejected' %}selected{% endif %}>{% trans "Rejected" %}</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Date Range Filter -->
+                            <div class="mb-3">
+                                <label class="mb-2" for="start_date">{% trans "Cheque Date Range" %}</label>
+                                <div class="mb-2">
+                                    <label for="start_date">{% trans "From" %}</label>
+                                    <input type="date" class="form-control" name="start_date" value="{{ start_date }}">
+                                </div>
+                                <div>
+                                    <label for="end_date">{% trans "To" %}</label>
+                                    <input type="date" class="form-control" name="end_date" value="{{ end_date }}">
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">{% trans "Apply Filters" %}</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tabs Section -->
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-header">
+                        <ul class="nav nav-tabs" id="reportTabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-bs-toggle="tab" href="#cheque-table">{% trans "Cheque Table" %}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#payee-table">{% trans "Payee Table" %}</a>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tab-content mt-3">
+                        <div class="tab-pane fade show active" id="cheque-table">
+                            Cheque table
+                        </div>
+                        <div class="tab-pane fade" id="payee-table">
+                            Payee table
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function () {
+    $(".nav-link").on("click", function () {
+        $(".nav-link").removeClass("active");
+        $(this).addClass("active");
+    });
+});
+</script>
+{% endblock scripts %}

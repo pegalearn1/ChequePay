@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
-from chq_pay.views import base_views, authentic_views, cheque_views, bank_views, payee_views, currency_views, company_views, cheque_issue, imp_libs, user_views
+from chq_pay.views import base_views, authentic_views, cheque_views, bank_views, payee_views, currency_views, company_views, cheque_issue, imp_libs, user_views, report_views
 from django.contrib.auth.views import LogoutView
 from chq_pay.forms import BankForm, CurrencyForm, PayeeForm
 from chq_pay.views.wizard_views import AppSetupWizard
@@ -95,6 +95,9 @@ urlpatterns = [
     path('get_cheque_text', cheque_issue.get_cheque_text, name='get_cheque_text'),
     path('print-cheque/<int:cheque_id>/', cheque_issue.print_cheque, name='print_cheque'),
     path('approval/<int:cheque_id>/', cheque_issue.approval, name='approval'),
+
+    #Reports
+    path('reports/', report_views.reports, name='reports'),
 
 
     #wizard
