@@ -31,9 +31,8 @@
                         <!-- Form to save draggable positions -->
                         <form method="post" id="chequeTextForm">
                             {% csrf_token %}
-                            <div id="chequeTemplateContainer" style="position: relative; display: inline-block;">
-                                <img id="chequeTemplate" src="{{ template.background_image.url }}"
-                                    style="width: {{ template.width }}mm; height: {{ template.height }}mm; position: relative;">
+
+                                <div id="chequeTemplate" style="position: relative; display: inline-block; background-image: url('{{ template.background_image.url }}'); background-size: contain; background-repeat: no-repeat; width: {{ template.width }}mm; height: {{ template.height }}mm;">
         
                                 <!-- Draggable elements on the template -->
                                 {% if text.date_x_position and text.date_y_position %}

@@ -8,13 +8,13 @@
     /* Ensure the page size and margin are fixed for printing */
     @page {
         size: {{ width }}mm {{ height }}mm;
-        margin: 0;
+        
     }
 
     /* Cheque container */
     .cheque-container {
         background-image: url({{ template.url }});
-        background-size: cover;
+        background-size: contain;
         background-repeat: no-repeat;
         position: relative;
         width: {{ width }}mm;

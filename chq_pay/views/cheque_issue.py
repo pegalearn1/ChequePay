@@ -59,6 +59,8 @@ def amount_in_words(amount, currency, lang):
         else:
             result = f"{dollars} Dollars"
 
+        return result
+
     elif currency == "EUR" and lang == "en":  # Euros in English
         euros = num2words(whole_part, lang="en")
         if fractional_part > 0:
@@ -67,6 +69,8 @@ def amount_in_words(amount, currency, lang):
         else:
             result = f"{euros} Euros"
 
+        return result
+
     elif currency == "AED" and lang == "en":  # UAE Dirhams in Arabic
         dirhams = num2words(whole_part, lang="en")
         if fractional_part > 0:
@@ -74,6 +78,8 @@ def amount_in_words(amount, currency, lang):
             result = f"{dirhams} Dirhams And {fils} Fils"
         else:
             result = f"{dirhams} Dirhams"
+
+        return result
     
     
     elif currency == "AED" and lang == "ar":  # UAE Dirhams in Arabic
@@ -84,6 +90,8 @@ def amount_in_words(amount, currency, lang):
         else:
             result = f"{dirhams} درهم إماراتي"
 
+        return result
+
     elif currency == "SAR" and lang == "en":  # Saudi Riyals in Arabic
         riyals = num2words(whole_part, lang="en")
         if fractional_part > 0:
@@ -91,6 +99,8 @@ def amount_in_words(amount, currency, lang):
             result = f"{riyals} Riyals And {halalas} Halala"
         else:
             result = f"{riyals} ريال سعودي"
+
+        return result
     
     elif currency == "SAR" and lang == "ar":  # Saudi Riyals in Arabic
         riyals = num2words(whole_part, lang="ar")
@@ -99,6 +109,8 @@ def amount_in_words(amount, currency, lang):
             result = f"{riyals} ريال سعودي و {halalas} هللة"
         else:
             result = f"{riyals} ريال سعودي"
+
+        return result
 
     else:
         raise ValueError(f"Unsupported currency {currency} or language {lang}")
@@ -252,7 +264,7 @@ def cheque_issue_list(request):
 def delete_chequeissue(request, chequeissue_id):
     cheque_issue = get_object_or_404(ChequeIssue, id=chequeissue_id)
     cheque_issue.delete()
-    messages.error(request,('Cheque Issued Deleted Successfully!!'))
+    messages.success(request,('Cheque Issued Deleted Successfully!!'))
     return redirect('cheque_issue_list')
 
 
@@ -389,6 +401,7 @@ def print_cheque(request, cheque_id):
     issue_amount_wrd = amount_in_words(
         cheque_issue.issue_amount, issue_currency, 'en'
     )
+
     issue_amount_wrd_title = issue_amount_wrd.title()
 
     context = {

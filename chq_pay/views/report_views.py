@@ -16,7 +16,7 @@ def reports(request):
     payees = Payee.objects.all()
     chq_txts = ChequeText.objects.all()
 
-    print("accountsss - ", accounts)
+    # print("accountsss - ", accounts)
 
     # Apply filters if provided in the request
     search = request.GET.get('search', '')
