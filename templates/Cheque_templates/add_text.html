@@ -171,70 +171,72 @@
 {% block scripts %}
 
 <script>
-  function makeDraggable(divId, xFieldId, yFieldId) {
-    let element = document.getElementById(divId);
-    let offsetX, offsetY;
-
-    element.onmousedown = function (event) {
-        offsetX = event.clientX - element.getBoundingClientRect().left;
-        offsetY = event.clientY - element.getBoundingClientRect().top;
-
-        // Temporarily set absolute position when dragging starts
-        element.style.position = "absolute";
-        document.body.appendChild(element);
-
-        document.onmousemove = function (event) {
-            let newX = event.clientX - offsetX;
-            let newY = event.clientY - offsetY;
-
-            // Move the element as per mouse movement
-            element.style.left = newX + "px";
-            element.style.top = newY + "px";
-        };
-
-        document.onmouseup = function () {
-            document.onmousemove = null;
-            document.onmouseup = null;
-
-            // Check if the element is dropped inside the cheque template
+    function makeDraggable(divId, xFieldId, yFieldId) {
+        let element = document.getElementById(divId);
+        let chequeTemplate = document.getElementById("chequeTemplate");
+    
+        element.onmousedown = function (event) {
+            event.preventDefault(); // Prevents text selection while dragging
+    
+            let rect = element.getBoundingClientRect();
             let chequeRect = chequeTemplate.getBoundingClientRect();
-            let elementRect = element.getBoundingClientRect();
-
-            if (
-                elementRect.left >= chequeRect.left &&
-                elementRect.right <= chequeRect.right &&
-                elementRect.top >= chequeRect.top &&
-                elementRect.bottom <= chequeRect.bottom
-            ) {
-                // Position the element within the cheque template
-                let xPosition = ((elementRect.left - chequeRect.left) / chequeRect.width) * {{ template.width }};
-                let yPosition = ((elementRect.top - chequeRect.top) / chequeRect.height) * {{ template.height }};
-
-                // Update hidden input fields
-                document.getElementById(xFieldId).value = xPosition.toFixed(2);
-                document.getElementById(yFieldId).value = yPosition.toFixed(2);
-
-                // Append the element to the cheque template container
-                chequeTemplate.parentElement.appendChild(element);
-                element.style.left = ((xPosition / {{ template.width }}) * chequeRect.width) + "px";
-                element.style.top = ((yPosition / {{ template.height }}) * chequeRect.height) + "px";
-            } else {
-                // Return the element to the toolbar if dropped outside the template
-                element.style.position = "relative";
-                element.style.left = "";
-                element.style.top = "";
-                document.getElementById("toolbar").appendChild(element);
-            }
+    
+            let offsetX = event.clientX - rect.left;
+            let offsetY = event.clientY - rect.top;
+    
+            // Set absolute position based on current screen position
+            element.style.position = "absolute";
+            element.style.left = rect.left + "px";
+            element.style.top = rect.top + "px";
+    
+            document.onmousemove = function (event) {
+                let newX = event.clientX - offsetX;
+                let newY = event.clientY - offsetY;
+    
+                element.style.left = `${newX}px`;
+                element.style.top = `${newY}px`;
+            };
+    
+            document.onmouseup = function () {
+                document.onmousemove = null;
+                document.onmouseup = null;
+    
+                let elementRect = element.getBoundingClientRect();
+    
+                if (
+                    elementRect.left >= chequeRect.left &&
+                    elementRect.right <= chequeRect.right &&
+                    elementRect.top >= chequeRect.top &&
+                    elementRect.bottom <= chequeRect.bottom
+                ) {
+                    let xPosition = ((elementRect.left - chequeRect.left) / chequeRect.width) * {{ template.width }};
+                    let yPosition = ((elementRect.top - chequeRect.top) / chequeRect.height) * {{ template.height }};
+    
+                    document.getElementById(xFieldId).value = xPosition.toFixed(2);
+                    document.getElementById(yFieldId).value = yPosition.toFixed(2);
+    
+                    chequeTemplate.appendChild(element);
+                    element.style.left = `${((xPosition / {{ template.width }}) * chequeRect.width)}px`;
+                    element.style.top = `${((yPosition / {{ template.height }}) * chequeRect.height)}px`;
+                } else {
+                    element.style.position = "relative";
+                    element.style.left = "";
+                    element.style.top = "";
+                    document.getElementById("toolbar").appendChild(element);
+                }
+            };
         };
-    };
-}
+    }
+    
+    document.addEventListener("DOMContentLoaded", function () {
+        makeDraggable("dateDiv", "date_x_position", "date_y_position");
+        makeDraggable("payeeDiv", "payee_x_position", "payee_y_position");
+        makeDraggable("amtWordsDiv", "amtwrds_x_position", "amtwrds_y_position");
+        makeDraggable("amtNumDiv", "amtnum_x_position", "amtnum_y_position");
+        makeDraggable("signDiv", "sign_x_position", "sign_y_position");
+    });
+    
 
-// Apply draggable functionality to each element
-makeDraggable("dateDiv", "date_x_position", "date_y_position");
-makeDraggable("payeeDiv", "payee_x_position", "payee_y_position");
-makeDraggable("amtWordsDiv", "amtwrds_x_position", "amtwrds_y_position");
-makeDraggable("amtNumDiv", "amtnum_x_position", "amtnum_y_position");
-makeDraggable("signDiv", "sign_x_position", "sign_y_position");
 
 
   
