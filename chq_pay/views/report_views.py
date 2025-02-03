@@ -12,7 +12,7 @@ def reports(request):
     cheques = ChequeIssue.objects.all().filter(Q(company__is_selected=True)).order_by('-issue_cheque_date')
     templates = ChequeTemplate.objects.all()
     banks = Banks.objects.all()
-    accounts = ChequeIssue.objects.values_list('issue_accountnum', flat=True).distinct()
+    accounts = ChequeIssue.objects.values_list('issue_accountnum', 'issue_bank__bank_name_e').distinct()
     payees = Payee.objects.all()
     chq_txts = ChequeText.objects.all()
 

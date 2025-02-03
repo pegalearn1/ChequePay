@@ -1,8 +1,37 @@
 {% extends 'layouts/base.html' %}
 {% load i18n %}
 {% load static %}
-{% block tiitle %}Cheque Issue{% endblock tiitle %}
-{% block stylesheet %}{% endblock stylesheet %}
+{% block tiitle %}{% trans "Reports" %}{% endblock tiitle %}
+{% block stylesheet %}
+
+<style>
+    /* Add spacing around the table */
+    .table-responsive {
+        padding: 15px;
+    }
+  
+    /* Improve table spacing */
+    table.dataTable {
+        margin-top: 10px !important;
+        border-spacing: 0 10px; /* Adds space between rows */
+    }
+  
+    /* Center pagination */
+    .dataTables_wrapper .dataTables_paginate {
+        text-align: center !important;
+        margin-top: 10px;
+    }
+  
+    /* Table header styling */
+    .dataTable thead th {
+        background-color: #f8f9fa;
+        padding: 12px;
+        border-bottom: 2px solid #dee2e6;
+    }
+  </style>
+  
+
+{% endblock stylesheet %}
 {% block content %}
 
 <!-- Page header -->
@@ -28,30 +57,7 @@
                         <h4 class="card-title">{% trans "Filters" %}</h4>
                     </div>
                     <div class="card-body">
-                        <form method="get" id="filterForm">
-                            <!-- Bank Filter -->
-                            <div class="mb-3">
-                                <label for="bankFilter">{% trans "Bank" %}</label>
-                                <select class="form-control" name="bank" id="bankFilter">
-                                    <option value="">{% trans "Select Bank" %}</option>
-                                    <option value="All" {% if 'All' == request.GET.bank %}selected{% endif %}>All</option>
-                                    {% for bank in banks %}
-                                    <option value="{{ bank.id }}" {% if bank.id == request.GET.bank %}selected{% endif %}>{{ bank.bank_name_e }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            
-                            <!-- Account Filter -->
-                            <div class="mb-3">
-                                <label for="accountFilter">{% trans "Accounts" %}</label>
-                                <select class="form-control" name="account" id="accountFilter">
-                                    <option value="">{% trans "Select Account" %}</option>
-                                    <option value="All" {% if 'All' == request.GET.account %}selected{% endif %}>All</option>
-                                    {% for account in accounts %}
-                                    <option value="{{ account }}" {% if account == request.GET.account %}selected{% endif %}>{{ account }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
+                        <form method="post" id="report">
                             
                             <!-- Approval Filter -->
                             <div class="mb-3">
@@ -92,21 +98,176 @@
                     <div class="card-header">
                         <ul class="nav nav-tabs" id="reportTabs">
                             <li class="nav-item">
-                                <a class="nav-link active" data-bs-toggle="tab" href="#cheque-table">{% trans "Cheque Table" %}</a>
+                                <a class="nav-link active" data-bs-toggle="tab" href="#bank-table">{% trans "Banks" %}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" data-bs-toggle="tab" href="#payee-table">{% trans "Payee Table" %}</a>
+                                <a class="nav-link" data-bs-toggle="tab" href="#payee-table">{% trans "Payees " %}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#account-table">{% trans "Accounts" %}</a>
                             </li>
                         </ul>
                     </div>
                     
                     <div class="tab-content mt-3">
-                        <div class="tab-pane fade show active" id="cheque-table">
-                            Cheque table
+                        
+                        <!-- bank-table -->
+                        <div class="tab-pane fade show active" id="bank-table">
+                           
+                            <!-- table -->
+                            <div class="table-responsive" >
+                                <table class="table card-table table-vcenter text-nowrap datatable" id="bankDataTable">
+                                  <thead>
+                                    <tr>
+                                    <th><input type="checkbox" id="selectAllBank"></th>
+                                    <th>{% trans "Bank Char" %}</th>
+                                    <th>{% trans "Bank Name E" %}</th>
+                                    <th>{% trans "Bank Name L" %}</th>
+                                    <th>{% trans "Telephone" %}</th>
+                                    <th>{% trans "Address" %}</th>
+                                      
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                      {% if banks %}
+                                          {% for bank in banks %}
+                                    <tr>
+                  
+                                    <td class="text-start">
+
+                                        <input type="checkbox" class="rowCheckboxBank">
+                  
+                                    </td>
+                                    
+                                    <td>
+                                        {{bank.bank_char}}
+                                      </td>
+                                      <td>
+                                        {{bank.bank_name_e}}
+                                      </td>
+                                      <td>
+                                        {{bank.bank_name_l}}
+                                      </td>
+                                      <td>
+                                        {{bank.tel_no}}
+                                      </td>
+                                      <td>
+                                        {{bank.address}}
+                                      </td>
+                                      
+                                    </tr>
+                                    {% endfor %}
+                            {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center">{% trans "No Payees found" %}</td>
+                            </tr>
+                            {% endif %}
+                                  </tbody>
+                                </table>
+                              </div>
+                            <!-- table -->
+                        
+                        
+                        
                         </div>
+                        <!-- bank-table -->
+
+
+                        <!-- payee-table -->
                         <div class="tab-pane fade" id="payee-table">
-                            Payee table
+                            <!-- table -->
+                            <div class="table-responsive" >
+                                <table class="table card-table table-vcenter text-nowrap datatable" id="payeeDataTable">
+                                  <thead>
+                                    <tr>
+                                      <th><input type="checkbox" id="selectAllPayee">
+                                    </th>
+                                      <th>{% trans "Payee Name" %}</th>
+                                      <th>{% trans "Mobile Number" %}</th>
+                                      <th>{% trans "Email" %}</th>
+                                      <th>{% trans "Address" %}</th>
+                                      
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                      {% if payees %}
+                                          {% for payee in payees %}
+                                    <tr>
+                  
+                                    <td class="text-start">
+
+                                        <input type="checkbox" class="rowCheckboxPayee">
+                  
+                                    </td>
+                                    
+                                      <td>{{ payee.payee_name }}</td>
+                                      <td>{{ payee.mobile_no }}</td>
+                                      <td>{{ payee.email }}</td>
+                                      <td>
+                                        {% if payee.address %}
+                                        {{payee.address}}
+                                        {% endif %}
+                                      </td>
+                                      
+                                    </tr>
+                                    {% endfor %}
+                            {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center">{% trans "No Payees found" %}</td>
+                            </tr>
+                            {% endif %}
+                                  </tbody>
+                                </table>
+                              </div>
+                            <!-- table -->
+                        
                         </div>
+                        <!-- payee-table -->
+
+                        <!-- account-table -->
+                        <div class="tab-pane fade show" id="account-table">
+                            
+                            <!-- table -->
+                            <div class="table-responsive" >
+                                <table class="table card-table table-vcenter text-nowrap datatable" id="accountDataTable">
+                                  <thead>
+                                    <tr>
+                                      <th><input type="checkbox" id="selectAllAccount"></th>
+                                      <th>{% trans "Account Number" %}</th>
+                                      <th>{% trans "Bank" %}</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                      {% if accounts %}
+                                          {% for account, bank in accounts %}
+                                    <tr>
+                  
+                                    <td class="text-start">
+
+                                        <input type="checkbox" class="rowCheckboxAccount">
+                  
+                                    </td>
+                                    
+                                      <td>{{ account }}</td>
+                                      <td>{{ bank }}</td>
+                                      
+                                      
+                                    </tr>
+                                    {% endfor %}
+                            {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center">{% trans "No Payees found" %}</td>
+                            </tr>
+                            {% endif %}
+                                  </tbody>
+                                </table>
+                              </div>
+                            <!-- table -->
+
+
+                        </div>
+                        <!-- account-table -->
+
                     </div>
                 </div>
             </div>
@@ -118,6 +279,7 @@
 
 {% block scripts %}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script>
 $(document).ready(function () {
     $(".nav-link").on("click", function () {
@@ -125,5 +287,125 @@ $(document).ready(function () {
         $(this).addClass("active");
     });
 });
+
+
+// Initialize DataTable on page load
+document.addEventListener('DOMContentLoaded', function () {
+  $('#bankDataTable').DataTable({
+    paging: true, // Enable pagination
+    pageLength: 10, // Number of rows per page
+    lengthChange: true, // Allow changing number of rows per page
+    searching: false, // Disable search (optional, if not needed)
+    ordering: true, // Enable column sorting
+    order: [], // Disable initial ordering
+    info: true, // Show info about current page and total rows
+    language: {
+      paginate: {
+        previous: "{% trans 'Previous' %}",
+        next: "{% trans 'Next' %}",
+      },
+      info: "{% trans 'Showing _START_ to _END_ of _TOTAL_ entries' %}",
+      lengthMenu: "{% trans 'Show _MENU_ entries' %}",
+    },
+  });
+});
+
+
+//Initialize DataTable on page load
+document.addEventListener('DOMContentLoaded', function () {
+  $('#payeeDataTable').DataTable({
+    paging: true, // Enable pagination
+    pageLength: 10, // Number of rows per page
+    lengthChange: true, // Allow changing number of rows per page
+    searching: false, // Disable search (optional, if not needed)
+    ordering: true, // Enable column sorting
+    order: [], // Disable initial ordering
+    info: true, // Show info about current page and total rows
+    language: {
+      paginate: {
+        previous: "{% trans 'Previous' %}",
+        next: "{% trans 'Next' %}",
+      },
+      info: "{% trans 'Showing _START_ to _END_ of _TOTAL_ entries' %}",
+      lengthMenu: "{% trans 'Show _MENU_ entries' %}",
+    },
+  });
+});
+
+//Initialize DataTable on page load
+document.addEventListener('DOMContentLoaded', function () {
+  $('#accountDataTable').DataTable({
+    paging: true, // Enable pagination
+    pageLength: 10, // Number of rows per page
+    lengthChange: true, // Allow changing number of rows per page
+    searching: false, // Disable search (optional, if not needed)
+    ordering: true, // Enable column sorting
+    order: [], // Disable initial ordering
+    info: true, // Show info about current page and total rows
+    language: {
+      paginate: {
+        previous: "{% trans 'Previous' %}",
+        next: "{% trans 'Next' %}",
+      },
+      info: "{% trans 'Showing _START_ to _END_ of _TOTAL_ entries' %}",
+      lengthMenu: "{% trans 'Show _MENU_ entries' %}",
+    },
+  });
+});
+
+
+//for bank table
+$(document).ready(function () {
+        // Select/Deselect All Rows
+        $('#selectAllBank').on('click', function () {
+            $('.rowCheckboxBank').prop('checked', this.checked);
+        });
+
+        // If any row checkbox is unchecked, uncheck the selectAll checkbox
+        $('.rowCheckboxBank').on('click', function () {
+            if ($('.rowCheckboxBank:checked').length === $('.rowCheckboxBank').length) {
+                $('#selectAllBank').prop('checked', true);
+            } else {
+                $('#selectAllBank').prop('checked', false);
+            }
+        });
+    });
+
+
+//for payee table
+    $(document).ready(function () {
+        // Select/Deselect All Rows
+        $('#selectAllPayee').on('click', function () {
+            $('.rowCheckboxPayee').prop('checked', this.checked);
+        });
+
+        // If any row checkbox is unchecked, uncheck the selectAll checkbox
+        $('.rowCheckboxPayee').on('click', function () {
+            if ($('.rowCheckboxPayee:checked').length === $('.rowCheckboxPayee').length) {
+                $('#selectAllPayee').prop('checked', true);
+            } else {
+                $('#selectAllPayee').prop('checked', false);
+            }
+        });
+    });
+
+
+//for Account table
+    $(document).ready(function () {
+        // Select/Deselect All Rows
+        $('#selectAllAccount').on('click', function () {
+            $('.rowCheckboxAccount').prop('checked', this.checked);
+        });
+
+        // If any row checkbox is unchecked, uncheck the selectAll checkbox
+        $('.rowCheckboxAccount').on('click', function () {
+            if ($('.rowCheckboxAccount:checked').length === $('.rowCheckboxAccount').length) {
+                $('#selectAllAccount').prop('checked', true);
+            } else {
+                $('#selectAllAccount').prop('checked', false);
+            }
+        });
+    });
+
 </script>
 {% endblock scripts %}

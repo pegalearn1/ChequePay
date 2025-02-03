@@ -2,6 +2,38 @@
 {% load i18n %}
 {% load static %}
 {% block tiitle %}{% trans "Payees" %}{% endblock tiitle %}
+{% block stylesheet %}
+
+<style>
+    /* Add spacing around the table */
+    .table-responsive {
+        padding: 15px;
+    }
+  
+    /* Improve table spacing */
+    table.dataTable {
+        margin-top: 10px !important;
+        border-spacing: 0 10px; /* Adds space between rows */
+    }
+  
+    /* Center pagination */
+    .dataTables_wrapper .dataTables_paginate {
+        text-align: center !important;
+        margin-top: 10px;
+    }
+  
+    /* Table header styling */
+    .dataTable thead th {
+        background-color: #f8f9fa;
+        padding: 12px;
+        border-bottom: 2px solid #dee2e6;
+    }
+  </style>
+  
+
+{% endblock stylesheet %}
+
+
 {% block content %}
 
 
@@ -295,7 +327,7 @@
           <div id="dataTablePayeeContainer" class="mt-3 d-none">
             <h6>{% trans "Validation Results" %}</h6>
             <div style="max-height: 600px; overflow-y: auto;">
-            <table class="table table-bordered" id="payeeDataTable">
+            <table class="table card-table table-vcenter text-nowrap datatable" id="payeeDataTable">
               <thead>
                 <tr>
                   <th>{% trans "Payee Name" %}</th>
@@ -319,17 +351,6 @@
 </div>
 
 <!-- Excel Upload Payee Modal -->
-
-  
-
-
-
-
-
-
-
-
-
 
 
 {% endblock content %}
