@@ -54,8 +54,39 @@ def reports(request):
         selected_payees = request.POST.getlist('selected_payees')
         selected_accounts = request.POST.getlist('selected_accounts')
 
-        print("payeeesss -- ", selected_payees)
-        print("acountsss -- ", selected_accounts)
+        if selected_payees:
+            # Initialize a dictionary to group cheques by payee
+            payee_cheques = {}
+
+            # Fetch cheques filtered by the selected payees
+            for payee in selected_payees:
+                print("\n")
+                print("payee - ", payee)
+                # Filter cheques by the current payee
+                chq_payee = cheques.filter(issue_payee=payee)
+
+                # Group cheques by payee
+                for p in chq_payee:
+                    if p.issue_payee.payee_name not in payee_cheques:
+                        payee_cheques[p.issue_payee.payee_name] = []
+                    payee_cheques[p.issue_payee.payee_name].append(p)
+
+            # Iterate over the payee_cheques dictionary to print each payee's name and associated cheque details
+            for payee_name, cheques in payee_cheques.items():
+                print(f"Payee: {payee_name}")
+                for p in cheques:
+                    print(f"Cheque Details - Bank: {p.issue_bank.bank_name_e}, Amount: {p.issue_amount}")  # Adjust as per your model's fields
+
+
+
+           
+
+            # After the loop, render the template with the gathered `all_chq_payees`
+            return render(request, "Reports/payee_report.html", {'chq_payee': payee_cheques.items()})
+                
+        
+        # print("payeeesss -- ", chq_payee)
+        # print("acountsss -- ", selected_accounts)
         print("getbanks - ", selected_bank)
         print("getapproval - ", selected_approval)
         print("getstdate - ", start_date)

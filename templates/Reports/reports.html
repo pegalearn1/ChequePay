@@ -126,7 +126,7 @@
                                 <button type="submit" form="payeeForm" class="btn btn-success">{% trans "Generate Report" %}</button>
                             </div>
                             
-                            <form method="post" id="payeeForm" action="{% url 'reports' %}">
+                            <form method="post" id="payeeForm" action="{% url 'reports' %}" target="_blank">
                                 {% csrf_token %}
                                 
                                 <!-- table -->
@@ -241,6 +241,7 @@ $(document).ready(function () {
 });
 
 
+//for Payee table
 //Initialize DataTable on page load
 document.addEventListener('DOMContentLoaded', function () {
   $('#payeeDataTable').DataTable({
@@ -262,6 +263,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
+//for Account table
 //Initialize DataTable on page load
 document.addEventListener('DOMContentLoaded', function () {
   $('#accountDataTable').DataTable({
@@ -284,40 +286,135 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-//for payee table
-    $(document).ready(function () {
-        // Select/Deselect All Rows
-        $('#selectAllPayee').on('click', function () {
-            $('.rowCheckboxPayee').prop('checked', this.checked);
-        });
 
-        // If any row checkbox is unchecked, uncheck the selectAll checkbox
-        $('.rowCheckboxPayee').on('click', function () {
-            if ($('.rowCheckboxPayee:checked').length === $('.rowCheckboxPayee').length) {
-                $('#selectAllPayee').prop('checked', true);
-            } else {
-                $('#selectAllPayee').prop('checked', false);
+//for Payee table
+document.addEventListener('DOMContentLoaded', function () {
+    // Check if DataTable is already initialized
+    if ($.fn.DataTable.isDataTable('#payeeDataTable')) {
+        $('#payeeDataTable').DataTable().destroy();
+    }
+
+    var payeeTable = $('#payeeDataTable').DataTable({
+        paging: true,
+        pageLength: 10,
+        lengthChange: true,
+        searching: false,
+        ordering: true,
+        order: [],
+        info: true,
+        language: {
+            paginate: {
+                previous: "{% trans 'Previous' %}",
+                next: "{% trans 'Next' %}",
+            },
+            info: "{% trans 'Showing _START_ to _END_ of _TOTAL_ entries' %}",
+            lengthMenu: "{% trans 'Show _MENU_ entries' %}",
+        },
+        initComplete: function () {
+            if (!$('#selectAllGlobalPayee').length) {
+                $("#payeeDataTable_length").append(
+                    '<label style="margin-left: 15px;">' +
+                    '<input type="checkbox" id="selectAllGlobalPayee"> {% trans "Select All" %}' +
+                    '</label>'
+                );
             }
+        }
+    });
+
+    // Select/Deselect All Rows on Current Page
+    $('#selectAllPayee').on('click', function () {
+        var isChecked = this.checked;
+        $('.rowCheckboxPayee').prop('checked', isChecked);
+    });
+
+    // Select/Deselect All Rows Across All Pages
+    $(document).on('click', '#selectAllGlobalPayee', function () {
+        var isChecked = this.checked;
+        $('.rowCheckboxPayee').prop('checked', isChecked);
+
+        // Select all checkboxes across all pages using DataTables API
+        payeeTable.rows().every(function () {
+            $(this.node()).find('.rowCheckboxPayee').prop('checked', isChecked);
         });
     });
+
+    // If any row checkbox is unchecked, uncheck the selectAll checkboxes
+    $(document).on('click', '.rowCheckboxPayee', function () {
+        if ($('.rowCheckboxPayee:checked').length === $('.rowCheckboxPayee').length) {
+            $('#selectAllPayee').prop('checked', true);
+            $('#selectAllGlobalPayee').prop('checked', true);
+        } else {
+            $('#selectAllPayee').prop('checked', false);
+            $('#selectAllGlobalPayee').prop('checked', false);
+        }
+    });
+});
+
 
 
 //for Account table
-    $(document).ready(function () {
-        // Select/Deselect All Rows
-        $('#selectAllAccount').on('click', function () {
-            $('.rowCheckboxAccount').prop('checked', this.checked);
-        });
+$(document).ready(function () {
+    // Check if DataTable is already initialized and destroy it before reinitializing
+    if ($.fn.DataTable.isDataTable('#accountDataTable')) {
+        $('#accountDataTable').DataTable().destroy();
+    }
 
-        // If any row checkbox is unchecked, uncheck the selectAll checkbox
-        $('.rowCheckboxAccount').on('click', function () {
-            if ($('.rowCheckboxAccount:checked').length === $('.rowCheckboxAccount').length) {
-                $('#selectAllAccount').prop('checked', true);
-            } else {
-                $('#selectAllAccount').prop('checked', false);
+    var accountTable = $('#accountDataTable').DataTable({
+        paging: true,
+        pageLength: 10,
+        lengthChange: true,
+        searching: false,
+        ordering: true,
+        order: [],
+        info: true,
+        language: {
+            paginate: {
+                previous: "{% trans 'Previous' %}",
+                next: "{% trans 'Next' %}",
+            },
+            info: "{% trans 'Showing _START_ to _END_ of _TOTAL_ entries' %}",
+            lengthMenu: "{% trans 'Show _MENU_ entries' %}",
+        },
+        initComplete: function () {
+            if (!$('#selectAllGlobalAccount').length) {
+                $("#accountDataTable_length").append(
+                    '<label style="margin-left: 15px;">' +
+                    '<input type="checkbox" id="selectAllGlobalAccount"> {% trans "Select All" %}' +
+                    '</label>'
+                );
             }
+        }
+    });
+
+    // Select/Deselect All Rows on Current Page
+    $('#selectAllAccount').on('click', function () {
+        var isChecked = this.checked;
+        $('.rowCheckboxAccount').prop('checked', isChecked);
+    });
+
+    // Select/Deselect All Rows Across All Pages
+    $(document).on('click', '#selectAllGlobalAccount', function () {
+        var isChecked = this.checked;
+        $('.rowCheckboxAccount').prop('checked', isChecked);
+
+        // Select all checkboxes across all pages using DataTables API
+        accountTable.rows().every(function () {
+            $(this.node()).find('.rowCheckboxAccount').prop('checked', isChecked);
         });
     });
+
+    // If any row checkbox is unchecked, uncheck the selectAll checkboxes
+    $(document).on('click', '.rowCheckboxAccount', function () {
+        if ($('.rowCheckboxAccount:checked').length === $('.rowCheckboxAccount').length) {
+            $('#selectAllAccount').prop('checked', true);
+            $('#selectAllGlobalAccount').prop('checked', true);
+        } else {
+            $('#selectAllAccount').prop('checked', false);
+            $('#selectAllGlobalAccount').prop('checked', false);
+        }
+    });
+});
+
 
 
 
