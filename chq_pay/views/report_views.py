@@ -12,7 +12,7 @@ def reports(request):
     cheques = ChequeIssue.objects.all().filter(Q(company__is_selected=True)).order_by('-issue_cheque_date')
     banks = ChequeIssue.objects.values_list('issue_bank__id','issue_bank__bank_name_e').distinct()
     accounts = ChequeIssue.objects.values_list('issue_accountnum', 'issue_bank__bank_name_e').distinct()
-    payees = ChequeIssue.objects.select_related('issue_payee').distinct()
+    payees = ChequeIssue.objects.values('issue_payee__id','issue_payee__payee_name', 'issue_payee__mobile_no','issue_payee__email','issue_payee__address').distinct()
 
     
     # Fetch filter parameters for Bank and Approval
@@ -74,11 +74,9 @@ def reports(request):
             # Iterate over the payee_cheques dictionary to print each payee's name and associated cheque details
             for payee_name, cheques in payee_cheques.items():
                 print(f"Payee: {payee_name}")
+                
                 for p in cheques:
                     print(f"Cheque Details - Bank: {p.issue_bank.bank_name_e}, Amount: {p.issue_amount}")  # Adjust as per your model's fields
-
-
-
            
 
             # After the loop, render the template with the gathered `all_chq_payees`

@@ -232,64 +232,55 @@
 
     <!-- Payee Sections -->
 
+    {% for payee_name, cheques in chq_payee %}
     <!-- Payee Section 1 -->
     <div class="payee-section">
         <div class="sub-header">
-            <h4>Payee Name: Faraz Ahmed</h4>
+            <h4>Payee Name: {{payee_name}}</h4>
         </div>
-        <div class="payee-details">
+        {% comment %} <div class="payee-details">
             <span><strong>Address:</strong> N/A</span>
             <span><strong>City:</strong> UDR</span>
             <span><strong>Contact:</strong> N/A</span>
-        </div>
+        </div> {% endcomment %}
         <div class="sub-heading">
             <span>Cheque Details</span>
-            <span><strong>3 Cheque(s) Issued</strong></span>
+            <span><strong>{{ cheques|length }} Cheque(s) Issued</strong></span>
         </div>
         <table>
             <thead>
                 <tr>
                     <th>Bank</th>
                     <th>Account#</th>
-                    <th>Book Name</th>
                     <th>Cheque#</th>
                     <th>Amount</th>
-                    <th>Date</th>
+                    <th>Currency</th>
+                    <th>Cheque Date</th>
+                    <th>Approval</th>
                 </tr>
             </thead>
             <tbody>
+                {% for chq_details in cheques  %}
                 <tr>
-                    <td>State Bank of India <small>(IN)</small></td>
-                    <td>9864236626626</td>
-                    <td>SBI-12364-10 <small>(Running)</small></td>
-                    <td>#12373 <small>(Issued)</small></td>
-                    <td>50,00,00,000</td>
-                    <td>08/01/2025</td>
+                    <td>{{chq_details.issue_bank.bank_name_e}}</td>
+                    <td>{{chq_details.issue_accountnum}}</td>
+                    <td>{{chq_details.issue_cheque_no}}</td>
+                    <td>{{chq_details.issue_amount}}</td>
+                    <td>{{chq_details.issue_currency.currency_char}}</td>
+                    <td>{{chq_details.issue_cheque_date}}</td>
+                    <td>{% if chq_details.issue_is_approved %}Approved {% elif chq_details.issue_is_approved is None %}Pending {% else %}Rejected{% endif %}</td>
                 </tr>
-                <tr>
-                    <td>Commercial Bank of Kuwait <small>(KW)</small></td>
-                    <td>54749318387511</td>
-                    <td>CBK-1234561-20 <small>(Running)</small></td>
-                    <td>#1234561 <small>(Issued)</small></td>
-                    <td>50,635</td>
-                    <td>12/02/2025</td>
-                </tr>
-                <tr>
-                    <td>Commercial Bank of Kuwait <small>(KW)</small></td>
-                    <td>54749318387511</td>
-                    <td>CBK-1234561-20 <small>(Running)</small></td>
-                    <td>#1234562 <small>(Issued)</small></td>
-                    <td>43,215</td>
-                    <td>31/01/2025</td>
-                </tr>
+                {% endfor %}
             </tbody>
         </table>
         <div class="total">
             <p><strong>Total Amount Issued:</strong> 50,00,93,850 <i class="fa fa-inr" aria-hidden="true"></i> INR</p>
         </div>
     </div>
+    {% endfor %}
 
-    <!-- Payee Section 2 -->
+
+    {% comment %} <!-- Payee Section 2 -->
     <div class="payee-section">
         <div class="sub-header">
             <h4>Payee Name: Mohammed</h4>
@@ -328,7 +319,7 @@
         <div class="total">
             <p><strong>Total Amount Issued:</strong> 26,744 <i class="fa fa-inr" aria-hidden="true"></i> INR</p>
         </div>
-    </div>
+    </div> {% endcomment %}
 
     <!-- Add Payee Sections 3 to 7 following the same structure -->
     <!-- Summary -->

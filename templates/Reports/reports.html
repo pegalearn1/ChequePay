@@ -146,14 +146,14 @@
                                                 {% for payee in payees %}
                                                 <tr>
                                                     <td class="text-start">
-                                                        <input type="checkbox" name="selected_payees" class="rowCheckboxPayee" value="{{ payee.issue_payee.id }}">
+                                                        <input type="checkbox" name="selected_payees" class="rowCheckboxPayee" value="{{ payee.issue_payee__id }}">
                                                     </td>
-                                                    <td>{{ payee.issue_payee.payee_name }}</td>
-                                                    <td>{{ payee.issue_payee.mobile_no }}</td>
-                                                    <td>{{ payee.issue_payee.email }}</td>
+                                                    <td>{{ payee.issue_payee__payee_name }}</td>
+                                                    <td>{{ payee.issue_payee__mobile_no }}</td>
+                                                    <td>{{ payee.issue_payee__email }}</td>
                                                     <td>
                                                         {% if payee.address %}
-                                                        {{ payee.issue_payee.address }}
+                                                        {{ payee.issue_payee__address }}
                                                         {% endif %}
                                                     </td>
                                                 </tr>
