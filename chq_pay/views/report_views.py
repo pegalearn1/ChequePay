@@ -72,7 +72,6 @@ def reports(request):
         if selected_payees:
             # Initialize a dictionary to group cheques by payee
             payee_cheques = {}
-            payee_total_approved_amounts = {}
             
 
             # Fetch cheques filtered by the selected payees
@@ -80,12 +79,16 @@ def reports(request):
                 
                 chq_payee = cheques.filter(issue_payee=payee)
 
+                payee_name = Payee.objects.filter(id=payee).values_list('payee_name', flat=True).first()
+
+                print("pname - ", payee_name)
+
                 total_approved = {}
 
                 for p in chq_payee:
-                    if p.issue_payee.payee_name not in payee_cheques:
-                        payee_cheques[p.issue_payee.payee_name] = []
-                    payee_cheques[p.issue_payee.payee_name].append(p)
+                    if payee_name not in payee_cheques:
+                        payee_cheques[payee_name] = []
+                    payee_cheques[payee_name].append(p)
 
                     # Sum approved cheque amounts per currency for each payee
                     if p.issue_is_approved:
@@ -94,10 +97,18 @@ def reports(request):
                             total_approved[currency] = 0
                         total_approved[currency] += p.issue_amount
 
-                    # Store total amounts in the payee_cheques dictionary
-                    payee_cheques[p.issue_payee.payee_name].append({"total_approved": total_approved})
+                # Store total amounts in a separate variable and append the results
+                payee_cheques[payee_name].append({"total_approved": total_approved})
 
-                print("payee cheques - ", payee_cheques.items())
+# Now, payee_cheques will hold a list of cheques for each payee, followed by a dictionary of total_approved amounts
+
+
+                for pname, chq in payee_cheques.items():
+                    print("pname - ", pname)
+
+                    for c in chq:
+                        print("chq details - ",c)
+
                 
 
             # # Iterate over the payee_cheques dictionary to print each payee's name and associated cheque details

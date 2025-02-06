@@ -252,7 +252,7 @@
         </div>
         <div class="sub-heading">
             <span>Cheque Details</span>
-            <span><strong>{{ cheques|length }} Cheque(s) Issued</strong></span>
+            
         </div>
         <table>
             <thead>
@@ -268,6 +268,7 @@
             </thead>
             <tbody>
                 {% for chq_details in cheques  %}
+                {% if not chq_details.total_approved %}
                 <tr>
                     <td>{{chq_details.issue_bank.bank_name_e}}</td>
                     <td>{{chq_details.issue_accountnum}}</td>
@@ -277,6 +278,7 @@
                     <td>{{chq_details.issue_cheque_date}}</td>
                     <td>{% if chq_details.issue_is_approved %}Approved {% elif chq_details.issue_is_approved is None %}Pending {% else %}Rejected{% endif %}</td>
                 </tr>
+                {% endif %}
                 {% endfor %}
             </tbody>
         </table>
