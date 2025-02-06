@@ -21,6 +21,10 @@ def reports(request):
     start_date = request.POST.get('start_date', '')
     end_date = request.POST.get('end_date', '')
 
+    print("approveal - ",selected_approval )
+
+    
+
     
     # Filter by bank
     if selected_bank:
@@ -34,6 +38,9 @@ def reports(request):
             cheques = cheques.filter(issue_is_approved=None)
         elif selected_approval == 'rejected':
             cheques = cheques.filter(issue_is_approved=False)
+        else:
+            messages.warning(request,"No Records found for the given parameters" )
+            return redirect('reports')
 
     # Filter by cheque date range
     if start_date and end_date:
@@ -70,6 +77,36 @@ def reports(request):
 
         
         if selected_payees:
+
+
+            # Initialize dictionaries to store cumulative sums by currency
+            summary_total_approved = {}
+            summary_total_pending = {}
+            summary_total_rejected = {}
+
+            print("selected payees = ", selected_payees)
+
+            # Fetch cheques filtered by the selected payees
+            chq_payees = cheques.filter(issue_payee__in=selected_payees)
+            summary_total_payee = len(selected_payees)
+
+            # Process approved cheques
+            for cheque in chq_payees.filter(issue_is_approved=True):
+                currency = cheque.issue_currency.currency_char
+                summary_total_approved[currency] = summary_total_approved.get(currency, 0) + cheque.issue_amount
+
+            # Process pending cheques
+            for cheque in chq_payees.filter(issue_is_approved=None):
+                currency = cheque.issue_currency.currency_char
+                summary_total_pending[currency] = summary_total_pending.get(currency, 0) + cheque.issue_amount
+
+            # Process rejected cheques
+            for cheque in chq_payees.filter(issue_is_approved=False):
+                currency = cheque.issue_currency.currency_char
+                summary_total_rejected[currency] = summary_total_rejected.get(currency, 0) + cheque.issue_amount
+
+            
+            
             # Initialize a dictionary to group cheques by payee
             payee_cheques = {}
             
@@ -78,10 +115,9 @@ def reports(request):
             for payee in selected_payees:
                 
                 chq_payee = cheques.filter(issue_payee=payee)
+                
 
                 payee_name = Payee.objects.filter(id=payee).values_list('payee_name', flat=True).first()
-
-                print("pname - ", payee_name)
 
                 total_approved = {}
 
@@ -97,42 +133,30 @@ def reports(request):
                             total_approved[currency] = 0
                         total_approved[currency] += p.issue_amount
 
-                # Store total amounts in a separate variable and append the results
-                payee_cheques[payee_name].append({"total_approved": total_approved})
+                if selected_approval == 'approved' or selected_approval == '':
+                    # Store total amounts in a separate variable and append the results
+                    payee_cheques[payee_name].append({"total_approved": total_approved})
 
-# Now, payee_cheques will hold a list of cheques for each payee, followed by a dictionary of total_approved amounts
-
-
-                for pname, chq in payee_cheques.items():
-                    print("pname - ", pname)
-
-                    for c in chq:
-                        print("chq details - ",c)
-
-                
-
-            # # Iterate over the payee_cheques dictionary to print each payee's name and associated cheque details
-            # for payee_name, cheques in payee_cheques.items():
-            #     print(f"Payee: {payee_name}")
-                
-            #     for p in cheques:
-            #         print(f"Cheque Details - Bank: {p.issue_bank.bank_name_e}, Amount: {p.issue_amount}")  # Adjust as per your model's fields
-           
-
+            
             context = {
                 'chq_payee': payee_cheques.items(),
                 'company':company,
                  'bank':bank_name,
                  'approval':approval,
                  'st_date':st_date,
-                 'ed_date':ed_date
-
-
+                 'ed_date':ed_date,
+                 'summary_total_payee':summary_total_payee,
+                 'summary_approved_amt':summary_total_approved.items(),
+                 'summary_pending_amt':summary_total_pending.items(),
+                 'summary_rejected_amt':summary_total_rejected.items()
+                 
             }
             
             # After the loop, render the template with the gathered `all_chq_payees`
             return render(request, "Reports/payee_report.html", context)
-                
+
+        else:
+            messages.warning(request, "Please select some records")        
         
         # print("payeeesss -- ", chq_payee)
         # print("acountsss -- ", selected_accounts)

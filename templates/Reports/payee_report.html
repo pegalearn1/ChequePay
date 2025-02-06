@@ -300,60 +300,25 @@
     </div>
     {% endfor %}
 
-
-    {% comment %} <!-- Payee Section 2 -->
-    <div class="payee-section">
-        <div class="sub-header">
-            <h4>Payee Name: Mohammed</h4>
-        </div>
-        <div class="payee-details">
-            <span><strong>Address:</strong> N/A</span>
-            <span><strong>City:</strong> UDR</span>
-            <span><strong>Contact:</strong> 986562654</span>
-        </div>
-        <div class="sub-heading">
-            <span>Cheque Details</span>
-            <span><strong>1 Cheque(s) Issued</strong></span>
-        </div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Bank</th>
-                    <th>Account#</th>
-                    <th>Book Name</th>
-                    <th>Cheque#</th>
-                    <th>Amount</th>
-                    <th>Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Commercial Bank of Kuwait <small>(KW)</small></td>
-                    <td>54749318387511</td>
-                    <td>CBK-1234561-20 <small>(Running)</small></td>
-                    <td>#1234563 <small>(Issued)</small></td>
-                    <td>26,744</td>
-                    <td>12/02/2025</td>
-                </tr>
-            </tbody>
-        </table>
-        <div class="total">
-            <p><strong>Total Amount Issued:</strong> 26,744 <i class="fa fa-inr" aria-hidden="true"></i> INR</p>
-        </div>
-    </div> {% endcomment %}
-
-    <!-- Add Payee Sections 3 to 7 following the same structure -->
     <!-- Summary -->
     <div class="summary">
         <h3>Summary</h3>
-        <p><strong>Total Payee(s):</strong> 7</p>
-        <p><strong>Total Amount Issued to Payees:</strong> 50,01,20,594 <i class="fa fa-inr" aria-hidden="true"></i> INR</p>
-        <p><strong>Total Amount Issued to DELETED Payees:</strong> 0 <i class="fa fa-inr" aria-hidden="true"></i> INR</p>
-        <p><strong>Total Amount Issued:</strong> 50,01,20,594 <i class="fa fa-inr" aria-hidden="true"></i> INR</p>
+        <p><strong>Total Payee(s):</strong> {{summary_total_payee}}</p>
+        {% for currency, amt in summary_approved_amt  %}
+        <p><strong>Total Approved Amount in {{currency}}</strong> {{amt}} <i class="fa fa-inr" aria-hidden="true"></i> {{currency}}</p>
+        {% endfor %}
+        
+        {% for currency, amt in summary_pending_amt %}
+        <p><strong>Total Pending Amount in {{currency}}:</strong> {{amt}} <i class="fa fa-inr" aria-hidden="true"></i> {{currency}}</p>
+        {% endfor %}
+        
+        {% for currency, amt in summary_rejected_amt %}
+        <p><strong>Total Rejected Amount in {{currency}}:</strong> {{amt}} <i class="fa fa-inr" aria-hidden="true"></i> {{currency}}</p>
+        {% endfor %}
     </div>
 
     <div class="footer">
-        <p>&copy; 2025 Pega Learn - All Rights Reserved</p>
+        <p>&copy; 2025 {{ company.company_name }} - All Rights Reserved</p>
     </div>
 </div>
 
