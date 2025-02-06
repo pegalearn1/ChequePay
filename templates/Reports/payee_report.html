@@ -99,7 +99,7 @@
         }
 
         th {
-            background-color: #4b6bfb;
+            background-color: #8b8d94;
             color: white;
         }
 
@@ -220,12 +220,24 @@
 <div class="container">
     <!-- Report Header -->
     <div class="header">
-        <img class="logo" src="https://via.placeholder.com/100" alt="Pega Learn Logo">
+        <div class="header-left">
+            {% if company.logo %}
+            <img class="logo" src="{{ company.logo.url }}" alt="{{ company.company_name }}">
+            {% endif %}
+            <h2 class="company-name">{{ company.company_name }}</h2>
+        </div>
         <div class="header-right">
             <h3>Payee Report</h3>
             <div class="search-parameters">
-                <span><strong>Date Range:</strong> Jan 2025 - Feb 2025</span>
-                <span><strong>Status:</strong> Issued</span>
+                {% if bank %}
+                <span><strong>Bank:</strong>{{bank}}</span>
+                {% endif %}
+                {% if st_date and ed_date %}
+                <span><strong>Date Range:</strong> {{st_date}} - {{ed_date}}</span>
+                {% endif %}
+                {% if approval %}
+                <span><strong>Approval:</strong> {{approval}}</span>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -238,11 +250,6 @@
         <div class="sub-header">
             <h4>Payee Name: {{payee_name}}</h4>
         </div>
-        {% comment %} <div class="payee-details">
-            <span><strong>Address:</strong> N/A</span>
-            <span><strong>City:</strong> UDR</span>
-            <span><strong>Contact:</strong> N/A</span>
-        </div> {% endcomment %}
         <div class="sub-heading">
             <span>Cheque Details</span>
             <span><strong>{{ cheques|length }} Cheque(s) Issued</strong></span>
@@ -273,8 +280,20 @@
                 {% endfor %}
             </tbody>
         </table>
+        <!-- Display total approved amount per currency for this payee -->
         <div class="total">
-            <p><strong>Total Amount Issued:</strong> 50,00,93,850 <i class="fa fa-inr" aria-hidden="true"></i> INR</p>
+            {% with cheques|last as totals %}  {# Get the last entry which contains totals #}
+                {% if totals.total_approved %}
+                    {% for currency, amount in totals.total_approved.items %}
+                    <p>
+                        <strong>Total Approved Amount:</strong> {{ amount }} 
+                        <i class="fa fa-inr" aria-hidden="true"></i> {{ currency }}
+                    </p>
+                    {% endfor %}
+                {% else %}
+                    <p><strong>Total Approved Amount:</strong> 0</p>
+                {% endif %}
+            {% endwith %}
         </div>
     </div>
     {% endfor %}
