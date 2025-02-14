@@ -3,7 +3,7 @@ in 2024-2025.'''
 
 from .imp_libs import *
 from django.db.migrations.executor import MigrationExecutor
-from chq_pay.models import AppUser, Company_Setup, Banks, Payee, Currencies
+from chq_pay.models import AppUser, Company_Setup
 from datetime import datetime
 
 # Get the custom user model
@@ -36,7 +36,7 @@ def apply_migrations_to_db(connection):
         print(f"Migration error: {e}")
 
 
-def create_user_if_needed(reg_code, email, password, name, license_key, cust_id, country_id, country_name, allowed_templates, company, phone, address):
+def create_user_if_needed(reg_code, email, password, name, license_key, cust_id, country_id, country_name, allowed_templates,expiry_date, company, phone, address):
     """
     If the table doesn't exist in the specified database, apply migrations to create it.
     Then create a new user if the table was successfully created.
@@ -65,7 +65,8 @@ def create_user_if_needed(reg_code, email, password, name, license_key, cust_id,
                 cust_id=cust_id,
                 country_id=country_id,
                 country_name=country_name,
-                allowed_templates=allowed_templates
+                allowed_templates=allowed_templates,
+                expiry_date = expiry_date
             )
             print("App User Updated")
             
@@ -190,30 +191,26 @@ def user_login(request):
 
                     user = create_user_if_needed(
                         registcode, eml, passw, nme,
-                        license_key, cust_id, cntry_id, nme,
-                        templates_api, cmpny, phn, addrs
+                        license_key, cust_id, cntry_id, country_name,
+                        templates_api,expdt, cmpny, phn, addrs
                     )
 
-                    User = get_user_model()
+                    
+                    user = User.objects.using(registcode).get(username=username)
 
-                    try:
+                    if user.check_password(password):
+                        logger.info("User exists and password is correct.")
 
-                        user = User.objects.using(registcode).get(username=username)
+                        login(request, user)
+                        
 
-                        if user.check_password(password):
-                            logger.info("User exists and password is correct.")
+                        logger.info(f"Logged In with {user}.")
 
-                            login(request, user)
-
-                            logger.info(f"Logged In with {user}.")
-
-                            return redirect('setup_wizard')
-                        else:
-                            logger.info("Invalid login credentials: Incorrect password.")
-                            messages.error(request, 'Invalid login credentials!!')
-                    except User.DoesNotExist:
-                        logger.info("Invalid login credentials: User does not exist.")
+                        return redirect('setup_wizard')
+                    else:
+                        logger.info("Invalid login credentials: Incorrect password.")
                         messages.error(request, 'Invalid login credentials!!')
+                    
                 else:
                     logger.info("License expired.")
                     messages.error(request, 'License expired, please renew or upgrade the license.')

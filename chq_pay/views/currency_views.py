@@ -47,7 +47,7 @@ def currency_list(request):
 @login_required
 def delete_currency(request, currency_id):
     
-    currency_exist = ChequeTemplate.objects.filter(issue_currency = currency_id).exists()
+    currency_exist = ChequeTemplate.objects.filter(currency = currency_id).exists()
 
     if not currency_exist:
         currency = get_object_or_404(Currencies, id=currency_id)

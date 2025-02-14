@@ -2,7 +2,16 @@
 {% load i18n %}
 {% load static %}
 {% block tiitle %}Cheque Issue{% endblock tiitle %}
-{% block stylesheet %}{% endblock stylesheet %}
+{% block stylesheet %}
+
+<style>
+  .dropdown-menu-scroll {
+  max-height: 100px; /* Adjust height for scrolling */
+  overflow-y: auto; /* Enables vertical scrolling */
+}
+</style>
+
+{% endblock stylesheet %}
 {% block content %}
 
 
@@ -152,11 +161,11 @@
                     <td class="text-start">
                       
                         
-                      <div class="dropdown">
+                      <div class="dropdown dropend">
                          <button class="btn dropdown-toggle align-text-top" data-bs-toggle="dropdown">
                            {% trans "Actions" %}
                          </button>
-                         <div class="dropdown-menu dropdown-menu-end">
+                         <div class="dropdown-menu dropdown-menu-scroll">
                            {% if cheque.issue_is_approved %}
                            <a class="dropdown-item" href="{% url 'print_cheque' cheque.id %}" target="_blank"> {% trans "Preview & Print Cheque" %}</a>
                            {% endif %}

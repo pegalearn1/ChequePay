@@ -42,18 +42,45 @@
               <table class="table card-table table-vcenter text-nowrap datatable">
                 <thead>
                   <tr>
+                    <th></th>
                     <th>{% trans "Company" %}</th>
                     <th>{% trans "Phone" %}</th>
                     <th>{% trans "Email" %}</th>
                     <th>{% trans "Taxation ID" %}</th>
                     <th>{% trans "Address" %}</th>
-                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
                     {% if companies %}
                             {% for company in companies %}
                   <tr>
+                    <td class="text-start">
+                      
+                      <div class="dropdown dropend">
+                      <button class="btn dropdown-toggle align-text-top" data-bs-toggle="dropdown">
+                        {% trans "Actions" %}
+                      </button>
+                      <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#" data-bs-toggle="modal"  
+                        data-bs-target="#editCompanyModal" 
+                        data-id="{{ company.id }}" 
+                        data-name="{{ company.company_name }}" 
+                        data-phone="{{ company.tel_no }}"
+                        data-email="{{ company.email }}"
+                        data-tax-id="{{ company.tax_id }}"
+                        data-address="{{ company.address }}"
+                        {% if company.logo %}data-logo="{{ company.logo.url }}"{% endif %}  >
+                          {% trans "Edit Company" %}
+                        </a>
+                        <a class="dropdown-item" onclick="return confirm('Are you sure you want to delete {{ company.company_name }}?')" 
+                        href="{% url "delete_company" company.id %}">
+                          {% trans "Delete Company" %}
+                        </a>
+                      </div>
+                    </div>
+
+
+                  </td>
                     <td>
                         <div class="d-flex py-1 align-items-center">
                             <span class="avatar me-2" style="background-image: {% if company.logo %}url({{company.logo.url}}){% else %}url( {% static "tabler/default_company.png" %} ){% endif %} "></span>
@@ -66,34 +93,6 @@
                     <td>{{ company.email }}</td>
                     <td>{% if company.tax_id %}{{ company.tax_id }}{% endif %}</td>
                     <td>{{ company.address }}</td>
-
-                    <td class="text-end">
-                      
-                        <div class="dropdown">
-                        <button class="btn dropdown-toggle align-text-top" data-bs-toggle="dropdown">
-                          {% trans "Actions" %}
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-end">
-                          <a class="dropdown-item" href="#" data-bs-toggle="modal"  
-                          data-bs-target="#editCompanyModal" 
-                          data-id="{{ company.id }}" 
-                          data-name="{{ company.company_name }}" 
-                          data-phone="{{ company.tel_no }}"
-                          data-email="{{ company.email }}"
-                          data-tax-id="{{ company.tax_id }}"
-                          data-address="{{ company.address }}"
-                          {% if company.logo %}data-logo="{{ company.logo.url }}"{% endif %}  >
-                            {% trans "Edit Company" %}
-                          </a>
-                          <a class="dropdown-item" onclick="return confirm('Are you sure you want to delete {{ company.company_name }}?')" 
-                          href="{% url "delete_company" company.id %}">
-                            {% trans "Delete Company" %}
-                          </a>
-                        </div>
-                      </div>
-
-
-                    </td>
                   </tr>
                   {% endfor %}
           {% else %}

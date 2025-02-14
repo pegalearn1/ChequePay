@@ -156,14 +156,8 @@ def reports(request):
             return render(request, "Reports/payee_report.html", context)
 
         else:
-            messages.warning(request, "Please select some records")        
+            messages.warning(request, "Please select some records") 
         
-        # print("payeeesss -- ", chq_payee)
-        # print("acountsss -- ", selected_accounts)
-        print("getbanks - ", selected_bank)
-        print("getapproval - ", selected_approval)
-        print("getstdate - ", start_date)
-        print("geteddate - ", end_date)
 
     # Context for the template
     context = {

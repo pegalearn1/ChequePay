@@ -90,7 +90,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'chq_pay.context_processors.global_companies',  # Add this line
+                'chq_pay.context_processors.global_companies',  # Add this line to make compaies accesible throughout
+                'chq_pay.context_processors.license_info',  # Add this line to make licence info accesible throughout
             ],
         },
     },
@@ -173,43 +174,43 @@ DATABASE_ROUTERS = ['chq_pay.routers.SessionDatabaseRouter']
 
 import os
 
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'formatters': {
-#         'verbose': {
-#             'format': '{levelname} {asctime} {module} {message}',
-#             'style': '{',
-#         },
-#         'simple': {
-#             'format': '{levelname} {message}',
-#             'style': '{',
-#         },
-#     },
-#     'handlers': {
-#         'info_file': {
-#             'level': 'INFO',
-#             'class': 'logging.FileHandler',
-#             'filename': os.path.join(BASE_DIR, 'info.log'),
-#             'formatter': 'verbose',
-#         },
-#         'error_file': {
-#             'level': 'ERROR',
-#             'class': 'logging.FileHandler',
-#             'filename': os.path.join(BASE_DIR, 'error.log'),
-#             'formatter': 'verbose',
-#         },
-#     },
-#     'loggers': {
-#         'django': {
-#             'handlers': ['info_file', 'error_file'],
-#             'level': 'INFO',
-#             'propagate': True,
-#         },
-#         'chq_pay': {  # Change 'myapp' to the actual name of your Django app or leave it as __name__ dynamically
-#             'handlers': ['info_file', 'error_file'],
-#             'level': 'INFO',
-#             'propagate': False,
-#         },
-#     },
-# }
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'info_file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'info.log'),
+            'formatter': 'verbose',
+        },
+        'error_file': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'error.log'),
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['info_file', 'error_file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'chq_pay': {  # Change 'myapp' to the actual name of your Django app or leave it as __name__ dynamically
+            'handlers': ['info_file', 'error_file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}

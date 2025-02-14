@@ -257,6 +257,8 @@
                 <a href="{% url "users_list" %}" class="dropdown-item ">{% trans "Users" %}</a>
                 {% endif %}
                 <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#licenceInfoModal">License Info</a>
+                <div class="dropdown-divider"></div>
                 <a href="{% url "logout" %}" class="dropdown-item">{% trans "Logout" %}</a>
               </div>
             </div>
@@ -442,6 +444,121 @@
               {% endfor %}
           {% endif %}
       </div>
+
+      <div class="modal modal-blur fade" id="licenceInfoModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">License Info</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+              <div class="row">
+                <!-- col1 -->
+                <div class="col-lg-6">
+
+              {% if license %}
+
+              {% for lic in license %}
+
+              <div class="mb-2 text-left">
+                <p class="text-muted">{% trans "Registeration Code" %} : <strong>{{lic.reg_code}}</strong></p>
+              </div>
+              <div class="mb-2 text-left">
+                <p class="text-muted">{% trans "Name" %} : <strong>{{lic.name}}</strong></p>
+              </div>
+              <div class="mb-2 text-left">
+                <p class="text-muted">{% trans "Email" %} : <strong>{{lic.email}}</strong></p>
+              </div>
+              <div class="mb-2 text-left">
+                <p class="text-muted">{% trans "Country" %} : <strong>{{lic.country_name}}</strong></p>
+              </div>
+              <div class="mb-2 text-left">
+                <p class="text-muted">{% trans "Customer Id" %} : <strong>{{lic.cust_id}}</strong></p>
+              </div>
+              <div class="mb-2 text-left">
+                <p class="text-muted">{% trans "License Key" %} : <strong>{{lic.license_key}}</strong></p>
+              </div>
+              <div class="mb-2 text-left">
+                <p class="text-muted">{% trans "Allowed Templates" %} : <strong>{{lic.allowed_templates}}</strong></p>
+              </div>
+              <div class="mb-2 text-left">
+                <p class="text-muted">{% trans "Expiry" %} : <strong>{{lic.expiry_date}}</strong></p>
+              </div>
+              {% endfor %}
+              {% endif %}
+
+
+            </div>
+            <!-- col1 -->
+
+            <!-- col2 -->
+            <div class="col-lg-6">
+
+              <!-- Image with default light mode src -->
+              
+              <!-- Image with default light mode src -->
+              <img id="lic" src="{% static 'tabler/static/illustrations/light/boy-and-laptop.png' %}" alt="boy-and-laptop" />
+              
+              <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                  // Define paths using Django static
+                  const lightModeImage = "{% static 'tabler/static/illustrations/light/boy-and-laptop.png' %}";
+                  const darkModeImage = "{% static 'tabler/static/illustrations/dark/boy-and-laptop.png' %}";
+              
+                  // Reference to the image element
+                  const lic = document.getElementById("lic");
+              
+                  // Debugging: Check if element is found
+                  if (!lic) {
+                    console.error("Image element #lic not found!");
+                    return;
+                  }
+              
+                  // Retrieve the theme from localStorage
+                  const themeKey = "tablerTheme";
+                  let currentTheme = localStorage.getItem(themeKey);
+              
+                  // Debugging: Log the theme value
+                  console.log("Current Theme from localStorage:", currentTheme);
+              
+                  // Default to light mode if no value found
+                  if (!currentTheme) {
+                    console.warn("Theme not set in localStorage. Defaulting to 'light'");
+                    currentTheme = "light";
+                  }
+              
+                  // Change image based on theme
+                  if (currentTheme === "dark") {
+                    lic.src = darkModeImage;
+                    console.log("Dark mode activated. Image changed to:", darkModeImage);
+                  } else {
+                    lic.src = lightModeImage;
+                    console.log("Light mode activated. Image changed to:", lightModeImage);
+                  }
+                });
+              </script>
+              
+            
+            
+            </div>
+            <!-- col2 -->
+
+            
+
+          </div>
+          <!-- row -->
+            
+            
+            
+            
+            </div>
+          </div>
+        </div>
+      </div>
+
+
       
       <script>
           document.addEventListener("DOMContentLoaded", function () {

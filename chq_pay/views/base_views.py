@@ -125,9 +125,6 @@ def index(request):
         'currency_trans_color':currency_trans_color,
         'currency_transactions':currency_transactions,
 
-
-
-
         }
 
 

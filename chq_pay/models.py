@@ -167,6 +167,7 @@ class AppUser(models.Model):
     country_id = models.IntegerField()
     country_name = models.CharField(max_length=100)
     allowed_templates = models.IntegerField()
+    expiry_date = models.CharField(max_length=50)
 
 
 

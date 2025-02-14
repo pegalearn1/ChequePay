@@ -28,6 +28,13 @@
         padding: 12px;
         border-bottom: 2px solid #dee2e6;
     }
+    
+    /* Light gray row dividers */
+    .dataTable tbody tr {
+        border-bottom: 1px solid #e0e0e0 !important;
+    }
+    
+
   </style>
   
 
@@ -111,9 +118,9 @@
                             <li class="nav-item">
                                 <a class="nav-link active" data-bs-toggle="tab" href="#payee-table">{% trans "Payee Report " %}</a>
                             </li>
-                            {% comment %} <li class="nav-item">
+                            <li class="nav-item">
                                 <a class="nav-link" data-bs-toggle="tab" href="#account-table">{% trans "Account Report" %}</a>
-                            </li> {% endcomment %}
+                            </li>
                         </ul>
                     </div>
                     
