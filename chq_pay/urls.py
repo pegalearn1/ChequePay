@@ -98,6 +98,7 @@ urlpatterns = [
 
     #Reports
     path('reports/', report_views.reports, name='reports'),
+    path('reports/export/<str:file_format>/', report_views.export_payee_report, name='export_payee_report'),
 
 
     #wizard

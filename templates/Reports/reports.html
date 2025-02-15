@@ -132,8 +132,29 @@
                             {% if payees %}
                             
                             <div style="margin-left: 10px;">
-                                <button type="submit" form="payeeForm" class="btn btn-success">{% trans "Generate Report" %}</button>
+                                <button type="submit" form="payeeForm" class="btn btn-primary">{% trans "Generate Report" %}</button>
+                                
+                                <button type="button" class="btn btn-success" onclick="downloadReport('csv')">
+                                    {% trans "Download CSV" %}
+                                </button>
+                                
+                                <button type="button" class="btn btn-warning" onclick="downloadReport('xls')">
+                                    {% trans "Download Excel" %}
+                                </button>
                             </div>
+                            
+                            <script>
+                                function downloadReport(format) {
+                                    // Get the form element
+                                    let form = document.getElementById('payeeForm');
+                                    let formData = new FormData(form);
+                                    let queryString = new URLSearchParams(formData).toString();
+                            
+                                    // Redirect with the form data as query parameters
+                                    window.location.href = `{% url 'export_payee_report' '__FORMAT__' %}`.replace('__FORMAT__', format) + '?' + queryString;
+                                }
+                            </script>
+                            
                             
                             <form method="post" id="payeeForm" action="{% url 'reports' %}" target="_blank">
                                 {% csrf_token %}

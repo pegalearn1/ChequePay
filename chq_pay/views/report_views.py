@@ -21,10 +21,6 @@ def reports(request):
     start_date = request.POST.get('start_date', '')
     end_date = request.POST.get('end_date', '')
 
-    print("approveal - ",selected_approval )
-
-    
-
     
     # Filter by bank
     if selected_bank:
@@ -83,8 +79,7 @@ def reports(request):
             summary_total_approved = {}
             summary_total_pending = {}
             summary_total_rejected = {}
-
-            print("selected payees = ", selected_payees)
+            
 
             # Fetch cheques filtered by the selected payees
             chq_payees = cheques.filter(issue_payee__in=selected_payees)
@@ -172,3 +167,89 @@ def reports(request):
     }
 
     return render(request,  "Reports/reports.html", context)
+
+
+
+@login_required
+def export_payee_report(request, file_format):
+    # Fetch filtered cheques from session (or reapply filters)
+    selected_payees = request.GET.getlist('selected_payees')
+
+    print("payees - ", selected_payees)
+    selected_bank = request.GET.get('bank', '')
+    selected_approval = request.GET.get('approval', '')
+    start_date = request.GET.get('start_date', '')
+    end_date = request.GET.get('end_date', '')
+
+    cheques = ChequeIssue.objects.all().filter(Q(company__is_selected=True)).order_by('-issue_cheque_date')
+
+    # Apply filters
+    if selected_bank:
+        cheques = cheques.filter(issue_bank__id=selected_bank)
+    if selected_approval:
+        if selected_approval == 'approved':
+            cheques = cheques.filter(issue_is_approved=True)
+        elif selected_approval == 'pending':
+            cheques = cheques.filter(issue_is_approved=None)
+        elif selected_approval == 'rejected':
+            cheques = cheques.filter(issue_is_approved=False)
+    if start_date and end_date:
+        cheques = cheques.filter(issue_cheque_date__range=[start_date, end_date])
+    if selected_payees:
+        cheques = cheques.filter(issue_payee__in=selected_payees)
+
+    # Data to export
+    data = [
+        ["Payee Name", "Bank", "Account#", "Cheque#", "Amount", "Currency", "Cheque Date", "Approval"]
+    ]
+    for chq in cheques:
+        data.append([
+            chq.issue_payee.payee_name,
+            chq.issue_bank.bank_name_e,
+            chq.issue_accountnum,
+            chq.issue_cheque_no,
+            chq.issue_amount,
+            chq.issue_currency.currency_char,
+            chq.issue_cheque_date.strftime('%Y-%m-%d'),
+            "Approved" if chq.issue_is_approved else "Pending" if chq.issue_is_approved is None else "Rejected",
+        ])
+
+    # Export as CSV
+    if file_format == "csv":
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="payee_report.csv"'
+        writer = csv.writer(response)
+        for row in data:
+            writer.writerow(row)
+        return response
+
+    # Export as XLS (Excel)
+    elif file_format == "xls":
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="payee_report.xls"'
+        workbook = xlwt.Workbook()
+        sheet = workbook.add_sheet('Payee Report')
+
+        for row_num, row_data in enumerate(data):
+            for col_num, cell_data in enumerate(row_data):
+                sheet.write(row_num, col_num, cell_data)
+        
+        workbook.save(response)
+        return response
+
+    # Export as XLSX (Newer Excel format)
+    elif file_format == "xlsx":
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename="payee_report.xlsx"'
+        workbook = openpyxl.Workbook()
+        sheet = workbook.active
+        sheet.title = "Payee Report"
+
+        for row in data:
+            sheet.append(row)
+
+        workbook.save(response)
+        return response
+
+    else:
+        return HttpResponse("Invalid file format", status=400)
