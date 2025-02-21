@@ -1,6 +1,6 @@
 <!doctype html>
 
-<html lang="en">
+<html lang="en" {% if request.LANGUAGE_CODE == 'ar' %} dir="rtl" {% else %} dir="ltr" {% endif %}>
 {% load i18n %}  
 {% load static %}
   
@@ -37,11 +37,24 @@
     <meta property="og:url" content="https://tabler.io/demo/static/og.png">
     <meta property="og:description" content="Tabler comes with tons of well-designed components and features. Start your adventure with Tabler and make your dashboard great again. For free!">
     <!-- CSS files -->
+    {% if request.LANGUAGE_CODE == 'en' %}
+
     <link href="/static/tabler/dist/css/tabler.min4f79.css?1735606190" rel="stylesheet"/>
     <link href="/static/tabler/dist/css/tabler-flags.min4f79.css?1735606190" rel="stylesheet"/>
     <link href="/static/tabler/dist/css/tabler-payments.min4f79.css?1735606190" rel="stylesheet"/>
     <link href="/static/tabler/dist/css/tabler-vendors.min4f79.css?1735606190" rel="stylesheet"/>
     <link href="/static/tabler/dist/css/demo.min4f79.css?1735606190" rel="stylesheet"/>
+
+    {% elif request.LANGUAGE_CODE == 'ar'  %}
+
+    <link href="/static/tabler/dist/css/tabler.rtl.min4f79.css?1735606190" rel="stylesheet"/>
+    <link href="/static/tabler/dist/css/tabler-flags.rtl.min4f79.css?1735606190" rel="stylesheet"/>
+    <link href="/static/tabler/dist/css/tabler-payments.rtl.min4f79.css?1735606190" rel="stylesheet"/>
+    <link href="/static/tabler/dist/css/tabler-vendors.rtl.min4f79.css?1735606190" rel="stylesheet"/>
+    <link href="/static/tabler/dist/css/demo.rtl.min4f79.css?1735606190" rel="stylesheet"/>
+    
+    {% endif %}
+
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 
     <style>
@@ -153,6 +166,23 @@
                 <!-- Download SVG icon from http://tabler-icons.io/i/sun -->
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7" /></svg>
               </a>
+              
+              <div class="nav-item d-md-flex">
+
+                <form action="{% url 'set_language' %}" method="post">
+                  {% csrf_token %}
+                  <input name="next" type="hidden" value="{{ request.path }}">
+                  <select class="form-control select2" name="language" onchange="this.form.submit()">
+                    <option value="Select Language" disabled selected><strong>{% trans "Select Language" %} </strong> </option>
+                      <option value="en"{% if request.LANGUAGE_CODE == 'en' %} selected{% endif %}>English</option>
+                      <option value="ar"{% if request.LANGUAGE_CODE == 'ar' %} selected{% endif %}>العربية</option>
+                      
+                  </select>
+              </form>
+
+              </div>
+              
+              
               <div class="nav-item dropdown d-none d-md-flex me-3">
                 <a href="#" class="nav-link px-0" data-bs-toggle="dropdown" tabindex="-1" aria-label="Show notifications">
                   <!-- Download SVG icon from http://tabler-icons.io/i/bell -->

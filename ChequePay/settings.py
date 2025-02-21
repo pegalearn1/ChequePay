@@ -58,6 +58,7 @@ SESSION_COOKIE_AGE = 1209600  # (2 weeks) Time in seconds until cookie expires
 
 
 MIDDLEWARE = [
+    'django.middleware.locale.LocaleMiddleware',
     'ChequePay.middlewares.AttachRequestToDBRouterMiddleware', #user middleware
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -136,9 +137,25 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/5.1/topics/i18n/
+# https://docs.djangoproject.com/en/4.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en'
+
+DEFAULT_CHARSET = 'utf-8'
+
+
+from django.utils.translation import gettext_lazy as _
+
+LANGUAGES = [ 
+        
+    ('en', _('English')), 
+    ('ar', _('العربية')),
+] 
+
+#By User for language transltion
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale'),
+]
 
 TIME_ZONE = 'UTC'
 

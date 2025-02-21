@@ -108,6 +108,11 @@ urlpatterns = [
         name="setup_wizard",
     ),
 
+    #Language Switcher
+
+    path('set_language/', imp_libs.set_language, name='set_language'),
+
+
 
 
 ]

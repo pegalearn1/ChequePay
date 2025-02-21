@@ -41,6 +41,11 @@ import openpyxl
 
 from django.contrib.auth.hashers import make_password
 
+#for language change
+from django.conf.global_settings import LANGUAGES
+from django.utils import translation
+from django.utils.translation import activate, gettext_lazy as _
+
 
 
 import logging
@@ -173,3 +178,23 @@ def check_reg_update_sett(request):
     except Exception as e:
         logger.error("Exception occurred: %s", e)
         return JsonResponse({"status": "error", "message": str(e)}, status=500)
+    
+
+
+
+
+#Created By Faraz Ahmed Raj.
+def set_language(request):
+    """
+    View function to set the user's language preference
+    """
+    if request.method == 'POST' and 'language' in request.POST:
+        language = request.POST['language']
+        if language in dict(settings.LANGUAGES):
+            translation.activate(language)
+            response = redirect(request.META.get('HTTP_REFERER', '/'))
+            response.set_cookie(settings.LANGUAGE_COOKIE_NAME, language)
+
+           
+            return response
+    return redirect(request.META.get('HTTP_REFERER', '/'))

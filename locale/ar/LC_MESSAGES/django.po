@@ -1,0 +1,938 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-02-20 17:01+0530\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+#: .\ChequePay\settings.py:154
+msgid "English"
+msgstr "الإنجليزية"
+
+#: .\ChequePay\settings.py:155
+msgid "Arabic"
+msgstr "العربية"
+
+#: .\templates\Banks\bank_list_new.html:4
+#: .\templates\Banks\bank_list_new.html:14 .\templates\layouts\base.html:292
+msgid "Banks"
+msgstr "البنوك"
+
+#: .\templates\Banks\bank_list_new.html:24
+msgid "Create new Bank"
+msgstr "إنشاء بنك جديد"
+
+#: .\templates\Banks\bank_list_new.html:36
+#: .\templates\Payees\payee_list_new.html:68
+msgid "Excel Upload"
+msgstr "رفع ملف إكسل"
+
+#: .\templates\Banks\bank_list_new.html:53
+msgid "Bank List"
+msgstr "قائمة البنوك"
+
+#: .\templates\Banks\bank_list_new.html:60
+#: .\templates\Banks\bank_list_new.html:196
+#: .\templates\Banks\bank_list_new.html:243
+#: .\templates\Banks\bank_list_new.html:307
+msgid "Bank Char"
+msgstr "رمز البنك"
+
+#: .\templates\Banks\bank_list_new.html:61
+msgid "Bank Name E"
+msgstr "اسم البنك (بالإنجليزية)"
+
+#: .\templates\Banks\bank_list_new.html:62
+msgid "Bank Name L"
+msgstr "اسم البنك (باللغة المحلية)"
+
+#: .\templates\Banks\bank_list_new.html:63
+#: .\templates\Banks\bank_list_new.html:208
+#: .\templates\Banks\bank_list_new.html:255
+msgid "Telephone"
+msgstr "الهاتف"
+
+#: .\templates\Banks\bank_list_new.html:64
+#: .\templates\Banks\bank_list_new.html:212
+#: .\templates\Banks\bank_list_new.html:259
+#: .\templates\Banks\bank_list_new.html:311
+#: .\templates\Companies\company_list.html:50
+#: .\templates\Companies\company_list.html:207
+#: .\templates\Companies\company_list.html:288
+#: .\templates\Payees\payee_list_new.html:96
+#: .\templates\Payees\payee_list_new.html:242
+#: .\templates\Payees\payee_list_new.html:286
+#: .\templates\Payees\payee_list_new.html:336
+#: .\templates\Reports\reports.html:171
+msgid "Address"
+msgstr "العنوان"
+
+#: .\templates\Banks\bank_list_new.html:75
+#: .\templates\Cheque_issue\cheque_issue_list.html:166
+#: .\templates\Companies\company_list.html:61
+#: .\templates\Currency\currency_list_new.html:59
+#: .\templates\Payees\payee_list_new.html:109
+#: .\templates\Users\user_list.html:62
+msgid "Actions"
+msgstr "الإجراءات"
+
+#: .\templates\Banks\bank_list_new.html:79
+#: .\templates\Banks\bank_list_new.html:233
+msgid "Edit Bank"
+msgstr "تعديل البنك"
+
+#: .\templates\Banks\bank_list_new.html:82
+msgid "Delete Bank"
+msgstr "حذف البنك"
+
+#: .\templates\Banks\bank_list_new.html:109
+msgid "No Banks found"
+msgstr "لم يتم العثور على بنوك"
+
+#: .\templates\Banks\bank_list_new.html:118
+#: .\templates\Cheque_issue\cheque_issue_list.html:224
+#: .\templates\Companies\company_list.html:109
+#: .\templates\Currency\currency_list_new.html:94
+#: .\templates\Payees\payee_list_new.html:152
+#: .\templates\Users\user_list.html:111
+msgid "Showing"
+msgstr "عرض"
+
+#: .\templates\Banks\bank_list_new.html:118
+#: .\templates\Cheque_issue\cheque_issue_list.html:224
+#: .\templates\Companies\company_list.html:109
+#: .\templates\Currency\currency_list_new.html:94
+#: .\templates\Payees\payee_list_new.html:152
+#: .\templates\Users\user_list.html:111
+msgid "to"
+msgstr "إلى"
+
+#: .\templates\Banks\bank_list_new.html:118
+#: .\templates\Cheque_issue\cheque_issue_list.html:224
+#: .\templates\Companies\company_list.html:109
+#: .\templates\Currency\currency_list_new.html:94
+#: .\templates\Payees\payee_list_new.html:152
+#: .\templates\Users\user_list.html:111
+msgid "entries"
+msgstr "إدخالات"
+
+#: .\templates\Banks\bank_list_new.html:129
+#: .\templates\Cheque_issue\cheque_issue_list.html:235
+#: .\templates\Companies\company_list.html:120
+#: .\templates\Currency\currency_list_new.html:105
+#: .\templates\Payees\payee_list_new.html:163
+#: .\templates\Users\user_list.html:122 .\templates\Users\user_list.html:189
+msgid "First"
+msgstr "الأول"
+
+#: .\templates\Banks\bank_list_new.html:163
+#: .\templates\Cheque_issue\cheque_issue_list.html:267
+#: .\templates\Companies\company_list.html:154
+#: .\templates\Currency\currency_list_new.html:139
+#: .\templates\Payees\payee_list_new.html:197
+#: .\templates\Users\user_list.html:156 .\templates\Users\user_list.html:194
+msgid "Last"
+msgstr "الأخير"
+
+#: .\templates\Banks\bank_list_new.html:188
+msgid "Add New Bank"
+msgstr "إضافة بنك جديد"
+
+#: .\templates\Banks\bank_list_new.html:200
+#: .\templates\Banks\bank_list_new.html:247
+msgid "Bank Name (English)"
+msgstr "اسم البنك (بالإنجليزية)"
+
+#: .\templates\Banks\bank_list_new.html:204
+#: .\templates\Banks\bank_list_new.html:251
+msgid "Bank Name (Local)"
+msgstr "اسم البنك (باللغة المحلية)"
+
+#: .\templates\Banks\bank_list_new.html:216
+#: .\templates\Banks\bank_list_new.html:263
+#: .\templates\Companies\company_list.html:241
+#: .\templates\Currency\currency_list_new.html:181
+#: .\templates\Currency\currency_list_new.html:216
+#: .\templates\Payees\payee_list_new.html:247
+#: .\templates\Payees\payee_list_new.html:291
+#: .\templates\Users\user_list.html:250 .\templates\Users\user_list.html:318
+#: .\templates\wizard\wizard.html:144
+msgid "Close"
+msgstr "إغلاق"
+
+#: .\templates\Banks\bank_list_new.html:217
+#: .\templates\Companies\company_list.html:242
+#: .\templates\Currency\currency_list_new.html:182
+#: .\templates\Payees\payee_list_new.html:248
+#: .\templates\Users\user_list.html:251
+msgid "Save Changes"
+msgstr "حفظ التغييرات"
+
+#: .\templates\Banks\bank_list_new.html:264
+#: .\templates\Currency\currency_list_new.html:217
+#: .\templates\Payees\payee_list_new.html:292
+#: .\templates\Users\user_list.html:319
+msgid "Update"
+msgstr "تحديث"
+
+#: .\templates\Banks\bank_list_new.html:285
+msgid "Upload Excel Bank"
+msgstr "رفع ملف إكسل للبنك"
+
+#: .\templates\Banks\bank_list_new.html:292
+#: .\templates\Payees\payee_list_new.html:318
+msgid "Upload File"
+msgstr "رفع ملف"
+
+#: .\templates\Banks\bank_list_new.html:296
+#: .\templates\Payees\payee_list_new.html:322
+msgid "Validate Data"
+msgstr "التحقق من البيانات"
+
+#: .\templates\Banks\bank_list_new.html:297
+#: .\templates\Payees\payee_list_new.html:323
+msgid "Sample Download"
+msgstr "تحميل نموذج"
+
+#: .\templates\Banks\bank_list_new.html:298
+#: .\templates\Payees\payee_list_new.html:324
+msgid "Save Valid Data"
+msgstr "حفظ البيانات الصالحة"
+
+#: .\templates\Banks\bank_list_new.html:302
+#: .\templates\Payees\payee_list_new.html:328
+msgid "Validation Results"
+msgstr "نتائج التحقق"
+
+#: .\templates\Banks\bank_list_new.html:308
+msgid "Bank Name English"
+msgstr "اسم البنك (بالإنجليزية)"
+
+#: .\templates\Banks\bank_list_new.html:309
+msgid "Bank Name Local"
+msgstr "اسم البنك (باللغة المحلية)"
+
+#: .\templates\Banks\bank_list_new.html:310
+msgid "Telephone No."
+msgstr "رقم الهاتف"
+
+#: .\templates\Banks\bank_list_new.html:312
+#: .\templates\Payees\payee_list_new.html:337
+msgid "Status"
+msgstr "الحالة"
+
+#: .\templates\Banks\bank_list_new.html:313
+#: .\templates\Payees\payee_list_new.html:338
+msgid "Message"
+msgstr "الرسالة"
+
+#: .\templates\Banks\bank_list_new.html:440
+#: .\templates\Payees\payee_list_new.html:449
+msgid "Please select a file to validate."
+msgstr "يرجى تحديد ملف للتحقق."
+
+#: .\templates\Banks\bank_list_new.html:485
+#: .\templates\Payees\payee_list_new.html:493
+msgid "An error occurred while validating the file."
+msgstr "حدث خطأ أثناء التحقق من الملف."
+
+#: .\templates\Banks\bank_list_new.html:505
+#: .\templates\Payees\payee_list_new.html:513
+msgid "Failed to save data."
+msgstr "فشل في حفظ البيانات."
+
+#: .\templates\Banks\bank_list_new.html:509
+#: .\templates\Payees\payee_list_new.html:517
+msgid "An error occurred while saving the data."
+msgstr "حدث خطأ أثناء حفظ البيانات."
+
+#: .\templates\Banks\bank_list_new.html:526
+#: .\templates\Payees\payee_list_new.html:534
+#: .\templates\Reports\reports.html:292 .\templates\Reports\reports.html:314
+#: .\templates\Reports\reports.html:342 .\templates\Reports\reports.html:407
+msgid "Previous"
+msgstr "السابق"
+
+#: .\templates\Banks\bank_list_new.html:527
+#: .\templates\Payees\payee_list_new.html:535
+#: .\templates\Reports\reports.html:293 .\templates\Reports\reports.html:315
+#: .\templates\Reports\reports.html:343 .\templates\Reports\reports.html:408
+msgid "Next"
+msgstr "التالي"
+
+#: .\templates\Banks\bank_list_new.html:529
+#: .\templates\Payees\payee_list_new.html:537
+#: .\templates\Reports\reports.html:295 .\templates\Reports\reports.html:317
+#: .\templates\Reports\reports.html:345 .\templates\Reports\reports.html:410
+msgid "Showing _START_ to _END_ of _TOTAL_ entries"
+msgstr "عرض _START_ إلى _END_ من إجمالي _TOTAL_ إدخالات"
+
+#: .\templates\Banks\bank_list_new.html:530
+#: .\templates\Payees\payee_list_new.html:538
+#: .\templates\Reports\reports.html:296 .\templates\Reports\reports.html:318
+#: .\templates\Reports\reports.html:346 .\templates\Reports\reports.html:411
+msgid "Show _MENU_ entries"
+msgstr "عرض _MENU_ إدخالات"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:24
+msgid "Cheque Issue"
+msgstr "إصدار شيك"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:33
+msgid "Issue new Cheque"
+msgstr "إصدار شيك جديد"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:52
+#: .\templates\Cheque_templates\template_list.html:42
+msgid "Search & Filters"
+msgstr "البحث والفلاتر"
+
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:67
+#: .\templates\Cheque_templates\template_list.html:58
+msgid "Search"
+msgstr "بحث"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:77
+#: .\templates\Cheque_issue\cheque_issue_list.html:146
+#: .\templates\Cheque_templates\template_list.html:81
+#: .\templates\Reports\reports.html:72 .\templates\Reports\reports.html:225
+msgid "Bank"
+msgstr "البنك"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:79
+#: .\templates\Reports\reports.html:74
+msgid "Select Bank"
+msgstr "اختر البنك"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:88
+#: .\templates\Cheque_templates\template_list.html:68
+msgid "Currency"
+msgstr "العملة"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:90
+msgid "Select Currency"
+msgstr "اختر العملة"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:99
+#: .\templates\Reports\reports.html:83
+msgid "Approval Status"
+msgstr "حالة الموافقة"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:101
+#: .\templates\Reports\reports.html:85
+msgid "Select Approval Status"
+msgstr "اختر حالة الموافقة"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:102
+#: .\templates\Cheque_issue\cheque_issue_list.html:207
+#: .\templates\Reports\reports.html:86
+msgid "Approved"
+msgstr "موافق عليه"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:103
+#: .\templates\Cheque_issue\cheque_issue_list.html:207
+#: .\templates\Reports\reports.html:87
+msgid "Pending"
+msgstr "قيد الانتظار"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:104
+#: .\templates\Cheque_issue\cheque_issue_list.html:207
+#: .\templates\Reports\reports.html:88
+msgid "Rejected"
+msgstr "مرفوض"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:110
+#: .\templates\Reports\reports.html:94
+msgid "Cheque Date Range"
+msgstr "نطاق تاريخ الشيك"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:113
+#: .\templates\Reports\reports.html:96
+msgid "From"
+msgstr "من"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:118
+#: .\templates\Reports\reports.html:100
+msgid "To"
+msgstr "إلى"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:125
+#: .\templates\Cheque_templates\template_list.html:94
+#: .\templates\Reports\reports.html:106
+msgid "Apply Filters"
+msgstr "تطبيق الفلاتر"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:138
+msgid "Cheque Issue List"
+msgstr "قائمة إصدار الشيكات"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:145
+#: .\templates\Cheque_issue\cheque_issue_list.html:305
+msgid "Template"
+msgstr "القالب"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:147
+#: .\templates\Cheque_issue\cheque_issue_list.html:314
+#: .\templates\Reports\reports.html:224
+msgid "Account Number"
+msgstr "رقم الحساب"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:148
+#: .\templates\Cheque_issue\cheque_issue_list.html:326
+msgid "Payee"
+msgstr "المستفيد"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:149
+#: .\templates\Cheque_issue\cheque_issue_list.html:322
+msgid "Cheque Date"
+msgstr "تاريخ الشيك"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:150
+#: .\templates\Cheque_issue\cheque_issue_list.html:335
+msgid "Cheque Amount"
+msgstr "مبلغ الشيك"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:151
+msgid "Issue Date"
+msgstr "تاريخ الإصدار"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:152
+msgid "Approval"
+msgstr "الموافقة"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:153
+msgid "Approved/Rejected By"
+msgstr "تمت الموافقة/الرفض بواسطة"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:170
+msgid "Preview & Print Cheque"
+msgstr "معاينة وطباعة الشيك"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:175
+msgid "Delete Issued Cheque"
+msgstr "حذف الشيك الصادر"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:183
+msgid "Approve Cheque"
+msgstr "الموافقة على الشيك"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:189
+msgid "Reject Cheque"
+msgstr "رفض الشيك"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:214
+msgid "No Cheques Issued"
+msgstr "لم يتم إصدار أي شيكات"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:224
+#: .\templates\Companies\company_list.html:109
+#: .\templates\Users\user_list.html:111
+msgid "of"
+msgstr "من"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:297
+msgid "Issue New Cheque"
+msgstr "إصدار شيك جديد"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:307
+msgid "Select Template"
+msgstr "اختر القالب"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:318
+msgid "Cheque Number"
+msgstr "رقم الشيك"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:328
+msgid "Select Payee"
+msgstr "اختر المستفيد"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:339
+msgid "Cheque Narration"
+msgstr "ملاحظات الشيك"
+
+#: .\templates\Cheque_issue\cheque_issue_list.html:343
+msgid "Cheque Issue Sign"
+msgstr "توقيع إصدار الشيك"
+
+#: .\templates\Cheque_templates\template_list.html:70
+msgid "All Currencies"
+msgstr "كل العملات"
+
+#: .\templates\Cheque_templates\template_list.html:83
+msgid "All Banks"
+msgstr "كل البنوك"
+
+#: .\templates\Companies\company_list.html:4
+#: .\templates\Companies\company_list.html:14
+#: .\templates\Companies\company_list.html:100
+#: .\templates\layouts\base.html:252
+msgid "Companies"
+msgstr "الشركات"
+
+#: .\templates\Companies\company_list.html:23
+msgid "Create new Company"
+msgstr "إنشاء شركة جديدة"
+
+#: .\templates\Companies\company_list.html:39
+msgid "Company List"
+msgstr "قائمة الشركات"
+
+
+#: .\templates\Companies\company_list.html:46
+#: .\templates\Companies\company_list.html:179
+#: .\templates\Companies\company_list.html:187
+#: .\templates\Companies\company_list.html:192
+#: .\templates\Companies\company_list.html:197
+#: .\templates\Companies\company_list.html:202
+#: .\templates\Companies\company_list.html:207
+#: .\templates\Companies\company_list.html:212
+#: .\templates\Companies\company_list.html:268
+#: .\templates\Companies\company_list.html:273
+#: .\templates\Companies\company_list.html:278
+#: .\templates\Companies\company_list.html:283
+#: .\templates\Companies\company_list.html:288
+#: .\templates\Companies\company_list.html:293
+msgid "Company"
+msgstr "الشركة"
+
+#: .\templates\Companies\company_list.html:47
+#: .\templates\Companies\company_list.html:192
+#: .\templates\Companies\company_list.html:273
+msgid "Phone"
+msgstr "الهاتف"
+
+#: .\templates\Companies\company_list.html:48
+#: .\templates\Companies\company_list.html:197
+#: .\templates\Companies\company_list.html:278
+#: .\templates\Payees\payee_list_new.html:95
+#: .\templates\Payees\payee_list_new.html:238
+#: .\templates\Payees\payee_list_new.html:282
+#: .\templates\Payees\payee_list_new.html:335
+#: .\templates\Reports\reports.html:170 .\templates\Users\user_list.html:199
+#: .\templates\Users\user_list.html:289 .\templates\layouts\base.html:473
+msgid "Email"
+msgstr "البريد الإلكتروني"
+
+#: .\templates\Companies\company_list.html:49
+msgid "Taxation ID"
+msgstr "معرف الضريبة"
+
+#: .\templates\Companies\company_list.html:73
+msgid "Edit Company"
+msgstr "تعديل الشركة"
+
+#: .\templates\Companies\company_list.html:77
+msgid "Delete Company"
+msgstr "حذف الشركة"
+
+#: .\templates\Companies\company_list.html:100
+msgid "No"
+msgstr "لا"
+
+#: .\templates\Companies\company_list.html:100
+msgid "found"
+msgstr "تم العثور عليه"
+
+#: .\templates\Companies\company_list.html:179
+#: .\templates\Users\user_list.html:181
+msgid "Add"
+msgstr "إضافة"
+
+#: .\templates\Companies\company_list.html:179
+#: .\templates\Users\user_list.html:181
+msgid "New"
+msgstr "جديد"
+
+#: .\templates\Companies\company_list.html:187
+#: .\templates\Companies\company_list.html:268
+#: .\templates\Users\user_list.html:48 .\templates\Users\user_list.html:189
+#: .\templates\Users\user_list.html:194 .\templates\layouts\base.html:470
+msgid "Name"
+msgstr "الاسم"
+
+#: .\templates\Companies\company_list.html:202
+#: .\templates\Companies\company_list.html:283
+msgid "Tax Id"
+msgstr "معرف الضريبة"
+
+#: .\templates\Companies\company_list.html:212
+#: .\templates\Companies\company_list.html:293
+msgid "Logo"
+msgstr "الشعار"
+
+#: .\templates\Currency\currency_list_new.html:14
+#: .\templates\layouts\base.html:312
+msgid "Currencies"
+msgstr "العملات"
+
+#: .\templates\Currency\currency_list_new.html:23
+msgid "Create new Currency"
+msgstr "إنشاء عملة جديدة"
+
+#: .\templates\Currency\currency_list_new.html:39
+msgid "Currency List"
+msgstr "قائمة العملات"
+
+#: .\templates\Currency\currency_list_new.html:46
+#: .\templates\Currency\currency_list_new.html:172
+#: .\templates\Currency\currency_list_new.html:208
+msgid "Currency Char"
+msgstr "رمز العملة"
+
+#: .\templates\Currency\currency_list_new.html:47
+#: .\templates\Currency\currency_list_new.html:177
+#: .\templates\Currency\currency_list_new.html:212
+msgid "Currency Name"
+msgstr "اسم العملة"
+
+#: .\templates\Currency\currency_list_new.html:67
+#: .\templates\Currency\currency_list_new.html:198
+msgid "Edit Currency"
+msgstr "تعديل العملة"
+
+#: .\templates\Currency\currency_list_new.html:71
+msgid "Delete Currency"
+msgstr "حذف العملة"
+
+#: .\templates\Currency\currency_list_new.html:85
+msgid "No Currencies found"
+msgstr "لم يتم العثور على عملات"
+
+#: .\templates\Currency\currency_list_new.html:164
+msgid "Add New Currency"
+msgstr "إضافة عملة جديدة"
+
+#: .\templates\Payees\payee_list_new.html:4
+#: .\templates\Payees\payee_list_new.html:46 .\templates\layouts\base.html:302
+msgid "Payees"
+msgstr "المستفيدون"
+
+#: .\templates\Payees\payee_list_new.html:56
+msgid "Create new Payee"
+msgstr "إنشاء مستفيد جديد"
+
+#: .\templates\Payees\payee_list_new.html:86
+msgid "Payee List"
+msgstr "قائمة المستفيدين"
+
+#: .\templates\Payees\payee_list_new.html:93
+#: .\templates\Payees\payee_list_new.html:230
+#: .\templates\Payees\payee_list_new.html:274
+#: .\templates\Payees\payee_list_new.html:333
+#: .\templates\Reports\reports.html:168
+msgid "Payee Name"
+msgstr "اسم المستفيد"
+
+#: .\templates\Payees\payee_list_new.html:94
+#: .\templates\Payees\payee_list_new.html:234
+#: .\templates\Payees\payee_list_new.html:278
+#: .\templates\Payees\payee_list_new.html:334
+#: .\templates\Reports\reports.html:169
+msgid "Mobile Number"
+msgstr "رقم الجوال"
+
+#: .\templates\Payees\payee_list_new.html:119
+#: .\templates\Payees\payee_list_new.html:264
+msgid "Edit Payee"
+msgstr "تعديل المستفيد"
+
+#: .\templates\Payees\payee_list_new.html:123
+msgid "Delete Payee"
+msgstr "حذف المستفيد"
+
+#: .\templates\Payees\payee_list_new.html:143
+#: .\templates\Reports\reports.html:198
+msgid "No Payees found"
+msgstr "لم يتم العثور على مستفيدين"
+
+#: .\templates\Payees\payee_list_new.html:222
+msgid "Add New Payee"
+msgstr "إضافة مستفيد جديد"
+
+#: .\templates\Payees\payee_list_new.html:311
+msgid "Upload Excel Payee"
+msgstr "رفع مستفيد من إكسل"
+
+#: .\templates\Reports\reports.html:4 .\templates\Reports\reports.html:50
+#: .\templates\layouts\base.html:342
+msgid "Reports"
+msgstr "التقارير"
+
+#: .\templates\Reports\reports.html:64
+msgid "Filters"
+msgstr "الفلاتر"
+
+#: .\templates\Reports\reports.html:119
+msgid "Payee Report "
+msgstr "تقرير المستفيد"
+
+#: .\templates\Reports\reports.html:122
+msgid "Account Report"
+msgstr "تقرير الحساب"
+
+#: .\templates\Reports\reports.html:135 .\templates\Reports\reports.html:212
+msgid "Generate Report"
+msgstr "إنشاء تقرير"
+
+#: .\templates\Reports\reports.html:138
+msgid "Download CSV"
+msgstr "تحميل CSV"
+
+#: .\templates\Reports\reports.html:142
+msgid "Download Excel"
+msgstr "تحميل Excel"
+
+#: .\templates\Reports\reports.html:251
+msgid "No Accounts found"
+msgstr "لم يتم العثور على حسابات"
+
+#: .\templates\Reports\reports.html:352 .\templates\Reports\reports.html:417
+msgid "Select All"
+msgstr "تحديد الكل"
+
+#: .\templates\Users\user_list.html:4 .\templates\Users\user_list.html:14
+#: .\templates\layouts\base.html:258
+msgid "Users"
+msgstr "المستخدمون"
+
+#: .\templates\Users\user_list.html:23
+msgid "Create"
+msgstr "إنشاء"
+
+#: .\templates\Users\user_list.html:23
+msgid "new"
+msgstr "جديد"
+
+#: .\templates\Users\user_list.html:23 .\templates\Users\user_list.html:47
+#: .\templates\Users\user_list.html:74 .\templates\Users\user_list.html:78
+#: .\templates\Users\user_list.html:181 .\templates\Users\user_list.html:267
+msgid "User"
+msgstr "مستخدم"
+
+#: .\templates\Users\user_list.html:39
+msgid "User List"
+msgstr "قائمة المستخدمين"
+
+#: .\templates\Users\user_list.html:46
+msgid "ID"
+msgstr "المعرف"
+
+#: .\templates\Users\user_list.html:49 .\templates\Users\user_list.html:204
+#: .\templates\Users\user_list.html:295
+msgid "Role"
+msgstr "الدور"
+
+#: .\templates\Users\user_list.html:50 .\templates\Users\user_list.html:216
+msgid "Admin"
+msgstr "مسؤول"
+
+#: .\templates\Users\user_list.html:51
+msgid "Last Login"
+msgstr "آخر تسجيل دخول"
+
+#: .\templates\Users\user_list.html:74 .\templates\Users\user_list.html:267
+msgid "Edit"
+msgstr "تعديل"
+
+#: .\templates\Users\user_list.html:78
+msgid "Delete"
+msgstr "حذف"
+
+#: .\templates\Users\user_list.html:190 .\templates\Users\user_list.html:195
+#: .\templates\Users\user_list.html:200 .\templates\Users\user_list.html:205
+#: .\templates\Users\user_list.html:210
+msgid "Your"
+msgstr "خاصتك"
+
+#: .\templates\Users\user_list.html:190 .\templates\Users\user_list.html:277
+msgid "First Name"
+msgstr "الاسم الأول"
+
+#: .\templates\Users\user_list.html:195 .\templates\Users\user_list.html:283
+msgid "Last Name"
+msgstr "الاسم الأخير"
+
+#: .\templates\Users\user_list.html:200
+msgid "User Email"
+msgstr "بريد المستخدم"
+
+#: .\templates\Users\user_list.html:205
+msgid "User Role"
+msgstr "دور المستخدم"
+
+#: .\templates\Users\user_list.html:209 .\templates\Users\user_list.html:210
+msgid "Password"
+msgstr "كلمة المرور"
+
+#: .\templates\Users\user_list.html:216
+msgid "Make"
+msgstr "جعل"
+
+#: .\templates\Users\user_list.html:221 .\templates\Users\user_list.html:309
+msgid "Profile Picture"
+msgstr "صورة الملف الشخصي"
+
+#: .\templates\Users\user_list.html:278
+msgid "Your First Name"
+msgstr "اسمك الأول"
+
+#: .\templates\Users\user_list.html:284
+msgid "Your Last Name"
+msgstr "اسمك الأخير"
+
+#: .\templates\Users\user_list.html:290
+msgid "Your Email"
+msgstr "بريدك الإلكتروني"
+
+#: .\templates\Users\user_list.html:296
+msgid "Your Role"
+msgstr "دورك"
+
+#: .\templates\Users\user_list.html:303
+msgid "Make Admin"
+msgstr "جعله مسؤولًا"
+
+#: .\templates\Users\user_list.html:312
+msgid "User Profile Picture"
+msgstr "صورة ملف المستخدم"
+
+#: .\templates\home\index.html:4
+msgid "Index"
+msgstr "فهرس"
+
+#: .\templates\home\index.html:46
+msgid "Overview"
+msgstr "نظرة عامة"
+
+#: .\templates\home\index.html:49
+msgid "Dashboard"
+msgstr "لوحة التحكم"
+
+#: .\templates\home\index.html:79
+msgid "Banks Present"
+msgstr "البنوك الحالية"
+
+#: .\templates\home\index.html:100
+msgid "Payees Present"
+msgstr "المستفيدون الحاليون"
+
+#: .\templates\home\index.html:121
+msgid "Currencies Present"
+msgstr "العملات الحالية"
+
+#: .\templates\home\index.html:142 .\templates\layouts\base.html:322
+msgid "Cheque Templates"
+msgstr "نماذج الشيكات"
+
+#: .\templates\home\index.html:175
+msgid "Total Cheques Issued"
+msgstr "إجمالي الشيكات الصادرة"
+
+#: .\templates\home\index.html:197
+msgid "Approved Cheques"
+msgstr "الشيكات المعتمدة"
+
+#: .\templates\home\index.html:219
+msgid "Pending Cheques"
+msgstr "الشيكات المعلقة"
+
+#: .\templates\home\index.html:241
+msgid "Rejected Cheques"
+msgstr "الشيكات المرفوضة"
+
+#: .\templates\home\index.html:263
+msgid "Total Transactions via Currencies"
+msgstr "إجمالي المعاملات عبر العملات"
+
+#: .\templates\home\index.html:275
+msgid "Templates via Bank"
+msgstr "النماذج حسب البنك"
+
+#: .\templates\home\index.html:287
+msgid "Approved Cheques Issued via Bank"
+msgstr "الشيكات المعتمدة الصادرة عبر البنك"
+
+#: .\templates\layouts\base.html:250
+msgid "Profile"
+msgstr "الملف الشخصي"
+
+#: .\templates\layouts\base.html:263
+msgid "Logout"
+msgstr "تسجيل الخروج"
+
+#: .\templates\layouts\base.html:282
+msgid "Home"
+msgstr "الرئيسية"
+
+#: .\templates\layouts\base.html:332
+msgid "Issued Cheques"
+msgstr "الشيكات الصادرة"
+
+#: .\templates\layouts\base.html:467
+msgid "Registeration Code"
+msgstr "رمز التسجيل"
+
+#: .\templates\layouts\base.html:476
+msgid "Country"
+msgstr "الدولة"
+
+#: .\templates\layouts\base.html:479
+msgid "Customer Id"
+msgstr "معرف العميل"
+
+#: .\templates\layouts\base.html:482
+msgid "License Key"
+msgstr "مفتاح الترخيص"
+
+#: .\templates\layouts\base.html:485
+msgid "Allowed Templates"
+msgstr "النماذج المسموح بها"
+
+#: .\templates\layouts\base.html:488
+msgid "Expiry"
+msgstr "انتهاء الصلاحية"
+
+#: .\templates\wizard\wizard.html:4
+msgid "Wizard"
+msgstr "المعالج"
+
+#: .\templates\wizard\wizard.html:107
+msgid "Welcome to the Setup Wizard"
+msgstr "مرحبًا بك في معالج الإعداد"
+
+#: .\templates\wizard\wizard.html:111
+msgid "Let's Get Started!"
+msgstr "لنبدأ!"
+
+#: .\templates\wizard\wizard.html:112
+msgid ""
+"This wizard will guide you through the necessary setup steps for your "
+"application,"
+msgstr "سيرشدك هذا المعالج خلال خطوات الإعداد اللازمة لتطبيقك،"
+
+#: .\templates\wizard\wizard.html:113
+msgid "which is adding neccessary values like bank, currency and payee."
+msgstr "بما في ذلك إضافة القيم الضرورية مثل البنك، العملة، والمستفيد."
+
+#: .\templates\wizard\wizard.html:114
+msgid "Click 'Start Setup' to begin."
+msgstr "انقر على 'بدء الإعداد' للبدء."
+
+#: .\templates\wizard\wizard.html:115
+msgid "Start Setup"
+msgstr "بدء الإعداد"
+
