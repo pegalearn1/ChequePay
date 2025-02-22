@@ -936,3 +936,153 @@ msgstr "انقر على 'بدء الإعداد' للبدء."
 msgid "Start Setup"
 msgstr "بدء الإعداد"
 
+#: .\templates\layouts\base.html:617
+msgid "Documentation"
+msgstr "الوثائق"
+
+#: .\templates\layouts\base.html:290
+#: .\templates\layouts\base.html:482
+#: .\templates\layouts\base.html:290
+#: .\templates\layouts\base.html:618
+msgid "License"
+msgstr "ترخيص"
+
+#: .\templates\layouts\base.html:619
+msgid "Developed"
+msgstr "تطوير"
+
+#: .\templates\layouts\base.html:619
+msgid "By"
+msgstr "من قبل"
+
+#: .\templates\layouts\base.html:626
+msgid "Copyright"
+msgstr "حقوق النشر"
+
+#: .\templates\layouts\base.html:626
+msgid "2025"
+msgstr "٢٠٢٥"
+
+#: .\templates\layouts\base.html:628
+msgid "All rights reserved"
+msgstr "جميع الحقوق محفوظة"
+
+
+#: .\templates\layouts\base.html:290
+#: .\templates\layouts\base.html:482
+msgid "Info"
+msgstr "معلومات"
+
+
+#: .\templates\home\profile.html:10
+msgid "Welcome,"
+msgstr "مرحبا،"
+
+#: .\templates\home\profile.html:11
+msgid "Manage your profile details and view your account information here."
+msgstr "ادير تفاصيل ملفك الشخصي واعرض معلومات حسابك هنا."
+
+#: .\templates\home\profile.html:30
+msgid "User since"
+msgstr "مستخدم منذ"
+
+#: .\templates\home\profile.html:38
+msgid "Profile Information"
+msgstr "معلومات الملف الشخصي"
+
+#: .\templates\home\profile.html:42
+msgid "Personal Details"
+msgstr "التفاصيل الشخصية"
+
+#: .\templates\home\profile.html:48
+msgid "Username"
+msgstr "اسم المستخدم"
+
+#: .\templates\layouts\base.html:399
+msgid "Select Company"
+msgstr "اختر الشركة"
+
+msgid "Create new Template"
+msgstr "إنشاء قالب جديد"
+
+msgid "Size"
+msgstr "الحجم"
+
+msgid "Edit Template"
+msgstr "تحرير القالب"
+
+msgid "Delete Template"
+msgstr "حذف القالب"
+
+msgid "Add New Template"
+msgstr "إضافة قالب جديد"
+
+msgid "Cheque Template Name"
+msgstr "اسم قالب الشيك"
+
+msgid "Cheque Width (mm)"
+msgstr "عرض الشيك (مم)"
+
+msgid "Cheque Height (mm)"
+msgstr "ارتفاع الشيك (مم)"
+
+msgid "Cheque Background Image"
+msgstr "صورة خلفية الشيك"
+
+
+msgid "Template List"
+msgstr "قائمة القوالب"
+
+
+msgid "Template Details"
+msgstr "تفاصيل القالب"
+
+msgid "Template Name"
+msgstr "اسم القالب"
+
+msgid "D"
+msgstr "ي"
+
+msgid "M"
+msgstr "ش"
+
+msgid "Y"
+msgstr "س"
+
+msgid "Amount In Words"
+msgstr "المبلغ بالحروف"
+
+msgid "Amount"
+msgstr "المبلغ"
+
+msgid "Signature"
+msgstr "التوقيع"
+
+msgid "Set Text Positions"
+msgstr "تعيين مواضع النص"
+
+msgid "Cancel"
+msgstr "إلغاء"
+
+msgid "Text Positions"
+msgstr "مواضع النص"
+
+msgid "Attributes"
+msgstr "الخصائص"
+
+msgid "Position"
+msgstr "الموضع"
+
+msgid "Date"
+msgstr "التاريخ"
+
+msgid "Delete text"
+msgstr "حذف النص"
+
+msgid "Amount in Numbers"
+msgstr "المبلغ بالأرقام"
+
+msgid "No Text Attributes found."
+msgstr "لم يتم العثور على خصائص النص."
+
+

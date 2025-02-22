@@ -1,7 +1,7 @@
 {% extends 'layouts/base.html' %}
 {% load i18n %}
 {% load static %}
-{% block tiitle %}Profile{% endblock tiitle %}
+{% block tiitle %}{% trans "Profile" %}{% endblock tiitle %}
 {% block stylesheet %}{% endblock stylesheet %}
 {% block content %}
 
@@ -11,8 +11,8 @@
   <div class="container d-flex align-items-center">
     <div class="row">
       <div class="col-md-8">
-        <h1 class="text-white">Welcome, {{ request.user.username }}</h1>
-        <p class="text-white mt-2">Manage your profile details and view your account information here.</p>
+        <h1 class="text-white">{% trans "Welcome," %} {{ request.user.username }}</h1>
+        <p class="text-white mt-2">{% trans "Manage your profile details and view your account information here." %}</p>
       </div>
     </div>
   </div>
@@ -26,7 +26,7 @@
           
           <div class="profile-picture mb-3">
             <!-- Display the profile image -->
-            <img id="profile-picture"  src="{% if request.user.profile_picture %}{{ request.user.profile_picture.url }}{% else %}{% static "tabler/user_image.jpg" %}{% endif %}" alt="Profile Picture" 
+            <img id="profile-picture"  src="{% if request.user.profile_picture %}{{ request.user.profile_picture.url }}{% else %}{% static "tabler/user_image.jpg" %}{% endif %}" alt="{% trans "Profile Picture" %}" 
                  class="rounded-circle img-fluid" style="width: 150px; height: 150px; cursor: pointer;" 
                  onclick="document.getElementById('profile-picture-input').click();">
             <!-- Hidden input to change the profile picture -->
@@ -35,7 +35,7 @@
           
           <h5 class="h3">{{ request.user.first_name }} {{ request.user.last_name }}</h5>
           <p class="text-muted">{{ request.user.privilege_role }}</p>
-          <p><i class="ni education_hat mr-2"></i>User since {{ request.user.date_joined|date:"F Y" }}</p>
+          <p><i class="ni education_hat mr-2"></i>{% trans "User since" %} {{ request.user.date_joined|date:"F Y" }}</p>
         </div>
       </div>
     </div>
@@ -57,24 +57,24 @@
     <div class="col-xl-8">
       <div class="card">
         <div class="card-header">
-          <h3 class="mb-0">Profile Information</h3>
+          <h3 class="mb-0">{% trans "Profile Information" %}</h3>
         </div>
         <div class="card-body">
           <form method="post" id="profile_form" enctype="multipart/form-data">
             {% csrf_token %}
 
-            <h6 class="heading-small text-muted">Personal Details</h6>
+            <h6 class="heading-small text-muted">{% trans "Personal Details" %}</h6>
             <div class="pl-lg-4">
               <div class="row">
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="input-username">Username</label>
+                    <label for="input-username">{% trans "Username" %}</label>
                     <input type="text" id="input-username" name="username" class="form-control" value="{{ request.user.username }}" readonly>
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="input-email">Email</label>
+                    <label for="input-email">{% trans "Email" %}</label>
                     <input type="email" id="input-email" name="email" class="form-control" value="{{ request.user.email }}">
                   </div>
                 </div>
@@ -85,13 +85,13 @@
               <div class="row">
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="input-username">First Name</label>
+                    <label for="input-username">{% trans "First Name" %}</label>
                     <input type="text" id="input-fname" name="first_name" class="form-control" value="{{ request.user.first_name }}" >
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="input-email">Last Name</label>
+                    <label for="input-email">{% trans "Last Name" %}</label>
                     <input type="text" id="input-lname" name="last_name" class="form-control" value="{{ request.user.last_name }}">
                   </div>
                 </div>
@@ -102,18 +102,15 @@
               <div class="row">
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="input-password">Password</label>
+                    <label for="input-password">{% trans "Password" %}</label>
                     <input type="password" id="input-pasword" name="password" class="form-control" value="{{ request.user.password }}" >
                   </div>
                 </div>
-               
               </div>
             </div>
 
-            
-
             <div class="text-right mt-3 ">
-              <button type="submit" class="btn btn-primary">Save Changes</button>
+              <button type="submit" class="btn btn-primary">{% trans "Save Changes" %}</button>
             </div>
           </form>
         </div>

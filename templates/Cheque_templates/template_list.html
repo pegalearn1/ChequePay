@@ -1,7 +1,7 @@
 {% extends 'layouts/base.html' %}
 {% load i18n %}
 {% load static %}
-{% block tiitle %}Cheque Templates{% endblock tiitle %}
+{% block tiitle %}{% trans "Cheque Templates" %}{% endblock tiitle %}
 {% block content %}
 
 
@@ -11,7 +11,7 @@
       <div class="row g-2 align-items-center">
         <div class="col">
           <h2 class="page-title">
-            Cheque Templates
+            {% trans "Cheque Templates" %}
           </h2>
         </div>
         <!-- Page title actions -->
@@ -20,7 +20,7 @@
              <a href="#" class="btn btn-primary d-none d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#addTemplateModal">
                 <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
-                Create new Template
+                {% trans "Create new Template" %}
               </a>
               <a href="#" class="btn btn-primary d-sm-none btn-icon" data-bs-toggle="modal" data-bs-target="#addTemplateModal" aria-label="addTemplateModalLabel">
                 <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
@@ -50,7 +50,7 @@
                   class="form-control" 
                   name="search" 
                   id="searchInput" 
-                  placeholder="Search templates" 
+                  placeholder="{% trans "Search templates" %}" 
                   value="{{ request.GET.search }}" 
                   autocomplete="off">
                 <!-- Submit Button inside the input group -->
@@ -103,17 +103,17 @@
       <div class="col-md-9">
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">Template List</h3>
+            <h3 class="card-title">{% trans "Template List" %}</h3>
           </div>
           <div class="table-responsive">
             <table class="table card-table table-vcenter text-nowrap datatable">
               <thead>
                 <tr>
                   <th></th>
-                  <th>Template</th>
-                  <th>Size</th>
-                  <th>Bank</th>
-                  <th>Currency</th>
+                  <th>{% trans "Template" %}</th>
+                  <th>{% trans "Size" %}</th>
+                  <th>{% trans "Bank" %}</th>
+                  <th>{% trans "Currency" %}</th>
                 </tr>
               </thead>
               <tbody>
@@ -124,19 +124,19 @@
                   <td class="text-start">
                     <div class="dropdown dropend">
                       <button class="btn dropdown-toggle align-text-top" data-bs-toggle="dropdown">
-                        Actions
+                        {% trans "Actions" %}
                       </button>
                       <div class="dropdown-menu">
                         <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editTemplateModal"
                           data-id="{{ template.id }}" data-name="{{ template.name }}" data-width="{{ template.width }}"
                           data-height="{{ template.height }}" data-bank-id="{{ template.bank.id }}"
                           data-currency-id="{{ template.currency.id }}" data-background_image="{{ template.background_image.url }}">
-                          Edit Template
+                          {% trans "Edit Template" %}
                         </a>
                         <a class="dropdown-item"
                           onclick="if (confirm('Are you sure? Want to delete {{ template.name }}?')) {return true;} else {event.stopPropagation(); event.preventDefault();};"
                           href="{% url 'delete_template' template.id %}">
-                          Delete Template
+                          {% trans "Delete Template" %}
                         </a>
                       </div>
                     </div>
@@ -163,7 +163,7 @@
                 {% endfor %}
                 {% else %}
                 <tr>
-                  <td colspan="5" class="text-center">No Templates found.</td>
+                  <td colspan="5" class="text-center">{% trans "No Templates found" %}.</td>
                 </tr>
                 {% endif %}
               </tbody>
@@ -172,18 +172,18 @@
           <!-- Pagination -->
           <div class="card-footer d-flex align-items-center">
             <p class="m-0 text-secondary">
-              Showing <span>{{ templates.start_index }}</span> to <span>{{ templates.end_index }}</span> of <span>{{ templates.paginator.count }}</span> entries
+              {% trans "Showing" %} <span>{{ templates.start_index }}</span> {% trans "to" %} <span>{{ templates.end_index }}</span> {% trans "of" %} <span>{{ templates.paginator.count }}</span> {% trans "entries" %}
             </p>
             <ul class="pagination m-0 ms-auto">
               {% if templates.has_previous %}
               <li class="page-item">
                 <a class="page-link" href="?page=1{% if request.GET.currency %}&currency={{ request.GET.currency }}{% endif %}{% if request.GET.bank %}&bank={{ request.GET.bank }}{% endif %}" tabindex="-1">
-                  First
+                  {% trans "First" %}
                 </a>
               </li>
               <li class="page-item">
                 <a class="page-link" href="?page={{ templates.previous_page_number }}{% if request.GET.currency %}&currency={{ request.GET.currency }}{% endif %}{% if request.GET.bank %}&bank={{ request.GET.bank }}{% endif %}">
-                  Previous
+                  {% trans "Previous" %}
                 </a>
               </li>
               {% endif %}
@@ -199,12 +199,12 @@
               {% if templates.has_next %}
               <li class="page-item">
                 <a class="page-link" href="?page={{ templates.next_page_number }}{% if request.GET.currency %}&currency={{ request.GET.currency }}{% endif %}{% if request.GET.bank %}&bank={{ request.GET.bank }}{% endif %}">
-                  Next
+                  {% trans "Next" %}
                 </a>
               </li>
               <li class="page-item">
                 <a class="page-link" href="?page={{ templates.paginator.num_pages }}{% if request.GET.currency %}&currency={{ request.GET.currency }}{% endif %}{% if request.GET.bank %}&bank={{ request.GET.bank }}{% endif %}">
-                  Last
+                  {% trans "Last" %}
                 </a>
               </li>
               {% endif %}
@@ -225,7 +225,7 @@
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="addTemplateModalLabel">Add New Template</h5>
+          <h5 class="modal-title" id="addTemplateModalLabel">{% trans "Add New Template" %}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -233,37 +233,37 @@
           <form id="addTemplateForm" method="POST"  enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-group mb-2">
-              <label for="name" class="form-label">Cheque Template Name</label>
+              <label for="name" class="form-label">{% trans "Cheque Template Name" %}</label>
               <input type="text" class="form-control" id="name" name="name" required>
             </div>
             <div class="form-group mb-2">
-              <label for="width" class="form-label">Cheque Width (mm)</label>
+              <label for="width" class="form-label">{% trans "Cheque Width (mm)" %}</label>
               <input type="text" class="form-control" id="width" name="width" required>
             </div>
             <div class="form-group mb-2">
-              <label for="height" class="form-label">Cheque Height (mm)</label>
+              <label for="height" class="form-label">{% trans "Cheque Height (mm)" %}</label>
               <input type="text" class="form-control" id="height" name="height" required>
             </div>
             <div class="form-group mb-2">
-              <label for="bank" class="form-label">Bank</label>
+              <label for="bank" class="form-label">{% trans "Bank" %}</label>
               <select class="form-control" name="bank" id="bank" required>
-                <option value="" disabled>Select Bank</option>
+                <option value="" disabled>{% trans "Select Bank" %}</option>
                 {% for bank in banks %}
                 <option value="{{bank.id}}">{{bank.bank_name_e}}</option>
                 {% endfor %}
               </select>
             </div>
             <div class="form-group mb-2">
-              <label for="currency" class="form-label">Currency</label>
+              <label for="currency" class="form-label">{% trans "Currency" %}</label>
               <select class="form-control" name="currency" id="currency" required>
-                <option value="" disabled>Select Currency</option>
+                <option value="" disabled>{% trans "Select Currency" %}</option>
                 {% for curr in currencies  %}
                 <option value="{{curr.id}}">{{curr.currency_name}}</option>
                 {% endfor %}
               </select>
             </div>
             <div class="form-group mb-2">
-              <label for="background_image" class="form-label">Cheque Background Image</label>
+              <label for="background_image" class="form-label">{% trans "Cheque Background Image" %}</label>
               <input type="file" name="background_image" id="id_background_image" class="form-control-file" style="max-width: 400px; width: 100%;" required accept="image/*" onchange="addpreviewImage(event)">
               <!-- Image Preview -->
               <div id="image-preview" class="mt-3">
@@ -291,8 +291,8 @@
               </script>
               <!-- image script -->
             <div class="modal-footer">
-            <button type="button" class="btn me-auto" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <button type="button" class="btn me-auto" data-bs-dismiss="modal">{% trans "Close" %}</button>
+            <button type="submit" class="btn btn-primary">{% trans "Save Changes" %}</button>
             </div>
         </form>
         </div>
@@ -308,7 +308,7 @@
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="editTemplateModalLabel">Edit Template</h5>
+          <h5 class="modal-title" id="editTemplateModalLabel">{% trans "Edit Template" %}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
             </button>
         </div>
@@ -318,24 +318,24 @@
             {% csrf_token %}
             <input type="hidden" id="edit_template_id" name="template_id">
             <div class="form-group mb-2">
-              <label for="edit_name" class="form-label">Cheque Template Name</label>
+              <label for="edit_name" class="form-label">{% trans "Cheque Template Name" %}</label>
               <input type="text" class="form-control" id="edit_name" name="name" required>
             </div>
   
             <div class="form-group mb-2">
-              <label for="edit_width" class="form-label">Cheque Width (mm)</label>
+              <label for="edit_width" class="form-label">{% trans "Cheque Width (mm)" %}</label>
               <input type="text" class="form-control" id="edit_width" name="width" required>
             </div>
   
             <div class="form-group mb-2">
-              <label for="edit_height" class="form-label">Cheque Height (mm)</label>
+              <label for="edit_height" class="form-label">{% trans "Cheque Height (mm)" %}</label>
               <input type="text" class="form-control" id="edit_height" name="height" required>
             </div>
   
             <div class="form-group mb-2">
-              <label for="edit_bank" class="form-label">Bank</label>
+              <label for="edit_bank" class="form-label">{% trans "Bank" %}</label>
               <select class="form-control" name="bank" id="edit_bank"  required>
-                <option value="" disabled>Select Bank</option>
+                <option value="" disabled>{% trans "Select Bank" %}</option>
                 {% for bank in banks %}
                 <option value="{{bank.id}}">{{bank.bank_name_e}}</option>
                 
@@ -343,9 +343,9 @@
               </select>
             </div>
             <div class="form-group mb-2">
-              <label for="edit_currency" class="form-label">Currency</label>
+              <label for="edit_currency" class="form-label">{% trans "Currency" %}</label>
               <select class="form-control" name="currency" id="edit_currency" required>
-                <option value="" disabled>Select Currency</option>
+                <option value="" disabled>{% trans "Select Currency" %}</option>
                 {% for curr in currencies  %}
                 <option value="{{curr.id}}">{{curr.currency_name}}</option>
                 {% endfor %}
@@ -353,7 +353,7 @@
             </div>
   
             <div class="form-group mb-2">
-              <label for="edit_background_image" class="form-label">Cheque Background Image</label>
+              <label for="edit_background_image" class="form-label">{% trans "Cheque Background Image" %}</label>
               <input 
                 type="file" 
                 name="background_image" 
@@ -398,8 +398,8 @@
             
             
             <div class="modal-footer">
-              <button type="button" class="btn me-auto" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Update</button>
+              <button type="button" class="btn me-auto" data-bs-dismiss="modal">{% trans "Close" %}</button>
+            <button type="submit" class="btn btn-primary">{% trans "Update" %}</button>
           </div>
           </form>
         </div>

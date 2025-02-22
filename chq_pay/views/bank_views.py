@@ -14,7 +14,6 @@ def add_bank(request):
         address = request.POST.get("address")
 
         bank_exist = Banks.objects.filter(Q(bank_name_e=bank_name_e) | Q(bank_char=bank_char))
-
        
 
         if bank_exist:

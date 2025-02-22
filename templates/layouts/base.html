@@ -287,7 +287,7 @@
                 <a href="{% url "users_list" %}" class="dropdown-item ">{% trans "Users" %}</a>
                 {% endif %}
                 <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#licenceInfoModal">License Info</a>
+                <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#licenceInfoModal">{% trans "License" %} {% trans "Info" %}</a>
                 <div class="dropdown-divider"></div>
                 <a href="{% url "logout" %}" class="dropdown-item">{% trans "Logout" %}</a>
               </div>
@@ -396,7 +396,7 @@
                           </svg>
                         </span>
                         <select name="current_company" id="company-select" class="form-control" onchange="submitCompanyForm()" required>
-                          <option value="" disabled selected>Select a Company</option>
+                          <option value="" disabled selected>{% trans "Select Company" %}</option>
                           {% if companies %}
                           {% for company in companies %}
                           
@@ -479,7 +479,7 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title">License Info</h5>
+              <h5 class="modal-title">{% trans "License" %} {% trans "Info" %}</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -614,18 +614,18 @@
             <div class="row text-center align-items-center flex-row-reverse">
               <div class="col-lg-auto ms-lg-auto">
                 <ul class="list-inline list-inline-dots mb-0">
-                  <li class="list-inline-item"><a href="https://tabler.io/docs" target="_blank" class="link-secondary" rel="noopener">Documentation</a></li>
-                  <li class="list-inline-item"><a href="https://www.pegasustech.net/products/pegasus-softwares?product_id=103&product_type=licensed&ref_product_id=865" class="link-secondary">License</a></li>
-                  <li class="list-inline-item"><a href="https://github.com/farazraj" target="_blank" class="link-secondary" rel="noopener">Developed By</a></li>
+                  <li class="list-inline-item"><a href="https://tabler.io/docs" target="_blank" class="link-secondary" rel="noopener">{% trans "Documentation" %}</a></li>
+                  <li class="list-inline-item"><a href="https://www.pegasustech.net/products/pegasus-softwares?product_id=103&product_type=licensed&ref_product_id=865" class="link-secondary">{% trans "License" %}</a></li>
+                  <li class="list-inline-item"><a href="https://github.com/farazraj" target="_blank" class="link-secondary" rel="noopener">{% trans "Developed" %} {% trans "By" %}</a></li>
                   
                 </ul>
               </div>
               <div class="col-12 col-lg-auto mt-3 mt-lg-0">
                 <ul class="list-inline list-inline-dots mb-0">
                   <li class="list-inline-item">
-                    Copyright &copy; 2025
+                    {% trans "Copyright" %} &copy; {% trans "2025" %}
                     <a href="https://www.pegasustech.net/" class="link-secondary">Pegasus Turnkey Solution</a>.
-                    All rights reserved.
+                    {% trans "All rights reserved" %}.
                   </li>
                   <li class="list-inline-item">
                     <a href="changelog.html" class="link-secondary" rel="noopener">

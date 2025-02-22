@@ -1,5 +1,38 @@
 {% extends 'layouts/base.html' %}
-{% block tiitle %}Template Details{% endblock tiitle %}
+{% load i18n %}
+{% load static %}
+{% block tiitle %}{% trans "Template Details" %}{% endblock tiitle %}
+
+{% comment %} {% block stylesheet %}
+
+{% if request.LANGUAGE_CODE == 'ar' %}
+
+<style>
+  html {
+      direction: ltr !important;
+      text-align: left !important;
+  }
+  .page-body, .page-header, .card, .table {
+      direction: ltr !important;
+      text-align: left !important;
+  }
+  .text-primary, .btn {
+      direction: ltr !important;
+  }
+</style>
+
+<link href="/static/tabler/dist/css/tabler.min4f79.css?1735606190" rel="stylesheet"/>
+<link href="/static/tabler/dist/css/tabler-flags.min4f79.css?1735606190" rel="stylesheet"/>
+<link href="/static/tabler/dist/css/tabler-payments.min4f79.css?1735606190" rel="stylesheet"/>
+<link href="/static/tabler/dist/css/tabler-vendors.min4f79.css?1735606190" rel="stylesheet"/>
+<link href="/static/tabler/dist/css/demo.min4f79.css?1735606190" rel="stylesheet"/>
+
+
+
+{% endif %}
+
+
+{% endblock stylesheet %} {% endcomment %}
 
 
 {% block content %}
@@ -10,7 +43,7 @@
       <div class="row g-2 align-items-center">
         <div class="col">
           <h2 class="page-title">
-            Template Details
+            {% trans "Template Details" %}
           </h2>
         </div>
         <!-- Page title actions -->
@@ -22,7 +55,7 @@
     <div class="container-xl">
         <div class="card">
             <div class="card-header">
-              <h3 class="card-title">Template Name - {{ template.name }} </h3>
+              <h3 class="card-title">{% trans "Template Name" %} - {{ template.name }} </h3>
             </div>
             <div class="card-body">
           
@@ -34,26 +67,26 @@
                   {% for texts in chq_txts  %}
                   
                   <div class = "text-primary" style="position: absolute;{% if texts.date_x_position is not None and texts.date_y_position is not None %} left: {{ texts.date_x_position }}mm; top: {{ texts.date_y_position }}mm;{% else %}display: none;{% endif %} ">
-                    <span style="display: inline-block; width: 4mm;">D</span>
-                    <span style="display: inline-block; width: 4mm;">D</span>
-                    <span style="display: inline-block; width: 4mm;">M</span>
-                    <span style="display: inline-block; width: 4mm;">M</span>
-                    <span style="display: inline-block; width: 4mm;">Y</span>
-                    <span style="display: inline-block; width: 4mm;">Y</span>
-                    <span style="display: inline-block; width: 4mm;">Y</span>
-                    <span style="display: inline-block; width: 4mm;">Y</span>
+                    <span style="display: inline-block; width: 4mm;">{% trans "D" %}</span>
+                    <span style="display: inline-block; width: 4mm;">{% trans "D" %}</span>
+                    <span style="display: inline-block; width: 4mm;">{% trans "M" %}</span>
+                    <span style="display: inline-block; width: 4mm;">{% trans "M" %}</span>
+                    <span style="display: inline-block; width: 4mm;">{% trans "Y" %}</span>
+                    <span style="display: inline-block; width: 4mm;">{% trans "Y" %}</span>
+                    <span style="display: inline-block; width: 4mm;">{% trans "Y" %}</span>
+                    <span style="display: inline-block; width: 4mm;">{% trans "Y" %}</span>
                   </div>
                   <div class = "text-primary" style="position: absolute;{% if texts.payee_x_position is not None and texts.payee_y_position is not None %}left: {{ texts.payee_x_position }}mm; top: {{ texts.payee_y_position }}mm;{% else %}display: none;{% endif %}">
-                    Payee
+                    {% trans "Payee" %}
                   </div>
                   <div class = "text-primary" style="position: absolute;{% if texts.amtwrds_x_position is not None and texts.amtwrds_y_position is not None %} left: {{ texts.amtwrds_x_position }}mm; top: {{ texts.amtwrds_y_position }}mm;{% else %}display: none;{% endif %}">
-                    Amount In Words
+                    {% trans "Amount In Words" %}
                   </div>
                   <div class = "text-primary" style="position: absolute;{% if texts.amtnum_x_position is not None and texts.amtnum_y_position is not None %}left: {{ texts.amtnum_x_position }}mm; top: {{ texts.amtnum_y_position }}mm;{% else %}display: none;{% endif %}">
-                    Amount
+                    {% trans "Amount" %}
                   </div>
                   <div class = "text-primary" style="position: absolute;{% if texts.sign_x_position is not None and texts.sign_y_position is not None %} left: {{ texts.sign_x_position }}mm; top: {{ texts.sign_y_position }}mm;{% else %}display: none;{% endif %}">
-                    Signature
+                    {% trans "Signature" %}
                   </div>
           
                   {% endfor %}
@@ -62,17 +95,17 @@
               
               
               <div class = "mt-4">
-              <a href="{% url 'add_text_to_template' template.id %}" class="btn btn-primary">Set Text Positions</a>
-              <a href="{% url "template_list" %}" class="btn btn-danger">Cancel</a>
+              <a href="{% url 'add_text_to_template' template.id %}" class="btn btn-primary">{% trans "Set Text Positions" %}</a>
+              <a href="{% url "template_list" %}" class="btn btn-danger">{% trans "Cancel" %}</a>
               </div><br> 
-              <h2 class="text-primary">Text Positions</h2>
+              <h2 class="text-primary">{% trans "Text Positions" %}</h2>
               <!-- Light table -->
               <div class="table-responsive">
                   <table class="table align-items-center table-flush">
                     <thead class="thead-light">
                       <tr>
-                        <th scope="col" class="sort" >Attributes</th>
-                        <th scope="col" class="sort" >Position</th>
+                        <th scope="col" class="sort" >{% trans "Attributes" %}</th>
+                        <th scope="col" class="sort" >{% trans "Position" %}</th>
                         <th scope="col"></th>
                       </tr>
                     </thead>
@@ -85,7 +118,7 @@
                       {% if texts.date_x_position is not None and texts.date_y_position is not None %}
                       <tr>
                           <td class="budget">
-                            Date
+                            {% trans "Date" %}
                             </td>
                         
                             <td class="budget">
@@ -93,7 +126,7 @@
                         </td>
                         
                         <td class="budget">
-                          <a href="{% url "delete_text" texts.id texts.template.id%}?text_atrrb=Date" class="btn btn-danger">Delete text</a>
+                          <a href="{% url "delete_text" texts.id texts.template.id%}?text_atrrb=Date" class="btn btn-danger">{% trans "Delete text" %}</a>
                         </td>
 
                       </tr>
@@ -102,14 +135,14 @@
                       {% if texts.payee_x_position is not None and texts.payee_y_position is not None %}
                       <tr>
                         <td class="budget">
-                          Payee
+                          {% trans "Payee" %}
                           </td>
                       <td class="budget">
                         X: {{ texts.payee_x_position }}mm, Y: {{ texts.payee_y_position }}mm
                       </td>
                       
                       <td class="budget">
-                        <a href="{% url "delete_text" texts.id texts.template.id%}?text_atrrb=Payee" class="btn btn-danger">Delete text</a>
+                        <a href="{% url "delete_text" texts.id texts.template.id%}?text_atrrb=Payee" class="btn btn-danger">{% trans "Delete text" %}</a>
                       </td>
                     </tr>
                     {% endif %}
@@ -117,7 +150,7 @@
                     {% if texts.amtwrds_x_position is not None and texts.amtwrds_y_position is not None %}
                     <tr>
                       <td class="budget">
-                        Amount In Words
+                        {% trans "Amount In Words" %}
                         </td>
                     
                         <td class="budget">
@@ -125,7 +158,7 @@
                     </td>
                     
                     <td class="budget">
-                      <a href="{% url "delete_text" texts.id texts.template.id%}?text_atrrb=Amt_Wrds" class="btn btn-danger">Delete text</a>
+                      <a href="{% url "delete_text" texts.id texts.template.id%}?text_atrrb=Amt_Wrds" class="btn btn-danger">{% trans "Delete text" %}</a>
                     </td>
                   </tr>
                   {% endif %}
@@ -133,7 +166,7 @@
                   {% if texts.amtnum_x_position is not None and texts.amtnum_y_position is not None %}
                   <tr>
                     <td class="budget">
-                      Amount in Numbers
+                      {% trans "Amount in Numbers" %}
                       </td>
                   
                       <td class="budget">
@@ -141,7 +174,7 @@
                   </td>
                   
                   <td class="budget">
-                    <a href="{% url "delete_text" texts.id texts.template.id%}?text_atrrb=Amt_Num" class="btn btn-danger">Delete text</a>
+                    <a href="{% url "delete_text" texts.id texts.template.id%}?text_atrrb=Amt_Num" class="btn btn-danger">{% trans "Delete text" %}</a>
                   </td>
                 </tr>
                 {% endif %}
@@ -149,7 +182,7 @@
                 {% if texts.sign_x_position is not None and texts.sign_y_position is not None %}
                 <tr>
                   <td class="budget">
-                    Signature
+                    {% trans "Signature" %}
                     </td>
                 
                     <td class="budget">
@@ -157,7 +190,7 @@
                 </td>
                 
                 <td class="budget">
-                  <a href="{% url "delete_text" texts.id texts.template.id%}?text_atrrb=Sign" class="btn btn-danger">Delete text</a>
+                  <a href="{% url "delete_text" texts.id texts.template.id%}?text_atrrb=Sign" class="btn btn-danger">{% trans "Delete text" %}</a>
                 </td>
               </tr>
               {% endif %}
@@ -166,7 +199,7 @@
           
               {% else %}
               <tr>
-                <td colspan="4" class="text-center">No Text Attributes found.</td>
+                <td colspan="4" class="text-center">{% trans "No Text Attributes found." %}</td>
             </tr>
               
           
