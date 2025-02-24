@@ -1,5 +1,7 @@
 {% extends 'layouts/base.html' %}
 {% load static %}
+{% load i18n %}
+{% load l10n %}
 {% block tiitle %}Cheque Issue Preview{% endblock tiitle %}
 
 {% block stylesheet %}
@@ -7,7 +9,7 @@
 <style>
     /* Ensure the page size and margin are fixed for printing */
     @page {
-        size: {{ width }}mm {{ height }}mm;
+        size: {{ width|unlocalize }}mm {{ height|unlocalize }}mm;
         
     }
 
@@ -17,8 +19,8 @@
         background-size: contain;
         background-repeat: no-repeat;
         position: relative;
-        width: {{ width }}mm;
-        height: {{ height }}mm;
+        width: {{ width|unlocalize }}mm;
+        height: {{ height|unlocalize }}mm;
         margin: 20px;
     }
 
@@ -134,28 +136,28 @@
     
     {% if positions.date.0 is not None %}
     <!-- Date -->
-    <span class="cheque-text cheque-date" style="left: {{ positions.date.0 }}mm; top: {{ positions.date.1 }}mm;">
+    <span class="cheque-text cheque-date" style="left: {{ positions.date.0|unlocalize }}mm; top: {{ positions.date.1|unlocalize }}mm;">
         {{ date }}
     </span>
     {% endif %}
 
     {% if positions.payee.0 is not None %}
     <!-- Payee -->
-    <span class="cheque-text" style="left: {{ positions.payee.0 }}mm; top: {{ positions.payee.1 }}mm;">
+    <span class="cheque-text" style="left: {{ positions.payee.0|unlocalize }}mm; top: {{ positions.payee.1|unlocalize }}mm;">
         {{ payee }}
     </span>
     {% endif %}
 
     {% if positions.amount_word.0 is not None %}
     <!-- Amount in Words -->
-    <span class="cheque-text" data-type="amount-word" style="left: {{ positions.amount_word.0 }}mm; top: {{ positions.amount_word.1 }}mm;">
+    <span class="cheque-text" data-type="amount-word" style="left: {{ positions.amount_word.0|unlocalize }}mm; top: {{ positions.amount_word.1|unlocalize }}mm;">
         {{ amount_word }}
     </span>
     {% endif %}
 
     {% if positions.amount_num.0 is not None %}
     <!-- Amount in Numbers -->
-    <span class="cheque-text" style="left: {{ positions.amount_num.0 }}mm; top: {{ positions.amount_num.1 }}mm;">
+    <span class="cheque-text" style="left: {{ positions.amount_num.0|unlocalize }}mm; top: {{ positions.amount_num.1|unlocalize }}mm;">
         {{ amount }}
     </span>
     {% endif %}
@@ -163,7 +165,7 @@
     {% if positions.sign.0 is not None %}
     <!-- Signature -->
     {% if sign_url %}
-    <div class="cheque-sign" style="position: absolute; left: {{ positions.sign.0 }}mm; top: {{ positions.sign.1 }}mm;">
+    <div class="cheque-sign" style="position: absolute; left: {{ positions.sign.0|unlocalize }}mm; top: {{ positions.sign.1|unlocalize }}mm;">
         <img src="{{ sign_url }}"  alt="Signature">
     </div>
     {% endif %}

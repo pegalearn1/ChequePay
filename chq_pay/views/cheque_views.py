@@ -171,8 +171,22 @@ def edit_template(request):
 def template_detail(request, template_id):
     template = get_object_or_404(ChequeTemplate, id=template_id)
     chq_txts = ChequeText.objects.filter(template=template)
+
+    template_height =  template.height
+    template_width =  template.width
+    template_background = template.background_image.url
+
+    print(template_background)
+
+    context = {
+
+        'chq_txts':chq_txts,
+        'template':template,
+
+
+    }
     
-    return render(request, 'Cheque_templates/template_detail.html', {'template': template, 'chq_txts': chq_txts})
+    return render(request, 'Cheque_templates/template_detail.html', context)
 
 
 

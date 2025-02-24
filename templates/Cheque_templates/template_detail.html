@@ -1,38 +1,8 @@
 {% extends 'layouts/base.html' %}
-{% load i18n %}
+{% load i18n %} #internationalization
+{% load l10n %} #Localization
 {% load static %}
 {% block tiitle %}{% trans "Template Details" %}{% endblock tiitle %}
-
-{% comment %} {% block stylesheet %}
-
-{% if request.LANGUAGE_CODE == 'ar' %}
-
-<style>
-  html {
-      direction: ltr !important;
-      text-align: left !important;
-  }
-  .page-body, .page-header, .card, .table {
-      direction: ltr !important;
-      text-align: left !important;
-  }
-  .text-primary, .btn {
-      direction: ltr !important;
-  }
-</style>
-
-<link href="/static/tabler/dist/css/tabler.min4f79.css?1735606190" rel="stylesheet"/>
-<link href="/static/tabler/dist/css/tabler-flags.min4f79.css?1735606190" rel="stylesheet"/>
-<link href="/static/tabler/dist/css/tabler-payments.min4f79.css?1735606190" rel="stylesheet"/>
-<link href="/static/tabler/dist/css/tabler-vendors.min4f79.css?1735606190" rel="stylesheet"/>
-<link href="/static/tabler/dist/css/demo.min4f79.css?1735606190" rel="stylesheet"/>
-
-
-
-{% endif %}
-
-
-{% endblock stylesheet %} {% endcomment %}
 
 
 {% block content %}
@@ -58,15 +28,15 @@
               <h3 class="card-title">{% trans "Template Name" %} - {{ template.name }} </h3>
             </div>
             <div class="card-body">
-          
-              <div style="position: relative; display: inline-block; background-image: url('{{ template.background_image.url }}'); background-size: contain; background-repeat: no-repeat; width: {{ template.width }}mm; height: {{ template.height }}mm;">
+
+             <div style="position: relative; display: inline-block; background-image: url('{{ template.background_image.url }}'); background-size: contain; background-repeat: no-repeat; width: {{ template.width|unlocalize }}mm; height: {{ template.height|unlocalize }}mm;">
 
                   
                   <!-- Render each text on the cheque at its specific position -->
           
                   {% for texts in chq_txts  %}
                   
-                  <div class = "text-primary" style="position: absolute;{% if texts.date_x_position is not None and texts.date_y_position is not None %} left: {{ texts.date_x_position }}mm; top: {{ texts.date_y_position }}mm;{% else %}display: none;{% endif %} ">
+                  <div class = "text-primary" style="position: absolute;{% if texts.date_x_position is not None and texts.date_y_position is not None %} left: {{ texts.date_x_position|unlocalize }}mm; top: {{ texts.date_y_position|unlocalize }}mm;{% else %}display: none;{% endif %} ">
                     <span style="display: inline-block; width: 4mm;">{% trans "D" %}</span>
                     <span style="display: inline-block; width: 4mm;">{% trans "D" %}</span>
                     <span style="display: inline-block; width: 4mm;">{% trans "M" %}</span>
@@ -76,16 +46,16 @@
                     <span style="display: inline-block; width: 4mm;">{% trans "Y" %}</span>
                     <span style="display: inline-block; width: 4mm;">{% trans "Y" %}</span>
                   </div>
-                  <div class = "text-primary" style="position: absolute;{% if texts.payee_x_position is not None and texts.payee_y_position is not None %}left: {{ texts.payee_x_position }}mm; top: {{ texts.payee_y_position }}mm;{% else %}display: none;{% endif %}">
+                  <div class = "text-primary" style="position: absolute;{% if texts.payee_x_position is not None and texts.payee_y_position is not None %}left: {{ texts.payee_x_position|unlocalize }}mm; top: {{ texts.payee_y_position|unlocalize }}mm;{% else %}display: none;{% endif %}">
                     {% trans "Payee" %}
                   </div>
-                  <div class = "text-primary" style="position: absolute;{% if texts.amtwrds_x_position is not None and texts.amtwrds_y_position is not None %} left: {{ texts.amtwrds_x_position }}mm; top: {{ texts.amtwrds_y_position }}mm;{% else %}display: none;{% endif %}">
+                  <div class = "text-primary" style="position: absolute;{% if texts.amtwrds_x_position is not None and texts.amtwrds_y_position is not None %} left: {{ texts.amtwrds_x_position|unlocalize }}mm; top: {{ texts.amtwrds_y_position|unlocalize }}mm;{% else %}display: none;{% endif %}">
                     {% trans "Amount In Words" %}
                   </div>
-                  <div class = "text-primary" style="position: absolute;{% if texts.amtnum_x_position is not None and texts.amtnum_y_position is not None %}left: {{ texts.amtnum_x_position }}mm; top: {{ texts.amtnum_y_position }}mm;{% else %}display: none;{% endif %}">
+                  <div class = "text-primary" style="position: absolute;{% if texts.amtnum_x_position is not None and texts.amtnum_y_position is not None %}left: {{ texts.amtnum_x_position|unlocalize }}mm; top: {{ texts.amtnum_y_position|unlocalize }}mm;{% else %}display: none;{% endif %}">
                     {% trans "Amount" %}
                   </div>
-                  <div class = "text-primary" style="position: absolute;{% if texts.sign_x_position is not None and texts.sign_y_position is not None %} left: {{ texts.sign_x_position }}mm; top: {{ texts.sign_y_position }}mm;{% else %}display: none;{% endif %}">
+                  <div class = "text-primary" style="position: absolute;{% if texts.sign_x_position is not None and texts.sign_y_position is not None %} left: {{ texts.sign_x_position|unlocalize }}mm; top: {{ texts.sign_y_position|unlocalize }}mm;{% else %}display: none;{% endif %}">
                     {% trans "Signature" %}
                   </div>
           
@@ -122,7 +92,7 @@
                             </td>
                         
                             <td class="budget">
-                          X: {{ texts.date_x_position }}mm, Y: {{ texts.date_y_position }}mm
+                          X: {{ texts.date_x_position|unlocalize }}mm, Y: {{ texts.date_y_position|unlocalize }}mm
                         </td>
                         
                         <td class="budget">
@@ -138,7 +108,7 @@
                           {% trans "Payee" %}
                           </td>
                       <td class="budget">
-                        X: {{ texts.payee_x_position }}mm, Y: {{ texts.payee_y_position }}mm
+                        X: {{ texts.payee_x_position|unlocalize }}mm, Y: {{ texts.payee_y_position|unlocalize }}mm
                       </td>
                       
                       <td class="budget">
@@ -154,7 +124,7 @@
                         </td>
                     
                         <td class="budget">
-                      X: {{ texts.amtwrds_x_position }}mm, Y: {{ texts.amtwrds_y_position }}mm
+                      X: {{ texts.amtwrds_x_position|unlocalize }}mm, Y: {{ texts.amtwrds_y_position|unlocalize }}mm
                     </td>
                     
                     <td class="budget">
@@ -170,7 +140,7 @@
                       </td>
                   
                       <td class="budget">
-                    X: {{ texts.amtnum_x_position }}mm, Y: {{ texts.amtnum_y_position }}mm
+                    X: {{ texts.amtnum_x_position|unlocalize }}mm, Y: {{ texts.amtnum_y_position|unlocalize }}mm
                   </td>
                   
                   <td class="budget">
@@ -186,7 +156,7 @@
                     </td>
                 
                     <td class="budget">
-                  X: {{ texts.sign_x_position }}mm, Y: {{ texts.sign_y_position }}mm
+                  X: {{ texts.sign_x_position|unlocalize}}mm, Y: {{ texts.sign_y_position|unlocalize }}mm
                 </td>
                 
                 <td class="budget">
