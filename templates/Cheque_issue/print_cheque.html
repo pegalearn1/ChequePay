@@ -2,7 +2,7 @@
 {% load static %}
 {% load i18n %}
 {% load l10n %}
-{% block tiitle %}Cheque Issue Preview{% endblock tiitle %}
+{% block tiitle %}{% trans "Cheque Issue Preview" %}{% endblock tiitle %}
 
 {% block stylesheet %}
 
@@ -107,7 +107,7 @@
       <div class="row g-2 align-items-center">
         <div class="col">
           <h2 class="page-title">
-            Cheque Issue preview
+            {% trans "Cheque Issue preview" %}
           </h2>
         </div>
         <!-- Page title actions -->
@@ -120,14 +120,14 @@
     <div class="container-xl">
         <div class="card">
             <div class="card-header">
-              <h3 class="card-title">Preview Cheque</h3>
+              <h3 class="card-title">{% trans "Preview Cheque" %}</h3>
             </div>
 
             <div style="margin-left: 20px; margin-top: 20px;">
                 <select name="" id="language-dropdown" style="margin-right: 20px;">
-                    <option value="en">English</option>
+                    <option value="en">{% trans "English" %}</option>
                     {% if issue_currency == 'KWD' or issue_currency == 'AED' or issue_currency == 'SAR' %}
-                    <option value="ar">Arabic</option>
+                    <option value="ar">العربية</option>
                     {% endif %}
                 </select>
             </div>
@@ -175,8 +175,8 @@
 
 <!-- Buttons -->
 <div class="buttons" style="margin-left: 20px; margin-bottom: 20px;">
-    <button class="print-btn" onclick="window.print();">Print</button>
-    <a href="{% url "cheque_issue_list" %}" class="btn btn-danger">Back</a>
+    <button class="print-btn" onclick="window.print();">{% trans "Print" %}</button>
+    <a href="{% url "cheque_issue_list" %}" class="btn btn-danger">{% trans "Back" %}</a>
 </div>
 
 

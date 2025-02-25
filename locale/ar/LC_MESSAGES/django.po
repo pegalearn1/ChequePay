@@ -1041,13 +1041,13 @@ msgid "Template Name"
 msgstr "اسم القالب"
 
 msgid "D"
-msgstr "ي"
+msgstr "د"
 
 msgid "M"
-msgstr "ش"
+msgstr "م"
 
 msgid "Y"
-msgstr "س"
+msgstr "ي"
 
 msgid "Amount In Words"
 msgstr "المبلغ بالحروف"
@@ -1084,5 +1084,81 @@ msgstr "المبلغ بالأرقام"
 
 msgid "No Text Attributes found."
 msgstr "لم يتم العثور على خصائص النص."
+
+msgid "Cheque Issue Preview"
+msgstr "معاينة إصدار الشيك"
+
+msgid "Cheque Issue preview"
+msgstr "معاينة إصدار الشيك"
+
+msgid "Preview Cheque"
+msgstr "معاينة الشيك"
+
+msgid "Print"
+msgstr "طباعة"
+
+msgid "Back"
+msgstr "رجوع"
+
+msgid "Set Text Position"
+msgstr "تعيين موضع النص"
+
+msgid "Save Positions"
+msgstr "حفظ المواضع"
+
+msgid "Toolbar"
+msgstr "شريط الأدوات"
+
+msgid "Search templates"
+msgstr "البحث في القوالب"
+
+msgid "Are you sure? Want to delete?"
+msgstr "هل أنت متأكد؟ هل تريد الحذف؟"
+
+
+msgid "Payee Report"
+msgstr "تقرير المستفيد"
+
+msgid "Print Report"
+msgstr "طباعة التقرير"
+
+msgid "Cheque Details"
+msgstr "تفاصيل الشيك"
+
+msgid "Account#"
+msgstr "رقم الحساب"
+
+msgid "Cheque#"
+msgstr "رقم الشيك"
+
+msgid "Total Approved Amount"
+msgstr "إجمالي المبلغ المعتمد"
+
+msgid "Total Payee(s)"
+msgstr "إجمالي المستفيدين"
+
+msgid "Total Approved Amount in"
+msgstr "إجمالي المبلغ المعتمد بـ"
+
+msgid "Total Pending Amount in"
+msgstr "إجمالي المبلغ المعلق بـ"
+
+msgid "Total Rejected Amount in"
+msgstr "إجمالي المبلغ المرفوض بـ"
+
+msgid "All Rights Reserved"
+msgstr "جميع الحقوق محفوظة"
+
+msgid "Total Approved Amount in %(currency)s"
+msgstr "إجمالي المبلغ المعتمد بـ %(currency)s"
+
+msgid "Total Pending Amount in %(currency)s"
+msgstr "إجمالي المبلغ المعلق بـ %(currency)s"
+
+msgid "Total Rejected Amount in %(currency)s"
+msgstr "إجمالي المبلغ المرفوض بـ %(currency)s"
+
+
+
 
 

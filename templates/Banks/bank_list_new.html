@@ -78,7 +78,7 @@
                           <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editBankModal" data-id="{{ bank.id }}" data-bank_char="{{ bank.bank_char }}" data-bank_name_e="{{ bank.bank_name_e }}" data-bank_name_l="{{ bank.bank_name_l }}" data-tel_no="{{ bank.tel_no }}" data-address="{{ bank.address }}">
                             {% trans "Edit Bank" %}
                           </a>
-                          <a class="dropdown-item" onclick="if (confirm('Are You sure? Want to delete {{bank.bank_name_e}} ?')){return true;}else{event.stopPropagation(); event.preventDefault();};" href="{% url 'delete_bank' bank.id %}">
+                          <a class="dropdown-item" onclick="if (confirm('{% trans "Are you sure? Want to delete?" %} {{bank.bank_name_e}}')){return true;}else{event.stopPropagation(); event.preventDefault();};" href="{% url 'delete_bank' bank.id %}">
                             {% trans "Delete Bank" %}
                           </a>
                         </div>

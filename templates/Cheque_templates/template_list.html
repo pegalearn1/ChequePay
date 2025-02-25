@@ -134,7 +134,7 @@
                           {% trans "Edit Template" %}
                         </a>
                         <a class="dropdown-item"
-                          onclick="if (confirm('Are you sure? Want to delete {{ template.name }}?')) {return true;} else {event.stopPropagation(); event.preventDefault();};"
+                          onclick="if (confirm('{% trans "Are you sure? Want to delete?" %} {{ template.name }}')) {return true;} else {event.stopPropagation(); event.preventDefault();};"
                           href="{% url 'delete_template' template.id %}">
                           {% trans "Delete Template" %}
                         </a>

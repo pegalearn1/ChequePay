@@ -1,9 +1,12 @@
 <!DOCTYPE html>
+{% load i18n %}
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payee Report</title>
+    <title>{% trans "Payee Report" %}- Cheque Pay - Cheque Printing Solutions.</title>
+    <link rel="shortcut icon" href="{% static 'Cheque_Pay_Fevi.png' %}" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
         body {
@@ -215,7 +218,7 @@
 <body>
 
 <!-- Print Button -->
-<button class="print-button" onclick="window.print()">Print Report</button>
+<button class="print-button" onclick="window.print()">{% trans "Print Report" %}</button>
 
 <div class="container">
     <!-- Report Header -->
@@ -227,16 +230,16 @@
             <h2 class="company-name">{{ company.company_name }}</h2>
         </div>
         <div class="header-right">
-            <h3>Payee Report</h3>
+            <h3>{% trans "Payee Report" %}</h3>
             <div class="search-parameters">
                 {% if bank %}
-                <span><strong>Bank:</strong>{{bank}}</span>
+                <span><strong>{% trans "Bank" %}:</strong>{{bank}}</span>
                 {% endif %}
                 {% if st_date and ed_date %}
-                <span><strong>Date Range:</strong> {{st_date}} - {{ed_date}}</span>
+                <span><strong>{% trans "Date Range" %}:</strong> {{st_date}} - {{ed_date}}</span>
                 {% endif %}
                 {% if approval %}
-                <span><strong>Approval:</strong> {{approval}}</span>
+                <span><strong>{% trans "Approval" %}:</strong> {{approval}}</span>
                 {% endif %}
             </div>
         </div>
@@ -248,22 +251,22 @@
     <!-- Payee Section 1 -->
     <div class="payee-section">
         <div class="sub-header">
-            <h4>Payee Name: {{payee_name}}</h4>
+            <h4>{% trans "Payee Name" %}: {{payee_name}}</h4>
         </div>
         <div class="sub-heading">
-            <span>Cheque Details</span>
+            <span>{% trans "Cheque Details" %}</span>
             
         </div>
         <table>
             <thead>
                 <tr>
-                    <th>Bank</th>
-                    <th>Account#</th>
-                    <th>Cheque#</th>
-                    <th>Amount</th>
-                    <th>Currency</th>
-                    <th>Cheque Date</th>
-                    <th>Approval</th>
+                    <th>{% trans "Bank" %}</th>
+                    <th>{% trans "Account#" %}</th>
+                    <th>{% trans "Cheque#" %}</th>
+                    <th>{% trans "Amount" %}</th>
+                    <th>{% trans "Currency" %}</th>
+                    <th>{% trans "Cheque Date" %}</th>
+                    <th>{% trans "Approval" %}</th>
                 </tr>
             </thead>
             <tbody>
@@ -276,7 +279,7 @@
                     <td>{{chq_details.issue_amount}}</td>
                     <td>{{chq_details.issue_currency.currency_char}}</td>
                     <td>{{chq_details.issue_cheque_date}}</td>
-                    <td>{% if chq_details.issue_is_approved %}Approved {% elif chq_details.issue_is_approved is None %}Pending {% else %}Rejected{% endif %}</td>
+                    <td>{% if chq_details.issue_is_approved %}{% trans "Approved" %} {% elif chq_details.issue_is_approved is None %}{% trans "Pending" %} {% else %}{% trans "Rejected" %}{% endif %}</td>
                 </tr>
                 {% endif %}
                 {% endfor %}
@@ -288,12 +291,12 @@
                 {% if totals.total_approved %}
                     {% for currency, amount in totals.total_approved.items %}
                     <p>
-                        <strong>Total Approved Amount:</strong> {{ amount }} 
+                        <strong>{% trans "Total Approved Amount" %}:</strong> {{ amount }} 
                         <i class="fa fa-inr" aria-hidden="true"></i> {{ currency }}
                     </p>
                     {% endfor %}
                 {% else %}
-                    <p><strong>Total Approved Amount:</strong> 0</p>
+                    <p><strong>{% trans "Total Approved Amount" %}:</strong> 0</p>
                 {% endif %}
             {% endwith %}
         </div>
@@ -302,23 +305,25 @@
 
     <!-- Summary -->
     <div class="summary">
-        <h3>Summary</h3>
-        <p><strong>Total Payee(s):</strong> {{summary_total_payee}}</p>
-        {% for currency, amt in summary_approved_amt  %}
-        <p><strong>Total Approved Amount in {{currency}}</strong> {{amt}} <i class="fa fa-inr" aria-hidden="true"></i> {{currency}}</p>
+        <h3>{% trans "Summary" %}</h3>
+        <p><strong>{% trans "Total Payee(s)" %}:</strong> {{ summary_total_payee }}</p>
+    
+        {% for currency, amt in summary_approved_amt %}
+        <p><strong>{% blocktrans %}Total Approved Amount in {{ currency }}{% endblocktrans %}:</strong> {{ amt }} <i class="fa fa-inr" aria-hidden="true"></i> {{ currency }}</p>
         {% endfor %}
-        
+    
         {% for currency, amt in summary_pending_amt %}
-        <p><strong>Total Pending Amount in {{currency}}:</strong> {{amt}} <i class="fa fa-inr" aria-hidden="true"></i> {{currency}}</p>
+        <p><strong>{% blocktrans %}Total Pending Amount in {{ currency }}{% endblocktrans %}:</strong> {{ amt }} <i class="fa fa-inr" aria-hidden="true"></i> {{ currency }}</p>
         {% endfor %}
-        
+    
         {% for currency, amt in summary_rejected_amt %}
-        <p><strong>Total Rejected Amount in {{currency}}:</strong> {{amt}} <i class="fa fa-inr" aria-hidden="true"></i> {{currency}}</p>
+        <p><strong>{% blocktrans %}Total Rejected Amount in {{ currency }}{% endblocktrans %}:</strong> {{ amt }} <i class="fa fa-inr" aria-hidden="true"></i> {{ currency }}</p>
         {% endfor %}
     </div>
+    
 
     <div class="footer">
-        <p>&copy; 2025 {{ company.company_name }} - All Rights Reserved</p>
+        <p>&copy; 2025 {{ company.company_name }} - {% trans "All Rights Reserved" %}</p>
     </div>
 </div>
 
