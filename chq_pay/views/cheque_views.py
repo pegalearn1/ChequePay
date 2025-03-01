@@ -2,7 +2,7 @@
 in 2024-2025.'''
 
 from .imp_libs import *
-from chq_pay.models import ChequeTemplate, ChequeText, Banks, Currencies, Payee, ChequeIssue, Company_Setup
+from chq_pay.models import ChequeTemplate, ChequeText, Banks, Currencies, Payee, ChequeIssue, Company_Setup, AppUser
 
 @login_required
 def upload_template(request):
@@ -38,13 +38,18 @@ def upload_template(request):
                 )
 
                 template_exist = ChequeTemplate.objects.filter(name=name)
+                allowed_temp_count = AppUser.objects.values('allowed_templates')[0]['allowed_templates']
+                temp_count = ChequeTemplate.objects.count()
 
                 if template_exist:
                     messages.warning(request,('Template Already Exits!!'))
                 else:
-                    cheque_template.save()
-                    messages.success(request,('Template Created Successfully!!!'))
-                    return JsonResponse({"success": True})
+                    if temp_count >= allowed_temp_count:
+                        messages.error(request,('Template limit reached,please upgrade license to continue.'))
+                    else:
+                        cheque_template.save()
+                        messages.success(request,('Template Created Successfully!!!'))
+                        return JsonResponse({"success": True})
                     
             except Exception as e:
                 print("error : ",str(e))
@@ -56,6 +61,7 @@ def template_list(request):
     templates = ChequeTemplate.objects.all().filter(Q(company__is_selected=True)).order_by('name')
     banks = Banks.objects.all()
     currencies = Currencies.objects.all()
+    
 
     # Filter by search term if provided
     search = request.GET.get('search', '')
