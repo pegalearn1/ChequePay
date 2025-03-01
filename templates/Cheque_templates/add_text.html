@@ -5,6 +5,26 @@
 
 {% block tiitle %}{% trans "Set Text Position" %}{% endblock tiitle %}
 
+{% block stylesheet %}
+
+<style>
+    .draggable {
+        cursor: grab;
+        display: inline-block;
+        padding: 4px 8px;
+        user-select: none;
+        border-radius: 4px;
+        min-width: max-content; /* Set width according to text */
+    }
+
+    .draggable:active {
+        cursor: grabbing;
+    }
+</style>
+
+
+{% endblock stylesheet %}
+
 {% block content %}
 
 <!-- Page header -->
@@ -102,8 +122,8 @@
                             <input type="hidden" name="sign_y_position" id="sign_y_position"
                                 value="{{ text.sign_y_position}}">
         
-                            <button type="submit" class="btn btn-primary mt-2">Save Positions</button>
-                            <button type="button" onclick="window.location='{% url 'template_detail' template.id %}';" class="btn btn-danger mt-2">Cancel</button>
+                            <button type="submit" class="btn btn-primary mt-2">{% trans "Save Positions" %}</button>
+                            <button type="button" onclick="window.location='{% url 'template_detail' template.id %}';" class="btn btn-danger mt-2">{% trans "Cancel" %}</button>
 
 
 
@@ -161,80 +181,148 @@
     </div>
 </div>
 
+
 {% endblock content %}
 
 
 
 {% block scripts %}
 
+
+
 <script>
-    function makeDraggable(divId, xFieldId, yFieldId) {
-        let element = document.getElementById(divId);
-        let chequeTemplate = document.getElementById("chequeTemplate");
-    
-        element.onmousedown = function (event) {
-            event.preventDefault(); // Prevents text selection while dragging
-    
-            let rect = element.getBoundingClientRect();
-            let chequeRect = chequeTemplate.getBoundingClientRect();
-    
-            // Get mouse position inside the div
-            let offsetX = event.clientX - rect.left;
-            let offsetY = event.clientY - rect.top;
-    
-            document.onmousemove = function (event) {
-                let newX = event.clientX - chequeRect.left - offsetX;
-                let newY = event.clientY - chequeRect.top - offsetY;
-    
-                element.style.position = "absolute";
-                element.style.left = `${newX}px`;
-                element.style.top = `${newY}px`;
-            };
-    
-            document.onmouseup = function () {
-                document.onmousemove = null;
-                document.onmouseup = null;
-    
-                let elementRect = element.getBoundingClientRect();
-    
-                if (
-                    elementRect.left >= chequeRect.left &&
-                    elementRect.right <= chequeRect.right &&
-                    elementRect.top >= chequeRect.top &&
-                    elementRect.bottom <= chequeRect.bottom
-                ) {
-                    let xPosition = ((elementRect.left - chequeRect.left) / chequeRect.width) * {{ template.width }};
-                    let yPosition = ((elementRect.top - chequeRect.top) / chequeRect.height) * {{ template.height }};
-    
-                    document.getElementById(xFieldId).value = xPosition.toFixed(2);
-                    document.getElementById(yFieldId).value = yPosition.toFixed(2);
-    
-                    chequeTemplate.appendChild(element);
-                    element.style.left = `${((xPosition / {{ template.width }}) * chequeRect.width)}px`;
-                    element.style.top = `${((yPosition / {{ template.height }}) * chequeRect.height)}px`;
-                } else {
-                    element.style.position = "relative";
-                    element.style.left = "";
-                    element.style.top = "";
-                    document.getElementById("toolbar").appendChild(element);
-                }
-            };
-        };
-    }
-    
-    
+
     document.addEventListener("DOMContentLoaded", function () {
+
+        const chequeTemplate = document.getElementById("chequeTemplate");
+
+        function makeDraggable(elementId, inputX, inputY) {
+            const element = document.getElementById(elementId);
+            const inputXField = document.getElementById(inputX);
+            const inputYField = document.getElementById(inputY);
+        
+            let isDragging = false, offsetX = 0, offsetY = 0;
+        
+            if (!element || !chequeTemplate) return; // Prevent errors if elements are missing
+        
+            // Restore saved position only if inside chequeTemplate
+            if (chequeTemplate.contains(element)) {
+                if (localStorage.getItem(elementId + "_left")) {
+                    element.style.left = localStorage.getItem(elementId + "_left");
+                }
+                if (localStorage.getItem(elementId + "_top")) {
+                    element.style.top = localStorage.getItem(elementId + "_top");
+                }
+            }
+        
+            element.addEventListener("mousedown", (e) => {
+                if (!chequeTemplate.contains(element)) return; // Ignore elements outside chequeTemplate
+        
+                isDragging = true;
+                offsetX = e.clientX - element.getBoundingClientRect().left;
+                offsetY = e.clientY - element.getBoundingClientRect().top;
+                element.style.cursor = "grabbing";
+            });
+        
+            document.addEventListener("mousemove", (e) => {
+                if (!isDragging) return;
+        
+                const parent = chequeTemplate.getBoundingClientRect();
+        
+                let left = e.clientX - parent.left - offsetX;
+                let top = e.clientY - parent.top - offsetY;
+        
+                // Prevent dragging outside chequeTemplate
+                left = Math.max(0, Math.min(left, parent.width - element.offsetWidth));
+                top = Math.max(0, Math.min(top, parent.height - element.offsetHeight));
+        
+                element.style.left = left + "px";
+                element.style.top = top + "px";
+        
+                // Convert pixel values to mm
+                const widthRatio = parent.width / parseFloat("{{ template.width|unlocalize }}");
+                const heightRatio = parent.height / parseFloat("{{ template.height|unlocalize }}");
+        
+                let leftMM = (left / widthRatio).toFixed(2);
+                let topMM = (top / heightRatio).toFixed(2);
+        
+                // Update hidden input fields only for elements inside chequeTemplate
+                if (chequeTemplate.contains(element)) {
+                    inputXField.value = leftMM;
+                    inputYField.value = topMM;
+                    localStorage.setItem(elementId + "_left", left + "px");
+                    localStorage.setItem(elementId + "_top", top + "px");
+                }
+            });
+        
+            document.addEventListener("mouseup", () => {
+                isDragging = false;
+                element.style.cursor = "grab";
+            });
+        }
+        
+        // Apply the function to draggable elements inside chequeTemplate
         makeDraggable("dateDiv", "date_x_position", "date_y_position");
         makeDraggable("payeeDiv", "payee_x_position", "payee_y_position");
         makeDraggable("amtWordsDiv", "amtwrds_x_position", "amtwrds_y_position");
         makeDraggable("amtNumDiv", "amtnum_x_position", "amtnum_y_position");
         makeDraggable("signDiv", "sign_x_position", "sign_y_position");
+        
+        document.getElementById("chequeTextForm").addEventListener("submit", function () {
+            localStorage.clear();
+        });
+
+        // Drag and Drop Functionality for Toolbar Elements
+        document.querySelectorAll(".draggable").forEach((el) => {
+            el.setAttribute("draggable", true);
+            el.addEventListener("dragstart", function (e) {
+                e.dataTransfer.setData("text/plain", el.id);
+            });
+        });
+
+        chequeTemplate.addEventListener("dragover", function (e) {
+            e.preventDefault(); // Allow drop
+        });
+
+        chequeTemplate.addEventListener("drop", function (e) {
+            e.preventDefault();
+
+            const elementId = e.dataTransfer.getData("text/plain");
+            const draggedElement = document.getElementById(elementId);
+
+            if (draggedElement) {
+                // Move element to the drop position
+                const parentRect = chequeTemplate.getBoundingClientRect();
+                let left = e.clientX - parentRect.left;
+                let top = e.clientY - parentRect.top;
+
+                // Prevent dragging outside
+                left = Math.max(0, Math.min(left, parentRect.width - draggedElement.offsetWidth));
+                top = Math.max(0, Math.min(top, parentRect.height - draggedElement.offsetHeight));
+
+                draggedElement.style.position = "absolute";
+                draggedElement.style.left = left + "px";
+                draggedElement.style.top = top + "px";
+
+                // Append to chequeTemplate
+                chequeTemplate.appendChild(draggedElement);
+
+                // Convert to mm
+                const widthRatio = parentRect.width / parseFloat("{{ template.width|unlocalize }}");
+                const heightRatio = parentRect.height / parseFloat("{{ template.height|unlocalize }}");
+
+                let leftMM = (left / widthRatio).toFixed(2);
+                let topMM = (top / heightRatio).toFixed(2);
+
+                // Update hidden input fields
+                document.getElementById(elementId + "_x_position").value = leftMM;
+                document.getElementById(elementId + "_y_position").value = topMM;
+            }
+        });
+
     });
-    
 
-
-
-  
 </script>
+
 
 {% endblock scripts %}
