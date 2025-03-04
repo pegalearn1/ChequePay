@@ -56,6 +56,7 @@ def upload_template(request):
     return JsonResponse({"success": False})
 
 
+
 @login_required
 def template_list(request):
     templates = ChequeTemplate.objects.all().filter(Q(company__is_selected=True)).order_by('name')
