@@ -2,7 +2,8 @@
 in 2024-2025.'''
 
 from .imp_libs import *
-from chq_pay.models import Payee, Company_Setup, ChequeIssue
+from django.utils.crypto import get_random_string
+from chq_pay.models import Payee, Company_Setup, ChequeIssue, TempDatas
 
 
 @login_required
@@ -192,6 +193,19 @@ def validate_excel_payee(request):
             # Save valid rows in the session for later processing
             request.session['valid_rows'] = valid_rows
 
+
+            # # Generate a unique session ID and save data in the database
+            # session_id = request.session.session_key or get_random_string(20)
+
+            # # Store valid data in the database
+            # TempDatas.objects.update_or_create(
+            #     session_id=session_id, defaults={'data': valid_rows}
+            # )
+
+            # # Store only the session ID in the session
+            # request.session['temp_payee_key'] = session_id
+
+
             return JsonResponse({'results': results, 'has_valid': len(valid_rows) > 0})
         except Exception as e:
             # Log the exception and return a detailed error message
@@ -205,6 +219,17 @@ def validate_excel_payee(request):
 def save_valid_data_payee(request):
     if request.method == 'POST':
         try:
+            
+            # session_id = request.session.get('temp_data_key')
+
+            # if not session_id:
+            #     return JsonResponse({'success': False, 'error': 'Session ID not found'})
+
+        
+            # temp_data = TempDatas.objects.get(session_id=session_id)
+            # valid_data = temp_data.data  # Fetch the stored JSON data
+            
+            
             # Load valid rows from session or a temporary store
             # Assuming they are sent back in a request body or stored in session
             valid_data = request.session.get('valid_rows', [])
@@ -221,6 +246,15 @@ def save_valid_data_payee(request):
                     modified_date=datetime.now(),
                 )
             messages.success(request,"Payee Uploaded Successfully")
+            
+            if 'valid_rows' in request.session:
+                del request.session['valid_rows']
+                print("Payee key IN SESSION DELETED")
+                request.session.modified = True  # Ensures session updates
+            
+            # # Delete temporary data after processing
+            # temp_data.delete()
+            
             return JsonResponse({'success': True})
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})

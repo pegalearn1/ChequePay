@@ -195,22 +195,27 @@
             <div class="form-group mb-2">
               <label for="bank_char" class="form-label">{% trans "Bank Char" %}</label>
               <input type="text" class="form-control" id="bank_char" name="bank_char" required>
+              <small class="form-text text-muted">{% trans "Enter a unique short identifier for the bank." %}</small>
             </div>
             <div class="form-group mb-2">
               <label for="bank_name_e" class="form-label">{% trans "Bank Name (English)" %}</label>
               <input type="text" class="form-control" id="bank_name_e" name="bank_name_e" required>
+              <small class="form-text text-muted">{% trans "Enter the official English name of the bank." %}</small>
             </div>
             <div class="form-group mb-2">
               <label for="bank_name_l" class="form-label">{% trans "Bank Name (Local)" %}</label>
               <input type="text" class="form-control" id="bank_name_l" name="bank_name_l">
+              <small class="form-text text-muted">{% trans "Enter the local language name of the bank, if applicable." %}</small>
             </div>
             <div class="form-group mb-2">
               <label for="tel_no" class="form-label">{% trans "Telephone" %}</label>
               <input type="text" class="form-control" id="tel_no" name="tel_no" required>
+              <small class="form-text text-muted">{% trans "Provide a contact number with country code if necessary." %}</small>
             </div>
             <div class="form-group mb-2">
               <label for="address" class="form-label">{% trans "Address" %}</label>
               <textarea class="form-control" id="address" name="address" required></textarea>
+              <small class="form-text text-muted">{% trans "Enter the address of the bank." %}</small>
             </div>
             <div class="modal-footer">
             <button type="button" class="btn me-auto" data-bs-dismiss="modal">{% trans "Close" %}</button>
@@ -242,22 +247,27 @@
             <div class="form-group mb-2">
               <label for="edit_bank_char" class="form-label">{% trans "Bank Char" %}</label>
               <input type="text" class="form-control" id="edit_bank_char" name="bank_char" required>
+              <small class="form-text text-muted">{% trans "Enter a unique short identifier for the bank." %}</small>
             </div>
             <div class="form-group mb-2">
               <label for="edit_bank_name_e" class="form-label">{% trans "Bank Name (English)" %}</label>
               <input type="text" class="form-control" id="edit_bank_name_e" name="bank_name_e" required>
+              <small class="form-text text-muted">{% trans "Enter the official English name of the bank." %}</small>
             </div>
             <div class="form-group mb-2">
               <label for="edit_bank_name_l" class="form-label">{% trans "Bank Name (Local)" %}</label>
               <input type="text" class="form-control" id="edit_bank_name_l" name="bank_name_l">
+              <small class="form-text text-muted">{% trans "Enter the local language name of the bank, if applicable." %}</small>
             </div>
             <div class="form-group mb-2">
               <label for="edit_tel_no" class="form-label">{% trans "Telephone" %}</label>
               <input type="text" class="form-control" id="edit_tel_no" name="tel_no" required>
+              <small class="form-text text-muted">{% trans "Provide a contact number with country code if necessary." %}</small>
             </div>
             <div class="form-group mb-2">
               <label for="edit_address" class="form-label">{% trans "Address" %}</label>
               <textarea class="form-control" id="edit_address" name="address" required></textarea>
+              <small class="form-text text-muted">{% trans "Enter the address of the bank." %}</small>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn me-auto" data-bs-dismiss="modal">{% trans "Close" %}</button>

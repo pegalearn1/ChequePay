@@ -132,20 +132,38 @@
                 <form method="post" class="wizard-form">
                     {% csrf_token %}
                     {{ wizard.management_form }}
+                    
                     <div class="wizard-step">
-                        {{ wizard.form.as_p }}
+                        {% for field in wizard.form %}
+                            <div class="mb-3">
+                                {{ field.label_tag }}
+                                {{ field }}
+                                
+                                {% if field.help_text %}
+                                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                                {% endif %}
+                                
+                                {% for error in field.errors %}
+                                    <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
                     </div>
+
                     <div class="wizard-navigation">
                         <button type="submit" class="btn-next">Next</button>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn me-auto" data-bs-dismiss="modal" onclick="closeWizard()">{% trans "Close" %}</button>
+                <button type="button" class="btn me-auto" data-bs-dismiss="modal" onclick="closeWizard()">
+                    {% trans "Close" %}
+                </button>
             </div>
         </div>
     </div>
 </div>
+
 
 {% endblock %}
 

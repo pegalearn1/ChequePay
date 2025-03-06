@@ -173,3 +173,9 @@ class AppUser(models.Model):
 
 
 ##########################################################################################################################################################################################################################################################
+
+#to save all temprary data
+class TempDatas(models.Model):
+    session_id = models.CharField(max_length=255, unique=True)
+    data = models.JSONField()  # Stores JSON data
+    created_at = models.DateTimeField(auto_now_add=True)

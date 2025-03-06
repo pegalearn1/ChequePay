@@ -1159,6 +1159,47 @@ msgid "Total Rejected Amount in %(currency)s"
 msgstr "إجمالي المبلغ المرفوض بـ %(currency)s"
 
 
+#for bank templates help texts
+
+msgid "Enter a unique short identifier for the bank."
+msgstr "أدخل معرفًا قصيرًا فريدًا للبنك."
+
+msgid "Enter the official English name of the bank."
+msgstr "أدخل الاسم الرسمي للبنك باللغة الإنجليزية."
+
+msgid "Enter the local language name of the bank, if applicable."
+msgstr "أدخل اسم البنك باللغة المحلية، إن أمكن."
+
+msgid "Provide a contact number with country code if necessary."
+msgstr "قدم رقم اتصال مع رمز البلد إذا لزم الأمر."
+
+msgid "Enter the address of the bank."
+msgstr "أدخل عنوان البنك."
+
+
+#for payee help texts
+
+msgid "Enter the full name of the payee."
+msgstr "أدخل الاسم الكامل للمستفيد."
+
+msgid "Provide the mobile number with country code if applicable."
+msgstr "قدم رقم الهاتف المحمول مع رمز البلد إذا كان ذلك ممكنًا."
+
+msgid "Enter a valid email address for the payee."
+msgstr "أدخل عنوان بريد إلكتروني صالحًا للمستفيد."
+
+msgid "Enter the complete postal address of the payee."
+msgstr "أدخل العنوان البريدي الكامل للمستفيد."
+
+
+#for currency help texts
+
+msgid "Enter the short code for the currency (e.g., USD, EUR, INR)."
+msgstr "أدخل الرمز القصير للعملة (مثل: USD، EUR، INR)."
+
+msgid "Enter the full name of the currency (e.g., US Dollar, Euro, Indian Rupee)."
+msgstr "أدخل الاسم الكامل للعملة (مثل: الدولار الأمريكي، اليورو، الروبية الهندية)."
+
 
 
 
