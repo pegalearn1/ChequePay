@@ -230,77 +230,87 @@
         </div>
         <div class="modal-body">
             <div class="mb-3">
-          <form id="addTemplateForm" method="POST"  enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="form-group mb-2">
-              <label for="name" class="form-label">{% trans "Cheque Template Name" %}</label>
-              <input type="text" class="form-control" id="name" name="name" required>
-              <small class="form-text text-muted">{% trans "" %}</small>
-            </div>
-            <div class="form-group mb-2">
-              <label for="width" class="form-label">{% trans "Cheque Width (mm)" %}</label>
-              <input type="text" class="form-control" id="width" name="width" required>
-              <small class="form-text text-muted">{% trans "" %}</small>
-            </div>
-            <div class="form-group mb-2">
-              <label for="height" class="form-label">{% trans "Cheque Height (mm)" %}</label>
-              <input type="text" class="form-control" id="height" name="height" required>
-              <small class="form-text text-muted">{% trans "" %}</small>
-            </div>
-            <div class="form-group mb-2">
-              <label for="bank" class="form-label">{% trans "Bank" %}</label>
-              <select class="form-control" name="bank" id="bank" required>
-                <option value="" disabled>{% trans "Select Bank" %}</option>
-                {% for bank in banks %}
-                <option value="{{bank.id}}">{{bank.bank_name_e}}</option>
-                {% endfor %}
-              </select>
-              <small class="form-text text-muted">{% trans "" %}</small>
-            </div>
-            <div class="form-group mb-2">
-              <label for="currency" class="form-label">{% trans "Currency" %}</label>
-              <select class="form-control" name="currency" id="currency" required>
-                <option value="" disabled>{% trans "Select Currency" %}</option>
-                {% for curr in currencies  %}
-                <option value="{{curr.id}}">{{curr.currency_name}}</option>
-                {% endfor %}
-              </select>
-              <small class="form-text text-muted">{% trans "" %}</small>
-            </div>
-            <div class="form-group mb-2">
-              <label for="background_image" class="form-label">{% trans "Cheque Background Image" %}</label>
-              <input type="file" name="background_image" id="id_background_image" class="form-control-file" style="max-width: 400px; width: 100%;" required accept="image/*" onchange="addpreviewImage(event)">
-              <small class="form-text text-muted">{% trans "" %}</small>
-              <!-- Image Preview -->
-              <div id="image-preview" class="mt-3">
-                <img id="selected-image" src="" alt="Selected Image" style="display: none; max-width: 100%; height: auto; border: 1px solid #ddd; padding: 5px;">
-              </div>
-            </div>
+              <form id="addTemplateForm" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="form-group mb-3">
+                    <label for="name" class="form-label">{% trans "Cheque Template Name" %}</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                    <small class="form-text text-muted">{% trans "Enter a unique name for this cheque template." %}</small>
+                </div>
             
-            <!-- image script -->
-            <script>
-              function addpreviewImage(event) {
-                  const input = event.target;
-                  const preview = document.getElementById('selected-image');
-                  
-                  if (input.files && input.files[0]) {
-                      const reader = new FileReader();
-                      
-                      reader.onload = function (e) {
-                          preview.src = e.target.result;
-                          preview.style.display = 'block'; // Show the image
-                      };
-                      
-                      reader.readAsDataURL(input.files[0]); // Read the image file as a data URL
-                  }
-              }
-              </script>
-              <!-- image script -->
-            <div class="modal-footer">
-            <button type="button" class="btn me-auto" data-bs-dismiss="modal">{% trans "Close" %}</button>
-            <button type="submit" class="btn btn-primary">{% trans "Save Changes" %}</button>
-            </div>
-        </form>
+                <div class="form-group mb-3">
+                    <label for="width" class="form-label">{% trans "Cheque Width (mm)" %}</label>
+                    <input type="text" class="form-control" id="width" name="width" required>
+                    <small class="form-text text-muted">{% trans "Specify the width of the cheque in millimeters (mm)." %}</small>
+                </div>
+            
+                <div class="form-group mb-3">
+                    <label for="height" class="form-label">{% trans "Cheque Height (mm)" %}</label>
+                    <input type="text" class="form-control" id="height" name="height" required>
+                    <small class="form-text text-muted">{% trans "Specify the height of the cheque in millimeters (mm)." %}</small>
+                </div>
+            
+                <div class="form-group mb-3">
+                    <label for="bank" class="form-label">{% trans "Bank" %}</label>
+                    <select class="form-control" name="bank" id="bank" required>
+                        <option value="" disabled>{% trans "Select Bank" %}</option>
+                        {% for bank in banks %}
+                        <option value="{{bank.id}}">{{bank.bank_name_e}}</option>
+                        {% endfor %}
+                    </select>
+                    <small class="form-text text-muted">{% trans "Choose the bank associated with this cheque template." %}</small>
+                </div>
+            
+                <div class="form-group mb-3">
+                    <label for="currency" class="form-label">{% trans "Currency" %}</label>
+                    <select class="form-control" name="currency" id="currency" required>
+                        <option value="" disabled>{% trans "Select Currency" %}</option>
+                        {% for curr in currencies  %}
+                        <option value="{{curr.id}}">{{curr.currency_name}}</option>
+                        {% endfor %}
+                    </select>
+                    <small class="form-text text-muted">{% trans "Select the currency used for this cheque template." %}</small>
+                </div>
+            
+                <div class="form-group mb-3">
+                    <label for="background_image" class="form-label">{% trans "Cheque Background Image" %}</label>
+                    <input type="file" name="background_image" id="id_background_image" class="form-control-file" 
+                           style="max-width: 400px; width: 100%;" required accept="image/*" 
+                           onchange="addpreviewImage(event)">
+                    
+                    <!-- Image Preview -->
+                    <div id="image-preview" class="mt-3">
+                        <img id="selected-image" src="" alt="Selected Image" 
+                             style="display: none; max-width: 100%; height: auto; border: 1px solid #ddd; padding: 5px;">
+                    </div>
+                </div>
+                
+                <!-- Image preview script -->
+                <script>
+                    function addpreviewImage(event) {
+                        const input = event.target;
+                        const preview = document.getElementById('selected-image');
+                        
+                        if (input.files && input.files[0]) {
+                            const reader = new FileReader();
+                            
+                            reader.onload = function (e) {
+                                preview.src = e.target.result;
+                                preview.style.display = 'block'; // Show the image
+                            };
+                            
+                            reader.readAsDataURL(input.files[0]); // Read the image file as a data URL
+                        }
+                    }
+                </script>
+            
+                <div class="modal-footer">
+                    <button type="button" class="btn me-auto" data-bs-dismiss="modal">{% trans "Close" %}</button>
+                    <button type="submit" class="btn btn-primary">{% trans "Save Changes" %}</button>
+                </div>
+            </form>
+            
         </div>
         </div>
       </div>
@@ -323,22 +333,25 @@
           <form id="editTemplateForm" method="POST"  enctype="multipart/form-data">
             {% csrf_token %}
             <input type="hidden" id="edit_template_id" name="template_id">
-            <div class="form-group mb-2">
+            <div class="form-group mb-3">
               <label for="edit_name" class="form-label">{% trans "Cheque Template Name" %}</label>
               <input type="text" class="form-control" id="edit_name" name="name" required>
+              <small class="form-text text-muted">{% trans "Enter a unique name for this cheque template." %}</small>
             </div>
   
-            <div class="form-group mb-2">
+            <div class="form-group mb-3">
               <label for="edit_width" class="form-label">{% trans "Cheque Width (mm)" %}</label>
               <input type="text" class="form-control" id="edit_width" name="width" required>
+              <small class="form-text text-muted">{% trans "Specify the width of the cheque in millimeters (mm)." %}</small>
             </div>
   
-            <div class="form-group mb-2">
+            <div class="form-group mb-3">
               <label for="edit_height" class="form-label">{% trans "Cheque Height (mm)" %}</label>
               <input type="text" class="form-control" id="edit_height" name="height" required>
+              <small class="form-text text-muted">{% trans "Specify the height of the cheque in millimeters (mm)." %}</small>
             </div>
   
-            <div class="form-group mb-2">
+            <div class="form-group mb-3">
               <label for="edit_bank" class="form-label">{% trans "Bank" %}</label>
               <select class="form-control" name="bank" id="edit_bank"  required>
                 <option value="" disabled>{% trans "Select Bank" %}</option>
@@ -347,8 +360,9 @@
                 
                 {% endfor %}
               </select>
+              <small class="form-text text-muted">{% trans "Choose the bank associated with this cheque template." %}</small>
             </div>
-            <div class="form-group mb-2">
+            <div class="form-group mb-3">
               <label for="edit_currency" class="form-label">{% trans "Currency" %}</label>
               <select class="form-control" name="currency" id="edit_currency" required>
                 <option value="" disabled>{% trans "Select Currency" %}</option>
@@ -356,9 +370,10 @@
                 <option value="{{curr.id}}">{{curr.currency_name}}</option>
                 {% endfor %}
               </select>
+              <small class="form-text text-muted">{% trans "Select the currency used for this cheque template." %}</small>
             </div>
   
-            <div class="form-group mb-2">
+            <div class="form-group mb-3">
               <label for="edit_background_image" class="form-label">{% trans "Cheque Background Image" %}</label>
               <input 
                 type="file" 

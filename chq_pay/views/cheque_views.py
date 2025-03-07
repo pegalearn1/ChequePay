@@ -245,6 +245,19 @@ def add_text_to_template(request, template_id):
     return render(request, 'Cheque_templates/add_text.html', {'template': template, 'text': text})
 
 
+@login_required
+def reset_text(request, temp_id):
+    chq_texts = ChequeText.objects.filter(template=temp_id)
+    
+    if chq_texts.exists():
+        if ChequeIssue.objects.filter(issue_template=temp_id).exists():
+            messages.warning(request, "Cheque issued, text can't be resetted")
+        else:
+            chq_texts.delete()
+            messages.warning(request, "Cheque Texts Resetted.")
+
+    return redirect('template_detail',temp_id)
+
 
 
 

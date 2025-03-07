@@ -108,6 +108,10 @@ def create_user_if_needed(reg_code, email, password, name, license_key, cust_id,
 
 @csrf_exempt
 def user_login(request):
+
+    registration_code_url = request.GET.get('reg_code')
+
+
     if request.method == "POST":
         # Getting values from template
         reg_code = request.POST.get('login_reg_code')
@@ -221,7 +225,7 @@ def user_login(request):
             logger.info("Exception during login: %s", str(e))
             return redirect('login')
 
-    return render(request, "Login/login.html")
+    return render(request, "Login/login.html",{'registration_code_url':registration_code_url})
 
 
 @login_required

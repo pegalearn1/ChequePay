@@ -226,22 +226,22 @@
             <div class="mb-3">
           <form id="addPayeeForm" method="POST" action="{% url 'add_payee' %}">
             {% csrf_token %}
-            <div class="form-group mb-2">
+            <div class="form-group mb-3">
                 <label for="payee_name" class="form-label">{% trans "Payee Name" %}</label>
                 <input type="text" class="form-control" id="payee_name" name="payee_name" required>
                 <small class="form-text text-muted">{% trans "Enter the full name of the payee." %}</small>
             </div>
-            <div class="form-group mb-2">
+            <div class="form-group mb-3">
                 <label for="payee_mobile_no" class="form-label">{% trans "Mobile Number" %}</label>
                 <input type="text" class="form-control" id="payee_mobile_no" name="payee_mobile_no" required>
                 <small class="form-text text-muted">{% trans "Provide the mobile number with country code if applicable." %}</small>
             </div>
-            <div class="form-group mb-2">
+            <div class="form-group mb-3">
                 <label for="payee_email" class="form-label">{% trans "Email" %}</label>
                 <input type="email" class="form-control" id="payee_email" name="payee_email">
                 <small class="form-text text-muted">{% trans "Provide the mobile number with country code if applicable." %}</small>
             </div>
-            <div class="form-group mb-2">
+            <div class="form-group mb-3">
               <label for="payee_address" class="form-label">{% trans "Address" %}</label>
               <textarea name="payee_address" class="form-control" id="payee_address"></textarea>
               <small class="form-text text-muted">{% trans "Enter the complete postal address of the payee." %}</small>
@@ -274,22 +274,22 @@
           <form id="editPayeeForm" method="POST" action="{% url 'edit_payee' %}">
             {% csrf_token %}
             <input type="hidden" id="edit_payee_id" name="payee_id">
-            <div class="form-group mb-2">
+            <div class="form-group mb-3">
                 <label for="edit_payee_name" class="form-label">{% trans "Payee Name" %}</label>
                 <input type="text" class="form-control" id="edit_payee_name" name="payee_name" required>
                 <small class="form-text text-muted">{% trans "Enter the full name of the payee." %}</small>
             </div>
-            <div class="form-group mb-2">
+            <div class="form-group mb-3">
                 <label for="edit_payee_mobile_no" class="form-label">{% trans "Mobile Number" %}</label>
                 <input type="text" class="form-control" id="edit_payee_mobile_no" name="payee_mobile_no" required>
                 <small class="form-text text-muted">{% trans "Provide the mobile number with country code if applicable." %}</small>
             </div>
-            <div class="form-group mb-2">
+            <div class="form-group mb-3">
                 <label for="edit_payee_email" class="form-label">{% trans "Email" %}</label>
                 <input type="email" class="form-control" id="edit_payee_email" name="payee_email" required>
                 <small class="form-text text-muted">{% trans "Provide the mobile number with country code if applicable." %}</small>
             </div>
-            <div class="form-group mb-2">
+            <div class="form-group mb-3">
               <label for="payee_address" class="form-label">{% trans "Address" %}</label>
               <textarea name="payee_address" class="form-control" id="edit_payee_address"></textarea>
               <small class="form-text text-muted">{% trans "Enter the complete postal address of the payee." %}</small>

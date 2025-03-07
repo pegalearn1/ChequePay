@@ -84,6 +84,7 @@ urlpatterns = [
     path('template/<int:template_id>/', cheque_views.template_detail, name='template_detail'),
     path('delete_temp/<int:template_id>/', cheque_views.delete_template, name='delete_template'),
     path('template/<int:template_id>/add-text/', cheque_views.add_text_to_template, name='add_text_to_template'),
+    path('reset_text/<int:temp_id>/', cheque_views.reset_text, name='reset_text'),
     path('delete_text/<int:text_id>/<int:temp_id>/', cheque_views.delete_text, name='delete_text'),
     path('template/<int:template_id>/print/', cheque_views.print_cheque, name='print_cheque'),
 

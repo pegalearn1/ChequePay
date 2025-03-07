@@ -217,7 +217,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     
                     <div class="mb-3">
                       <label class="form-label">Registation Code</label>
-                      <input type="text" class="form-control" placeholder="Your Code" id="regCodeInput" name="login_reg_code" autocomplete="off" oninput="sendRegCode(this.value)" required>
+                      <input type="text" class="form-control" placeholder="Your Code" id="regCodeInput" name="login_reg_code" autocomplete="off" oninput="sendRegCode(this.value)" {% if registration_code_url is not none %}value = '{{registration_code_url}}' {% endif %}  required>
                     </div>
 
 

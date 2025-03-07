@@ -1061,6 +1061,9 @@ msgstr "التوقيع"
 msgid "Set Text Positions"
 msgstr "تعيين مواضع النص"
 
+msgid "Reset"
+msgstr "إعادة ضبط"
+
 msgid "Cancel"
 msgstr "إلغاء"
 
@@ -1201,5 +1204,46 @@ msgid "Enter the full name of the currency (e.g., US Dollar, Euro, Indian Rupee)
 msgstr "أدخل الاسم الكامل للعملة (مثل: الدولار الأمريكي، اليورو، الروبية الهندية)."
 
 
+#for cheque template forms
+
+msgid "Enter a unique name for this cheque template."
+msgstr "أدخل اسمًا فريدًا لهذا النموذج الشيك."
+
+msgid "Specify the width of the cheque in millimeters (mm)."
+msgstr "حدد عرض الشيك بالملليمترات (مم)."
+
+msgid "Specify the height of the cheque in millimeters (mm)."
+msgstr "حدد ارتفاع الشيك بالملليمترات (مم)."
+
+msgid "Choose the bank associated with this cheque template."
+msgstr "اختر البنك المرتبط بهذا النموذج الشيك."
+
+msgid "Select the currency used for this cheque template."
+msgstr "حدد العملة المستخدمة لهذا النموذج الشيك."
+
+msgid "Upload an image to be used as the cheque background."
+msgstr "قم بتحميل صورة لاستخدامها كخلفية للشيك."
 
 
+#for cheque Issue
+
+msgid "Select the cheque template to be used."
+msgstr "اختر نموذج الشيك المراد استخدامه."
+
+msgid "Enter the account number linked to this cheque."
+msgstr "أدخل رقم الحساب المرتبط بهذا الشيك."
+
+msgid "Enter the unique cheque number as printed on the cheque."
+msgstr "أدخل رقم الشيك الفريد كما هو مطبوع على الشيك."
+
+msgid "Select the date on the issued cheque."
+msgstr "حدد التاريخ الموجود على الشيك الصادر."
+
+msgid "Choose the person or company receiving the cheque."
+msgstr "اختر الشخص أو الشركة التي ستستلم الشيك."
+
+msgid "Enter the cheque amount in the selected currency."
+msgstr "أدخل مبلغ الشيك بالعملة المحددة."
+
+msgid "Add a note or purpose for issuing this cheque."
+msgstr "أضف ملاحظة أو سببًا لإصدار هذا الشيك."

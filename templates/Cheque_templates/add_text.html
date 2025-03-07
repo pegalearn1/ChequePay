@@ -11,7 +11,6 @@
     .draggable {
         cursor: grab;
         display: inline-block;
-        padding: 4px 8px;
         user-select: none;
         border-radius: 4px;
         min-width: max-content; /* Set width according to text */
@@ -58,7 +57,7 @@
 
                                 <!-- Draggable elements -->
                                 {% if text.date_x_position and text.date_y_position %}
-                                <div id="dateDiv" contenteditable="true" class="draggable border border-dark text-primary"
+                                <div id="dateDiv" contenteditable="false" class="draggable border border-dark text-primary"
                                     style="position: absolute; left: {{ text.date_x_position|unlocalize }}mm; top: {{ text.date_y_position|unlocalize }}mm;">
                                     <span style="display: inline-block; width: 4mm;">{% trans "D" %}</span>
                                     <span style="display: inline-block; width: 4mm;">{% trans "D" %}</span>
@@ -72,28 +71,28 @@
                                 {% endif %}
 
                                 {% if text.payee_x_position and text.payee_y_position %}
-                                <div id="payeeDiv" contenteditable="true" class="draggable border border-dark text-primary"
+                                <div id="payeeDiv" contenteditable="false" class="draggable border border-dark text-primary"
                                     style="position: absolute; left: {{ text.payee_x_position|unlocalize }}mm; top: {{ text.payee_y_position|unlocalize }}mm;">
                                     {% trans "Payee" %}
                                 </div>
                                 {% endif %}
 
                                 {% if text.amtwrds_x_position and text.amtwrds_y_position %}
-                                <div id="amtWordsDiv" contenteditable="true" class="draggable border border-dark text-primary"
+                                <div id="amtWordsDiv" contenteditable="false" class="draggable border border-dark text-primary"
                                     style="position: absolute; left: {{ text.amtwrds_x_position|unlocalize }}mm; top: {{ text.amtwrds_y_position|unlocalize }}mm;">
                                     {% trans "Amount In Words" %}
                                 </div>
                                 {% endif %}
 
                                 {% if text.amtnum_x_position and text.amtnum_y_position %}
-                                <div id="amtNumDiv" contenteditable="true" class="draggable border border-dark text-primary"
+                                <div id="amtNumDiv" contenteditable="false" class="draggable border border-dark text-primary"
                                     style="position: absolute; left: {{ text.amtnum_x_position|unlocalize }}mm; top: {{ text.amtnum_y_position|unlocalize }}mm;">
                                     {% trans "Amount" %}
                                 </div>
                                 {% endif %}
 
                                 {% if text.sign_x_position and text.sign_y_position %}
-                                <div id="signDiv" contenteditable="true" class="draggable border border-dark text-primary"
+                                <div id="signDiv" contenteditable="false" class="draggable border border-dark text-primary"
                                     style="position: absolute; left: {{ text.sign_x_position|unlocalize }}mm; top: {{ text.sign_y_position|unlocalize }}mm;">
                                     {% trans "Signature" %}
                                 </div>
@@ -138,7 +137,7 @@
                             <p class="text-muted">{% trans "Drag elements onto the cheque" %}</p>
                              <!-- Draggable elements in the toolbar -->
                              {% if not text.date_x_position or not text.date_y_position %}
-                             <div id="dateDiv" contenteditable="true" class="draggable border border-dark text-primary mb-2">
+                             <div id="dateDiv" contenteditable="false" class="draggable border border-dark text-primary mb-2">
                                  <span style="display: inline-block; width: 4mm;">{% trans "D" %}</span>
                                  <span style="display: inline-block; width: 4mm;">{% trans "D" %}</span>
                                  <span style="display: inline-block; width: 4mm;">{% trans "M" %}</span>
@@ -151,25 +150,25 @@
                              {% endif %}
          
                              {% if not text.payee_x_position or not text.payee_y_position %}
-                             <div id="payeeDiv" contenteditable="true" class="draggable border border-dark text-primary mb-2">
+                             <div id="payeeDiv" contenteditable="false" class="draggable border border-dark text-primary mb-2">
                                  {% trans "Payee" %}
                              </div>
                              {% endif %}
          
                              {% if not text.amtwrds_x_position or not text.amtwrds_y_position %}
-                             <div id="amtWordsDiv" contenteditable="true" class="draggable border border-dark text-primary mb-2">
+                             <div id="amtWordsDiv" contenteditable="false" class="draggable border border-dark text-primary mb-2">
                                  {% trans "Amount In Words" %}
                              </div>
                              {% endif %}
          
                              {% if not text.amtnum_x_position or not text.amtnum_y_position %}
-                             <div id="amtNumDiv" contenteditable="true" class="draggable border border-dark text-primary mb-2">
+                             <div id="amtNumDiv" contenteditable="false" class="draggable border border-dark text-primary mb-2">
                                  {% trans "Amount" %}
                              </div>
                              {% endif %}
          
                              {% if not text.sign_x_position or not text.sign_y_position %}
-                             <div id="signDiv" contenteditable="true" class="draggable border border-dark text-primary mb-2">
+                             <div id="signDiv" contenteditable="false" class="draggable border border-dark text-primary mb-2">
                                  {% trans "Signature" %}
                              </div>
                              {% endif %}
