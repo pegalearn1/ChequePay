@@ -112,7 +112,7 @@ def validate_excel_bank(request):
             df = pd.read_excel(file)
 
             # Ensure the headers match the expected column names
-            expected_columns = ['BANK CHAR', 'BANK NAME ENGLISH', 'BANK NAME LOCAL', 'TELEPHONE NO.', 'ADDRESS']
+            expected_columns = ['BANK CHAR*', 'BANK NAME ENGLISH*', 'BANK NAME LOCAL*', 'TELEPHONE NO.', 'ADDRESS']
             if list(df.columns) != expected_columns:
                 return JsonResponse({
                     'error': 'Invalid file format. Ensure the headers are: {}'.format(", ".join(expected_columns))
@@ -124,14 +124,14 @@ def validate_excel_bank(request):
             # Iterate through rows to validate data
             for _, row in df.iterrows():
                 try:
-                    bank_char = row['BANK CHAR']
-                    bank_name_e = row['BANK NAME ENGLISH']
-                    bank_name_l = row['BANK NAME LOCAL']
+                    bank_char = row['BANK CHAR*']
+                    bank_name_e = row['BANK NAME ENGLISH*']
+                    bank_name_l = row['BANK NAME LOCAL*']
                     tel_no = row['TELEPHONE NO.']
                     address = row['ADDRESS']
 
                     # Check for missing fields
-                    if pd.isna(bank_char) or pd.isna(bank_name_e) or pd.isna(bank_name_l) or pd.isna(tel_no) or pd.isna(address):
+                    if pd.isna(bank_char) or pd.isna(bank_name_e) or pd.isna(bank_name_l):
 
                         bank_char = "" if pd.isna(bank_char) else bank_char
                         bank_name_e = "" if pd.isna(bank_name_e) else bank_name_e
@@ -150,7 +150,7 @@ def validate_excel_bank(request):
                             'error_message': 'Missing required fields',
                         })
                     
-                    elif Banks.objects.filter(bank_name_e = bank_name_e).exists():
+                    elif Banks.objects.filter(Q(bank_char=bank_char) | Q(bank_name_e=bank_name_e)).exists():
 
                         results.append({
                             'bank_char': bank_char,
@@ -182,9 +182,9 @@ def validate_excel_bank(request):
                     
                     # If a specific field is missing in the row, capture the error
                     results.append({
-                        'bank_char': row.get('BANK CHAR', None),
-                        'bank_name_e': row.get('BANK NAME ENGLISH', None),
-                        'bank_name_l': row.get('BANK NAME LOCAL', None),
+                        'bank_char': row.get('BANK CHAR*', None),
+                        'bank_name_e': row.get('BANK NAME ENGLISH*', None),
+                        'bank_name_l': row.get('BANK NAME LOCAL*', None),
                         'tel_no': row.get('TELEPHONE NO.', None),
                         'address': row.get('ADDRESS', None),
                         'status': 'Invalid',
@@ -242,7 +242,7 @@ def download_sample_bank(request):
     worksheet.title = "Banks"
     
     # columns
-    columns = ['BANK CHAR', 'BANK NAME ENGLISH','BANK NAME LOCAL', 'TELEPHONE NO.','ADDRESS']
+    columns = ['BANK CHAR*', 'BANK NAME ENGLISH*','BANK NAME LOCAL*', 'TELEPHONE NO.','ADDRESS']
     for col_num, column_title in enumerate(columns, 1):
         cell = worksheet.cell(row=1, column=col_num)
         cell.value = column_title

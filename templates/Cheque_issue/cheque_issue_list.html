@@ -6,7 +6,7 @@
 
 <style>
   .dropdown-menu-scroll {
-  max-height: 100px; /* Adjust height for scrolling */
+  max-height: 110px; /* Adjust height for scrolling */
   overflow-y: auto; /* Enables vertical scrolling */
 }
 </style>
@@ -76,7 +76,7 @@
                 <div class="mb-3">
                   <label for="bankFilter">{% trans "Bank" %}</label>
                   <select class="form-control" name="bank" id="bankFilter">
-                    <option value="">{% trans "Select Bank" %}</option>
+                    <option value="" class="text-muted">{% trans "Select Bank" %}</option>
                     {% for bank in banks %}
                       <option value="{{ bank.id }}" {% if bank.id == request.GET.bank %}selected{% endif %}>{{ bank.bank_name_e }}</option>
                     {% endfor %}
@@ -87,7 +87,7 @@
                 <div class="mb-3">
                   <label for="currencyFilter">{% trans "Currency" %}</label>
                   <select class="form-control" name="currency" id="currencyFilter">
-                    <option value="">{% trans "Select Currency" %}</option>
+                    <option value="" class="text-muted">{% trans "Select Currency" %}</option>
                     {% for currency in currencies %}
                       <option value="{{ currency.id }}" {% if currency.id == request.GET.currency %}selected{% endif %}>{{ currency.currency_name }}</option>
                     {% endfor %}
@@ -98,7 +98,8 @@
                 <div class="mb-3">
                   <label for="approvalFilter">{% trans "Approval Status" %}</label>
                   <select class="form-control" name="approval" id="approvalFilter">
-                    <option value="">{% trans "Select Approval Status" %}</option>
+                    <option value="" class="text-muted">{% trans "Select Approval Status" %}</option>
+                    <option value="all" {% if approval == 'all' %}selected{% endif %}>{% trans "All" %}</option>
                     <option value="approved" {% if approval == 'approved' %}selected{% endif %}>{% trans "Approved" %}</option>
                     <option value="pending" {% if approval == 'pending' %}selected{% endif %}>{% trans "Pending" %}</option>
                     <option value="rejected" {% if approval == 'rejected' %}selected{% endif %}>{% trans "Rejected" %}</option>
@@ -326,7 +327,7 @@
                 
                 <div class="form-group mb-3">
                     <label for="chq_date" class="form-label">{% trans "Cheque Date" %}</label>
-                    <input type="date" class="form-control" id="chq_date" name="chq_date" required>
+                    <input type="date" class="form-control w-25" id="chq_date" name="chq_date" required>
                     <small class="form-text text-muted">{% trans "Select the date on the issued cheque." %}</small>
                 </div>
                 

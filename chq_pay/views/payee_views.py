@@ -117,7 +117,7 @@ def validate_excel_payee(request):
             df = pd.read_excel(file)
 
             # Ensure the headers match the expected column names
-            expected_columns = ['PAYEE NAME', 'MOBILE NUMBER', 'EMAIL', 'ADDRESS']
+            expected_columns = ['PAYEE NAME*', 'MOBILE NUMBER', 'EMAIL', 'ADDRESS']
             if list(df.columns) != expected_columns:
                 return JsonResponse({
                     'error': 'Invalid file format. Ensure the headers are: {}'.format(", ".join(expected_columns))
@@ -129,31 +129,23 @@ def validate_excel_payee(request):
             # Iterate through rows to validate data
             for _, row in df.iterrows():
                 try:
-                    payee_name = row['PAYEE NAME']
-                    mobile_no = row['MOBILE NUMBER']
-                    email = row['EMAIL']
-                    address = row['ADDRESS']
+                    payee_name = row['PAYEE NAME*']
+                    mobile_no = row['MOBILE NUMBER'] if not pd.isna(row['MOBILE NUMBER']) else ""
+                    email = row['EMAIL'] if not pd.isna(row['EMAIL']) else ""
+                    address = row['ADDRESS'] if not pd.isna(row['ADDRESS']) else ""
 
-                    # Check for missing fields
-                    if pd.isna(payee_name) or pd.isna(mobile_no) or pd.isna(email) or pd.isna(address):
-
-                        payee_name = "" if pd.isna(payee_name) else payee_name
-                        mobile_no = "" if pd.isna(mobile_no) else mobile_no
-                        email = "" if pd.isna(email) else email
-                        address = "" if pd.isna(address) else address
-                        
-                        
+                    # Check if the mandatory field (payee_name) is missing
+                    if pd.isna(payee_name) or not str(payee_name).strip():
                         results.append({
-                            'payee_name': payee_name,
+                            'payee_name': "" if pd.isna(payee_name) else payee_name,
                             'mobile_no': mobile_no,
                             'email': email,
                             'address': address,
                             'status': 'Invalid',
-                            'error_message': 'Missing required fields',
+                            'error_message': 'Missing required field.',
                         })
                     
-                    elif Payee.objects.filter(payee_name = payee_name).exists():
-
+                    elif Payee.objects.filter(payee_name=payee_name).exists():
                         results.append({
                             'payee_name': payee_name,
                             'mobile_no': mobile_no,
@@ -162,7 +154,6 @@ def validate_excel_payee(request):
                             'status': 'Exists',
                             'error_message': 'Payee already exists',
                         })
-
                     else:
                         valid_row = {
                             'payee_name': payee_name,
@@ -177,12 +168,10 @@ def validate_excel_payee(request):
                         })
                         valid_rows.append(valid_row)
                 
-            
                 except KeyError as e:
-                    
                     # If a specific field is missing in the row, capture the error
                     results.append({
-                        'payee_name': row.get('PAYEE NAME', None),
+                        'payee_name': row.get('PAYEE NAME*', None),
                         'mobile_no': row.get('MOBILE NUMBER', None),
                         'email': row.get('EMAIL', None),
                         'address': row.get('ADDRESS', None),
@@ -193,25 +182,13 @@ def validate_excel_payee(request):
             # Save valid rows in the session for later processing
             request.session['valid_rows'] = valid_rows
 
-
-            # # Generate a unique session ID and save data in the database
-            # session_id = request.session.session_key or get_random_string(20)
-
-            # # Store valid data in the database
-            # TempDatas.objects.update_or_create(
-            #     session_id=session_id, defaults={'data': valid_rows}
-            # )
-
-            # # Store only the session ID in the session
-            # request.session['temp_payee_key'] = session_id
-
-
             return JsonResponse({'results': results, 'has_valid': len(valid_rows) > 0})
         except Exception as e:
             # Log the exception and return a detailed error message
             print(f"Error processing file: {str(e)}")
             return JsonResponse({'error': f"Error processing file: {str(e)}"}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
 
 
 
@@ -272,7 +249,7 @@ def download_sample_payee(request):
     worksheet.title = "Payees"
     
     # columns
-    columns = ['PAYEE NAME', 'MOBILE NUMBER','EMAIL','ADDRESS']
+    columns = ['PAYEE NAME*', 'MOBILE NUMBER','EMAIL','ADDRESS']
     for col_num, column_title in enumerate(columns, 1):
         cell = worksheet.cell(row=1, column=col_num)
         cell.value = column_title

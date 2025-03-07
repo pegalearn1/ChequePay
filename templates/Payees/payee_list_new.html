@@ -338,12 +338,12 @@
             <table class="table card-table table-vcenter text-nowrap datatable" id="payeeDataTable">
               <thead>
                 <tr>
-                  <th>{% trans "Payee Name" %}</th>
+                  <th>{% trans "Status" %}</th>
+                  <th>{% trans "Message" %}</th>
+                  <th>{% trans "Payee Name" %}*</th>
                   <th>{% trans "Mobile Number" %}</th>
                   <th>{% trans "Email" %}</th>
                   <th>{% trans "Address" %}</th>
-                  <th>{% trans "Status" %}</th>
-                  <th>{% trans "Message" %}</th>
                 </tr>
               </thead>
               <tbody>
@@ -477,12 +477,12 @@
       const rows = [];
       data.results.forEach((row) => {
         rows.push([
+          row.status || '',
+          row.error_message || '',
           row.payee_name || '',
           row.mobile_no || '',
           row.email || '',
           row.address || '',
-          row.status || '',
-          row.error_message || '',
         ]);
       });
 

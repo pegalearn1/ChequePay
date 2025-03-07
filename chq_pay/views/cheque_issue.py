@@ -187,7 +187,7 @@ def cheque_issue(request):
 
 @login_required
 def cheque_issue_list(request):
-    cheques = ChequeIssue.objects.all().filter(Q(company__is_selected=True)).order_by('-issue_cheque_date')
+    cheques = ChequeIssue.objects.all().filter(company__is_selected=True).order_by('-created_date')
     templates = ChequeTemplate.objects.all()
     banks = Banks.objects.all()
     currencies = Currencies.objects.all()
@@ -218,10 +218,15 @@ def cheque_issue_list(request):
     if approval:
         if approval == 'approved':
             cheques = cheques.filter(issue_is_approved=True)
-        elif approval == 'pending':
-            cheques = cheques.filter(issue_is_approved=None)
+        elif approval == 'all':
+            cheques = cheques
         elif approval == 'rejected':
             cheques = cheques.filter(issue_is_approved=False)
+        elif approval == 'pending':
+            cheques = cheques.filter(issue_is_approved=None)
+    else:
+        cheques = cheques.filter(issue_is_approved=None)
+
 
     # Filter by cheque date range
     start_date = request.GET.get('start_date', '')

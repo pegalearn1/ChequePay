@@ -44,8 +44,8 @@ class Banks(models.Model):
     bank_char = models.CharField(max_length=10)
     bank_name_e = models.CharField(max_length=120)
     bank_name_l = models.CharField(max_length=120)
-    tel_no = models.CharField(max_length=20)
-    address = models.TextField()
+    tel_no = models.CharField(max_length=20, blank= True, null= True)
+    address = models.TextField(blank= True, null= True)
     created_by = models.IntegerField()
     created_date = models.DateTimeField()
     modified_by = models.IntegerField()
@@ -78,8 +78,8 @@ class Currencies(models.Model):
 
 class Payee(models.Model):
     payee_name = models.CharField(max_length=120)
-    mobile_no = models.CharField(max_length=20)
-    email = models.EmailField(max_length=100)
+    mobile_no = models.CharField(max_length=20, blank= True, null= True)
+    email = models.EmailField(max_length=100, blank= True, null= True)
     address = models.TextField(null=True, blank=True)
     created_by = models.IntegerField()
     created_date = models.DateTimeField()

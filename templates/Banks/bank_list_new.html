@@ -314,13 +314,14 @@
             <table class="table table-bordered" id="bankDataTable">
               <thead>
                 <tr>
-                  <th>{% trans "Bank Char" %}</th>
-                  <th>{% trans "Bank Name English" %}</th>
-                  <th>{% trans "Bank Name Local" %}</th>
-                  <th>{% trans "Telephone No." %}</th>
-                  <th>{% trans "Address" %}</th>
                   <th>{% trans "Status" %}</th>
                   <th>{% trans "Message" %}</th>
+                  <th>{% trans "Bank Char" %}*</th>
+                  <th>{% trans "Bank Name English" %}*</th>
+                  <th>{% trans "Bank Name Local" %}*</th>
+                  <th>{% trans "Telephone No." %}</th>
+                  <th>{% trans "Address" %}</th>
+                  
                 </tr>
               </thead>
               <tbody>
@@ -470,13 +471,13 @@
       const rows = [];
       data.results.forEach((row) => {
         rows.push([
+          row.status || '',
+          row.error_message || '',
           row.bank_char || '',
           row.bank_name_e || '',
           row.bank_name_l || '',
           row.tel_no || '',
           row.address || '',
-          row.status || '',
-          row.error_message || '',
         ]);
       });
 
