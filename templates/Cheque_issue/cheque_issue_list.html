@@ -6,8 +6,9 @@
 
 <style>
   .dropdown-menu-scroll {
-  max-height: 110px; /* Adjust height for scrolling */
+  max-height: 112px; /* Adjust height for scrolling */
   overflow-y: auto; /* Enables vertical scrolling */
+  
 }
 </style>
 
@@ -78,7 +79,7 @@
                   <select class="form-control" name="bank" id="bankFilter">
                     <option value="" class="text-muted">{% trans "Select Bank" %}</option>
                     {% for bank in banks %}
-                      <option value="{{ bank.id }}" {% if bank.id == request.GET.bank %}selected{% endif %}>{{ bank.bank_name_e }}</option>
+                      <option value="{{ bank.id }}" {% if bank.id|stringformat:"s" == request.GET.bank %}selected{% endif %}>{{ bank.bank_name_e }}</option>
                     {% endfor %}
                   </select>
                 </div>
@@ -89,7 +90,7 @@
                   <select class="form-control" name="currency" id="currencyFilter">
                     <option value="" class="text-muted">{% trans "Select Currency" %}</option>
                     {% for currency in currencies %}
-                      <option value="{{ currency.id }}" {% if currency.id == request.GET.currency %}selected{% endif %}>{{ currency.currency_name }}</option>
+                      <option value="{{ currency.id }}" {% if currency.id|stringformat:"s" == request.GET.currency %}selected{% endif %}>{{ currency.currency_name }}</option>
                     {% endfor %}
                   </select>
                 </div>

@@ -76,9 +76,9 @@ def template_list(request):
    
     # Apply filters if provided
     if selected_bank:
-        templates = templates.filter(bank__bank_name_e=selected_bank)
+        templates = templates.filter(bank__id=selected_bank)
     if selected_currency:
-        templates = templates.filter(currency__currency_char=selected_currency)
+        templates = templates.filter(currency__id=selected_currency)
     
     #pagination
     per_page = 25

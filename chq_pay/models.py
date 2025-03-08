@@ -21,6 +21,7 @@ class Company_Setup(models.Model):
     registration_id = models.CharField(max_length=50)
     company_name = models.CharField(max_length=120)
     logo = models.ImageField(upload_to ='company_logos/', blank = True, null=True )
+    auth_sign = models.ImageField(upload_to ='company_auth_sign/', blank = True, null=True )
     tax_id = models.CharField(max_length=120, null=True, blank=True)
     is_selected = models.BooleanField()
     # currency_id = models.IntegerField()

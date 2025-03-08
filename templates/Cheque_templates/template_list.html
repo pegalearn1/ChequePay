@@ -69,7 +69,7 @@
                 <select class="form-select" id="currencyFilter" name="currency">
                   <option value="" {% if not request.GET.currency %}selected{% endif %}>{% trans "All Currencies" %}</option>
                   {% for currency in currencies %}
-                  <option value="{{ currency }}" {% if request.GET.currency == currency %}selected{% endif %}>
+                  <option value="{{ currency.id }}" {% if currency.id|stringformat:"s" == request.GET.currency%}selected{% endif %}>
                     {{ currency }}
                   </option>
                   {% endfor %}
@@ -82,7 +82,7 @@
                 <select class="form-select" id="bankFilter" name="bank">
                   <option value="" {% if not request.GET.bank %}selected{% endif %}>{% trans "All Banks" %}</option>
                   {% for bank in banks %}
-                  <option value="{{ bank }}" {% if request.GET.bank == bank %}selected{% endif %}>
+                  <option value="{{ bank.id }}" {% if bank.id|stringformat:"s" == request.GET.bank %}selected{% endif %}>
                     {{ bank }}
                   </option>
                   {% endfor %}
