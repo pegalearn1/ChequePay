@@ -239,5 +239,3 @@ def user_logout(request):
 
     return render(request, 'Login/login.html')
 
-def user_profile(request):
-    return render(request, "home/profile.html")

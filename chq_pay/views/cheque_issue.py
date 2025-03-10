@@ -127,10 +127,7 @@ def cheque_issue(request):
         issue_payee = request.POST.get('chq_payee')
         issue_amount = request.POST.get('chq_amt')
         issue_naration = request.POST.get('chq_narration')
-        issue_sign = request.FILES.get('chq_sign')
-
-        if issue_sign:
-            issue_sign = issue_sign
+        
         
         
         # Save the data to the database
@@ -158,7 +155,6 @@ def cheque_issue(request):
                 issue_amount = issue_amount,
                 issue_issue_date=date.today(),
                 issue_naration=issue_naration,
-                issue_sign=issue_sign,
                 created_by = request.user.id,
                 created_date = datetime.now(),
                 modified_by = request.user.id,

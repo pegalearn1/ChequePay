@@ -30,7 +30,6 @@ urlpatterns = [
     #login/register urls
     path("logout/", authentic_views.user_logout, name="logout"),
     path('login/', authentic_views.user_login, name = "login"),
-    path('profile/', authentic_views.user_profile, name = "profile"),
     path('check_reg_update_sett/', imp_libs.check_reg_update_sett, name = "check_reg_update_sett"),
 
     

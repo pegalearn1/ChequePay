@@ -140,6 +140,7 @@ def profile(request):
         last_name = request.POST.get('last_name')
         password = request.POST.get('password')
         profile_picture = request.FILES.get('profile_picture')
+        sign = request.FILES.get('sign')
 
        
         print("POST values:")
@@ -159,6 +160,9 @@ def profile(request):
 
             if profile_picture:
                 usr.profile_picture = profile_picture
+
+            if sign:
+                usr.auth_sign = sign
 
             # Check if a password was provided
             if password:

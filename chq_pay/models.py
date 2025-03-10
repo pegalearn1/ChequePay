@@ -9,7 +9,7 @@ from decimal import ROUND_DOWN, Decimal
 class ChqpayUser(AbstractUser):
     profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
     privilege_role = models.CharField(max_length=100, null=True, blank=True)  # or use choices for predefined roles
-
+    auth_sign = models.ImageField(upload_to ='Signatures/', blank = True, null=True )
     def __str__(self):
         return self.username
     
@@ -21,7 +21,6 @@ class Company_Setup(models.Model):
     registration_id = models.CharField(max_length=50)
     company_name = models.CharField(max_length=120)
     logo = models.ImageField(upload_to ='company_logos/', blank = True, null=True )
-    auth_sign = models.ImageField(upload_to ='company_auth_sign/', blank = True, null=True )
     tax_id = models.CharField(max_length=120, null=True, blank=True)
     is_selected = models.BooleanField()
     # currency_id = models.IntegerField()
