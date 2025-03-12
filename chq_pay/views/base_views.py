@@ -5,6 +5,12 @@ from .imp_libs import *
 from chq_pay.models import Banks, Payee, ChequeTemplate, ChequeIssue, Currencies,Company_Setup
 from django.contrib.auth.hashers import check_password
 
+
+from rembg import remove
+from PIL import Image
+import io
+from django.core.files.base import ContentFile
+
 # Get the custom user model
 User = get_user_model()
 
@@ -127,9 +133,37 @@ def index(request):
 
         }
 
-
-
     return render(request, "home/index.html", context)
+
+
+def remove_background(image_file):
+    """
+    Removes background from the uploaded image file and returns a processed image.
+    """
+    try:
+        # Open the image
+        img = Image.open(image_file)
+        
+        # Convert to RGBA (if not already)
+        img = img.convert("RGBA")
+
+        # Remove background
+        img_no_bg = remove(img)
+
+        # Save to memory
+        img_io = io.BytesIO()
+        img_no_bg.save(img_io, format="PNG")
+        
+        return ContentFile(img_io.getvalue(), name=image_file.name)  # Preserve original filename
+
+    except Exception as e:
+        print(f"Error processing signature: {e}")
+        return None
+
+
+
+
+
 
 
 def profile(request):
@@ -162,7 +196,9 @@ def profile(request):
                 usr.profile_picture = profile_picture
 
             if sign:
-                usr.auth_sign = sign
+                processed_sign = remove_background(sign)  # Remove background
+                if processed_sign:
+                    usr.auth_sign = processed_sign
 
             # Check if a password was provided
             if password:

@@ -127,8 +127,13 @@ def cheque_issue(request):
         issue_payee = request.POST.get('chq_payee')
         issue_amount = request.POST.get('chq_amt')
         issue_naration = request.POST.get('chq_narration')
-        
-        
+        issue_sign = request.POST.get('chq_sign')
+
+        if issue_sign == "on":
+            issue_sign = True
+        else:
+            issue_sign = False
+
         
         # Save the data to the database
         comapny_now = get_object_or_404(Company_Setup, is_selected = True)
@@ -155,6 +160,7 @@ def cheque_issue(request):
                 issue_amount = issue_amount,
                 issue_issue_date=date.today(),
                 issue_naration=issue_naration,
+                # issue_sign=issue_sign,
                 created_by = request.user.id,
                 created_date = datetime.now(),
                 modified_by = request.user.id,

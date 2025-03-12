@@ -10,9 +10,9 @@ class ChqpayUser(AbstractUser):
     profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
     privilege_role = models.CharField(max_length=100, null=True, blank=True)  # or use choices for predefined roles
     auth_sign = models.ImageField(upload_to ='Signatures/', blank = True, null=True )
+    
     def __str__(self):
         return self.username
-    
 
 ##########################################################################################################################################################################################################################################################
 #company_setup
@@ -147,7 +147,7 @@ class ChequeIssue(models.Model):
     issue_amount = models.DecimalField(max_digits=30, decimal_places=3)
     issue_naration = models.CharField(max_length=200)
     issue_issue_date = models.DateField()
-    issue_sign = models.ImageField(upload_to='Signatures/', null=True, blank= True)
+    issue_sign = models.BooleanField(null=True, blank=True)
     issue_is_approved = models.BooleanField(null=True, blank=True)
     issue_approv_rejectby = models.IntegerField(null=True, blank=True)
     created_by = models.IntegerField()
