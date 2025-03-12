@@ -218,9 +218,12 @@ def add_text_to_template(request, template_id):
             if value not in [None, '', '0']:
                 try:
                     valid_data[tf] = float(value)  # Convert the value to float
+                    
                 except ValueError:
                     pass  # Ignore invalid values that cannot be converted to float
 
+        
+        
         if valid_data:  # Proceed only if there is valid data
             valid_data.update({
                 'created_by': request.user.id,
@@ -255,6 +258,8 @@ def reset_text(request, temp_id):
         else:
             chq_texts.delete()
             messages.warning(request, "Cheque Texts Resetted.")
+    else:
+        messages.warning(request, "No cheque texts exists.")
 
     return redirect('template_detail',temp_id)
 

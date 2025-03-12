@@ -65,7 +65,7 @@
               
               
               <div class = "mt-4">
-              <a href="{% url 'reset_text' template.id %}" class="btn btn-warning">{% trans "Reset" %}</a>
+              <a onclick="if (confirm('{% trans "Are you sure? Want to reset the text positions?" %}')) {return true;} else {event.stopPropagation(); event.preventDefault();};" href="{% url 'reset_text' template.id %}" class="btn btn-warning">{% trans "Reset" %}</a>
               <a href="{% url 'add_text_to_template' template.id %}" class="btn btn-primary">{% trans "Set Text Positions" %}</a>
               <a href="{% url "template_list" %}" class="btn btn-danger">{% trans "Cancel" %}</a>
               </div><br> 
