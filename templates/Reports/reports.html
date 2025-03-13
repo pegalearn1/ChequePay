@@ -56,62 +56,97 @@
 <!-- Page body -->
 <div class="page-body">
     <div class="container-xl">
-        <div class="row">
-            <!-- Filters and Search Section -->
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title">{% trans "Filters" %}</h4>
-                    </div>
-                    <div class="card-body">
-                        <form method="post" id="report">
-                            {% csrf_token %}
-                            
-                             <!-- Bank Filter -->
-                             <div class="mb-3">
-                                <label for="bankFilter">{% trans "Bank" %}</label>
-                                <select class="form-control" name="bank" id="bankFilter">
-                                    <option value="">{% trans "Select Bank" %}</option>
-                                    {% for bankid, bankname in banks %}
-                                    <option value="{{ bankid }}" {% if bankid == sel_bank %}selected{% endif %}>{{ bankname }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            
-                            <!-- Approval Filter -->
-                            <div class="mb-3">
-                                <label for="approvalFilter">{% trans "Approval Status" %}</label>
-                                <select class="form-control" name="approval" id="approvalFilter">
-                                    <option value="">{% trans "Select Approval Status" %}</option>
-                                    <option value="approved" {% if approval == 'approved' %}selected{% endif %}>{% trans "Approved" %}</option>
-                                    <option value="pending" {% if approval == 'pending' %}selected{% endif %}>{% trans "Pending" %}</option>
-                                    <option value="rejected" {% if approval == 'rejected' %}selected{% endif %}>{% trans "Rejected" %}</option>
-                                </select>
-                            </div>
-                            
-                            <!-- Date Range Filter -->
-                            <div class="mb-3">
-                                <label class="mb-2" for="start_date">{% trans "Cheque Date Range" %}</label>
-                                <div class="mb-2">
-                                    <label for="start_date">{% trans "From" %}</label>
-                                    <input type="date" class="form-control" name="start_date" value="{{ start_date }}">
-                                </div>
-                                <div>
-                                    <label for="end_date">{% trans "To" %}</label>
-                                    <input type="date" class="form-control" name="end_date" value="{{ end_date }}">
-                                </div>
-                            </div>
-                            
-                            <!-- <div class="d-grid">
-                                <button type="submit" class="btn btn-primary">{% trans "Apply Filters" %}</button>
-                            </div> -->
-                        </form>
+        
+           <!-- Filters and Search Section -->
+<!-- Filters Toggle Button -->
+<div class="row">
+    <div class="mb-2 d-flex justify-content-start">
+        <button class="btn btn-sm btn-outline-primary" id="toggleFilters">
+            <i class="fas fa-filter"></i> <span id="filterButtonText">{% trans "Show Filters" %}</span>
+        </button>
+    </div>
+</div>
+
+<!-- Filter Section -->
+<div id="filterSection" class="card mb-3 p-3" style="display: none;">
+   <div class="card-body">
+        <form method="post" id="report">
+            {% csrf_token %}
+
+            <div class="row g-3">
+                <!-- Bank Filter -->
+                <div class="col-md-4">
+                    <label for="bankFilter">{% trans "Bank" %}</label>
+                    <select class="form-select" name="bank">
+                        <option value="">{% trans "Select Bank" %}</option>
+                        {% for bankid, bankname in banks %}
+                        <option value="{{ bankid }}" {% if bankid == sel_bank %}selected{% endif %}>{{ bankname }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Approval Status Filter -->
+                <div class="col-md-4">
+                    <label for="approvalFilter">{% trans "Approval Status" %}</label>
+                    <select class="form-select" name="approval">
+                        <option value="">{% trans "Select Approval Status" %}</option>
+                        <option value="approved" {% if approval == 'approved' %}selected{% endif %}>{% trans "Approved" %}</option>
+                        <option value="pending" {% if approval == 'pending' %}selected{% endif %}>{% trans "Pending" %}</option>
+                        <option value="rejected" {% if approval == 'rejected' %}selected{% endif %}>{% trans "Rejected" %}</option>
+                    </select>
+                </div>
+
+                <!-- Cheque Date Range -->
+                <div class="col-md-4">
+                    <label for="dateRange">{% trans "Cheque Date Range" %}</label>
+                    <div class="d-flex gap-2">
+                        <input type="date" class="form-control" name="start_date" value="{{ start_date }}" placeholder="{% trans 'From' %}">
+                        <input type="date" class="form-control" name="end_date" value="{{ end_date }}" placeholder="{% trans 'To' %}">
                     </div>
                 </div>
+
+                <!-- Apply Filters Button -->
+                <div class="col-md-12 text-end">
+                    <button type="submit" class="btn btn-primary">{% trans "Apply Filters" %}</button>
+                </div>
             </div>
+        </form>
+    </div>
+</div>
+
+<!-- JavaScript to Toggle Filters & Persist State -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    let filterSection = document.getElementById("filterSection");
+    let buttonText = document.getElementById("filterButtonText");
+    let toggleButton = document.getElementById("toggleFilters");
+
+    // Check localStorage for filter state
+    if (localStorage.getItem("filtersVisible") === "true") {
+      filterSection.style.display = "block";
+      buttonText.innerText = "{% trans 'Hide Filters' %}";
+    }
+
+    // Toggle function
+    toggleButton.addEventListener("click", function () {
+      if (filterSection.style.display === "none" || filterSection.style.display === "") {
+        filterSection.style.display = "block";
+        buttonText.innerText = "{% trans 'Hide Filters' %}";
+        localStorage.setItem("filtersVisible", "true");
+      } else {
+        filterSection.style.display = "none";
+        buttonText.innerText = "{% trans 'Show Filters' %}";
+        localStorage.setItem("filtersVisible", "false");
+      }
+    });
+  });
+</script>
+
+
+            
             
             <!-- Tabs Section -->
-            <div class="col-md-9">
+            
                 <div class="card">
                     <div class="card-header">
                         <ul class="nav nav-tabs" id="reportTabs">
@@ -257,8 +292,8 @@
 
                     </div>
                 </div>
-            </div>
-        </div>
+            
+       
     </div>
 </div>
 
