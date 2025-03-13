@@ -31,192 +31,193 @@
       </div>
     </div>
   </div>
+ 
  <!-- Page body -->
- <div class="page-body">
+<div class="page-body">
   <div class="container-xl">
     <div class="row">
-      <!-- Filters and Search Section -->
-      <div class="col-md-3">
-        <div class="card">
-          <div class="card-header">
-            <h4 class="card-title">{% trans "Search & Filters" %}</h4>
-          </div>
-          <div class="card-body">
-            <!-- Search Bar -->
-            <form method="get" id="searchForm" class="mb-3">
-              <div class="input-group">
-                <input 
-                  type="text" 
-                  class="form-control" 
-                  name="search" 
-                  id="searchInput" 
-                  placeholder="{% trans "Search templates" %}" 
-                  value="{{ request.GET.search }}" 
-                  autocomplete="off">
-                <!-- Submit Button inside the input group -->
-                <button type="submit" class="btn btn-primary">
-                  {% trans "Search" %}
-                </button>
-              </div>
-            </form>
-            
-
-            <!-- Filter Form -->
-            <form method="get" id="filterForm">
-              <!-- Currency Filter -->
-              <div class="mb-3">
-                <label for="currencyFilter" class="form-label">{% trans "Currency" %}</label>
-                <select class="form-select" id="currencyFilter" name="currency">
-                  <option value="" {% if not request.GET.currency %}selected{% endif %}>{% trans "All Currencies" %}</option>
-                  {% for currency in currencies %}
-                  <option value="{{ currency.id }}" {% if currency.id|stringformat:"s" == request.GET.currency%}selected{% endif %}>
-                    {{ currency }}
-                  </option>
-                  {% endfor %}
-                </select>
-              </div>
-
-              <!-- Bank Filter -->
-              <div class="mb-3">
-                <label for="bankFilter" class="form-label">{% trans "Bank" %}</label>
-                <select class="form-select" id="bankFilter" name="bank">
-                  <option value="" {% if not request.GET.bank %}selected{% endif %}>{% trans "All Banks" %}</option>
-                  {% for bank in banks %}
-                  <option value="{{ bank.id }}" {% if bank.id|stringformat:"s" == request.GET.bank %}selected{% endif %}>
-                    {{ bank }}
-                  </option>
-                  {% endfor %}
-                </select>
-              </div>
-
-              <!-- Submit Button -->
-              <div class="d-grid">
-                <button type="submit" class="btn btn-primary">{% trans "Apply Filters" %}</button>
-              </div>
-            </form>
-          </div>
-        </div>
+      
+      <!-- Filter Toggle Button (Left Aligned) -->
+      <div class="mb-2 d-flex justify-content-start">
+        <button class="btn btn-sm btn-outline-primary" id="toggleFilters">
+          <i class="fas fa-filter"></i> <span id="filterButtonText">{% trans "Show Filters" %}</span>
+        </button>
       </div>
-      <!-- End Filters and Search Section -->
+
+      <!-- Filter Section -->
+      <div id="filterSection" class="card mb-3 p-3" style="display: none;">
+        <form method="get" id="filterForm" class="row g-2 align-items-end">
+          <!-- Search Input with Button Inside -->
+          <div class="col-md-4">
+            <div class="input-group">
+              <input type="text" class="form-control" name="search" placeholder="{% trans 'Search templates' %}" value="{{ request.GET.search }}">
+              <button class="btn btn-primary" type="submit">{% trans "Search" %}</button>
+            </div>
+          </div>
+          
+          <!-- Currency Filter -->
+          <div class="col-md-3">
+            <select class="form-select" id="currencyFilter" name="currency">
+              <option value="" {% if not request.GET.currency %}selected{% endif %}>{% trans "All Currencies" %}</option>
+              {% for currency in currencies %}
+              <option value="{{ currency.id }}" {% if currency.id|stringformat:"s" == request.GET.currency %}selected{% endif %}>
+                {{ currency }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- Bank Filter -->
+          <div class="col-md-3">
+            <select class="form-select" id="bankFilter" name="bank">
+              <option value="" {% if not request.GET.bank %}selected{% endif %}>{% trans "All Banks" %}</option>
+              {% for bank in banks %}
+              <option value="{{ bank.id }}" {% if bank.id|stringformat:"s" == request.GET.bank %}selected{% endif %}>
+                {{ bank }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- Apply Button -->
+          <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">{% trans "Apply Filters" %}</button>
+          </div>
+        </form>
+      </div>
 
       <!-- Template List Section -->
-      <div class="col-md-9">
-        <div class="card">
-          <div class="card-header">
-            <h3 class="card-title">{% trans "Template List" %}</h3>
-          </div>
-          <div class="table-responsive">
-            <table class="table card-table table-vcenter text-nowrap datatable">
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>{% trans "Template" %}</th>
-                  <th>{% trans "Size" %}</th>
-                  <th>{% trans "Bank" %}</th>
-                  <th>{% trans "Currency" %}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% if templates %}
-                {% for template in templates %}
-                <tr>
-                  
-                  <td class="text-start">
-                    <div class="dropdown dropend">
-                      <button class="btn dropdown-toggle align-text-top" data-bs-toggle="dropdown">
-                        {% trans "Actions" %}
-                      </button>
-                      <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editTemplateModal"
-                          data-id="{{ template.id }}" data-name="{{ template.name }}" data-width="{{ template.width }}"
-                          data-height="{{ template.height }}" data-bank-id="{{ template.bank.id }}"
-                          data-currency-id="{{ template.currency.id }}" data-background_image="{{ template.background_image.url }}">
-                          {% trans "Edit Template" %}
-                        </a>
-                        <a class="dropdown-item"
-                          onclick="if (confirm('{% trans "Are you sure? Want to delete?" %} {{ template.name }}')) {return true;} else {event.stopPropagation(); event.preventDefault();};"
-                          href="{% url 'delete_template' template.id %}">
-                          {% trans "Delete Template" %}
-                        </a>
-                      </div>
-                    </div>
-                  </td>
-
-                  <td>
-                    <div class="d-flex py-1 align-items-center">
-                      <a href="{% url 'template_detail' template.id %}">
-                        <span class="avatar me-2" style="background-image: url({{ template.background_image.url }})"></span>
-                      </a>
-                      <div class="flex-fill">
-                        <div class="font-weight-medium">
-                          <a href="{% url 'template_detail' template.id %}">{{ template.name }}</a>
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-
-                  <td>({{ template.width }}mm x {{ template.height }}mm)</td>
-                  <td>{{ template.bank }}</td>
-                  <td>{{ template.currency }}</td>
-                 
-                </tr>
-                {% endfor %}
-                {% else %}
-                <tr>
-                  <td colspan="5" class="text-center">{% trans "No Templates found" %}.</td>
-                </tr>
-                {% endif %}
-              </tbody>
-            </table>
-          </div>
-          <!-- Pagination -->
-          <div class="card-footer d-flex align-items-center">
-            <p class="m-0 text-secondary">
-              {% trans "Showing" %} <span>{{ templates.start_index }}</span> {% trans "to" %} <span>{{ templates.end_index }}</span> {% trans "of" %} <span>{{ templates.paginator.count }}</span> {% trans "entries" %}
-            </p>
-            <ul class="pagination m-0 ms-auto">
-              {% if templates.has_previous %}
-              <li class="page-item">
-                <a class="page-link" href="?page=1{% if request.GET.currency %}&currency={{ request.GET.currency }}{% endif %}{% if request.GET.bank %}&bank={{ request.GET.bank }}{% endif %}" tabindex="-1">
-                  {% trans "First" %}
-                </a>
-              </li>
-              <li class="page-item">
-                <a class="page-link" href="?page={{ templates.previous_page_number }}{% if request.GET.currency %}&currency={{ request.GET.currency }}{% endif %}{% if request.GET.bank %}&bank={{ request.GET.bank }}{% endif %}">
-                  {% trans "Previous" %}
-                </a>
-              </li>
-              {% endif %}
-              {% for i in templates.paginator.page_range %}
-              {% if templates.number == i %}
-              <li class="page-item active"><a class="page-link" href="#">{{ i }}</a></li>
-              {% elif i > templates.number|add:'-3' and i < templates.number|add:'3' %}
-              <li class="page-item"><a class="page-link"
-                  href="?page={{ i }}{% if request.GET.currency %}&currency={{ request.GET.currency }}{% endif %}{% if request.GET.bank %}&bank={{ request.GET.bank }}{% endif %}">{{ i }}</a>
-              </li>
-              {% endif %}
-              {% endfor %}
-              {% if templates.has_next %}
-              <li class="page-item">
-                <a class="page-link" href="?page={{ templates.next_page_number }}{% if request.GET.currency %}&currency={{ request.GET.currency }}{% endif %}{% if request.GET.bank %}&bank={{ request.GET.bank }}{% endif %}">
-                  {% trans "Next" %}
-                </a>
-              </li>
-              <li class="page-item">
-                <a class="page-link" href="?page={{ templates.paginator.num_pages }}{% if request.GET.currency %}&currency={{ request.GET.currency }}{% endif %}{% if request.GET.bank %}&bank={{ request.GET.bank }}{% endif %}">
-                  {% trans "Last" %}
-                </a>
-              </li>
-              {% endif %}
-            </ul>
-          </div>
-          <!-- End Pagination -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">{% trans "Template List" %}</h3>
         </div>
+        <div class="table-responsive">
+          <table class="table card-table table-vcenter text-nowrap datatable">
+            <thead>
+              <tr>
+                <th></th>
+                <th>{% trans "Template" %}</th>
+                <th>{% trans "Size" %}</th>
+                <th>{% trans "Bank" %}</th>
+                <th>{% trans "Currency" %}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if templates %}
+              {% for template in templates %}
+              <tr>
+                <td class="text-start">
+                  <div class="dropdown dropend">
+                    <button class="btn dropdown-toggle align-text-top" data-bs-toggle="dropdown">
+                      {% trans "Actions" %}
+                    </button>
+                    <div class="dropdown-menu">
+                      <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editTemplateModal"
+                        data-id="{{ template.id }}" data-name="{{ template.name }}" data-width="{{ template.width }}"
+                        data-height="{{ template.height }}" data-bank-id="{{ template.bank.id }}"
+                        data-currency-id="{{ template.currency.id }}" data-background_image="{{ template.background_image.url }}">
+                        {% trans "Edit Template" %}
+                      </a>
+                      <a class="dropdown-item"
+                        onclick="if (confirm('{% trans 'Are you sure? Want to delete?' %} {{ template.name }}')) {return true;} else {event.stopPropagation(); event.preventDefault();};"
+                        href="{% url 'delete_template' template.id %}">
+                        {% trans "Delete Template" %}
+                      </a>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="d-flex py-1 align-items-center">
+                    <a href="{% url 'template_detail' template.id %}">
+                      <span class="avatar me-2" style="background-image: url({{ template.background_image.url }})"></span>
+                    </a>
+                    <div class="flex-fill">
+                      <div class="font-weight-medium">
+                        <a href="{% url 'template_detail' template.id %}">{{ template.name }}</a>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td>({{ template.width }}mm x {{ template.height }}mm)</td>
+                <td>{{ template.bank }}</td>
+                <td>{{ template.currency }}</td>
+              </tr>
+              {% endfor %}
+              {% else %}
+              <tr>
+                <td colspan="5" class="text-center">{% trans "No Templates found" %}.</td>
+              </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="card-footer d-flex align-items-center">
+          <p class="m-0 text-secondary">
+            {% trans "Showing" %} <span>{{ templates.start_index }}</span> {% trans "to" %} <span>{{ templates.end_index }}</span> {% trans "of" %} <span>{{ templates.paginator.count }}</span> {% trans "entries" %}
+          </p>
+          <ul class="pagination m-0 ms-auto">
+            {% if templates.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page=1">First</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ templates.previous_page_number }}">Previous</a>
+            </li>
+            {% endif %}
+            {% for i in templates.paginator.page_range %}
+            {% if templates.number == i %}
+            <li class="page-item active"><a class="page-link" href="#">{{ i }}</a></li>
+            {% elif i > templates.number|add:'-3' and i < templates.number|add:'3' %}
+            <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+            {% endfor %}
+            {% if templates.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ templates.next_page_number }}">Next</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ templates.paginator.num_pages }}">Last</a>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+        <!-- End Pagination -->
+
       </div>
-      <!-- End Template List Section -->
     </div>
   </div>
 </div>
+
+<!-- JavaScript to Toggle Filters & Persist State -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    let filterSection = document.getElementById("filterSection");
+    let buttonText = document.getElementById("filterButtonText");
+    let toggleButton = document.getElementById("toggleFilters");
+
+    // Check localStorage for filter state
+    if (localStorage.getItem("filtersVisible") === "true") {
+      filterSection.style.display = "block";
+      buttonText.innerText = "{% trans 'Hide Filters' %}";
+    }
+
+    // Toggle function
+    toggleButton.addEventListener("click", function () {
+      if (filterSection.style.display === "none" || filterSection.style.display === "") {
+        filterSection.style.display = "block";
+        buttonText.innerText = "{% trans 'Hide Filters' %}";
+        localStorage.setItem("filtersVisible", "true");
+      } else {
+        filterSection.style.display = "none";
+        buttonText.innerText = "{% trans 'Show Filters' %}";
+        localStorage.setItem("filtersVisible", "false");
+      }
+    });
+  });
+</script>
+
 
 
 

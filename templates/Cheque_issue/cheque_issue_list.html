@@ -45,59 +45,59 @@
   <!-- Page body -->
   <div class="page-body">
     <div class="container-xl">
-      <div class="row">
-        <!-- Filters and Search Section -->
-        <div class="col-md-3">
-          <div class="card">
-            <div class="card-header">
-              <h4 class="card-title">{% trans "Search & Filters" %}</h4>
-            </div>
-            <div class="card-body">
-              <!-- Search Bar -->
-              <form method="get" id="searchForm" class="mb-3">
-                <div class="input-group">
-                  <input 
-                    type="text" 
-                    class="form-control" 
-                    name="search" 
-                    id="searchInput" 
-                    placeholder="Search cheques" 
-                    value="{{ search }}" 
-                    autocomplete="off">
-                  <button type="submit" class="btn btn-primary">
-                    {% trans "Search" %}
-                  </button>
-                </div>
-              </form>
-              
-  
-              <!-- Filter Form -->
-              <form method="get" id="filterForm">
-                <!-- Bank Filter -->
-                <div class="mb-3">
-                  <label for="bankFilter">{% trans "Bank" %}</label>
-                  <select class="form-control" name="bank" id="bankFilter">
-                    <option value="" class="text-muted">{% trans "Select Bank" %}</option>
-                    {% for bank in banks %}
-                      <option value="{{ bank.id }}" {% if bank.id|stringformat:"s" == request.GET.bank %}selected{% endif %}>{{ bank.bank_name_e }}</option>
-                    {% endfor %}
-                  </select>
-                </div>
-  
-                <!-- Currency Filter -->
-                <div class="mb-3">
-                  <label for="currencyFilter">{% trans "Currency" %}</label>
-                  <select class="form-control" name="currency" id="currencyFilter">
-                    <option value="" class="text-muted">{% trans "Select Currency" %}</option>
-                    {% for currency in currencies %}
-                      <option value="{{ currency.id }}" {% if currency.id|stringformat:"s" == request.GET.currency %}selected{% endif %}>{{ currency.currency_name }}</option>
-                    {% endfor %}
-                  </select>
-                </div>
 
-                 <!-- Approval Filter -->
-                <div class="mb-3">
-                  <label for="approvalFilter">{% trans "Approval Status" %}</label>
+      <!-- Search and Filters -->
+<div class="row">
+
+  <!-- Filter Toggle Button (Left Aligned) -->
+  <div class="mb-2 d-flex justify-content-start">
+    <button class="btn btn-sm btn-outline-primary" id="toggleFilters">
+      <i class="fas fa-filter"></i> <span id="filterButtonText">{% trans "Show Filters" %}</span>
+    </button>
+  </div>
+
+  <!-- Filter Section -->
+  <div id="filterSection" class="card mb-3 p-3" style="display: none;">
+    <form method="get" id="filterForm" class="row g-3 align-items-end">
+      
+      <!-- Search Input with Button Inside -->
+      <div class="col-md-4">
+        <label for="search">{% trans "Search" %}</label>
+        <div class="input-group">
+          <input type="text" class="form-control" name="search" placeholder="{% trans 'Search cheques' %}" value="{{ search }}">
+          <button class="btn btn-primary" type="submit">{% trans "Search" %}</button>
+        </div>
+      </div>
+
+      <!-- Bank Filter -->
+      <div class="col-md-4">
+        <label for="bankFilter">{% trans "Bank" %}</label>
+        <select class="form-select" name="bank">
+          <option value="" {% if not request.GET.bank %}selected{% endif %}>{% trans "All Banks" %}</option>
+          {% for bank in banks %}
+          <option value="{{ bank.id }}" {% if bank.id|stringformat:"s" == request.GET.bank %}selected{% endif %}>
+            {{ bank.bank_name_e }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Currency Filter -->
+      <div class="col-md-4">
+        <label for="currencyFilter">{% trans "Currency" %}</label>
+        <select class="form-select" name="currency">
+          <option value="" {% if not request.GET.currency %}selected{% endif %}>{% trans "All Currencies" %}</option>
+          {% for currency in currencies %}
+          <option value="{{ currency.id }}" {% if currency.id|stringformat:"s" == request.GET.currency %}selected{% endif %}>
+            {{ currency.currency_name }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Approval Status Filter -->
+      <div class="col-md-4">
+        <label for="approvalFilter">{% trans "Approval Status" %}</label>
                   <select class="form-control" name="approval" id="approvalFilter">
                     <option value="" class="text-muted">{% trans "Select Approval Status" %}</option>
                     <option value="all" {% if approval == 'all' %}selected{% endif %}>{% trans "All" %}</option>
@@ -105,37 +105,38 @@
                     <option value="pending" {% if approval == 'pending' %}selected{% endif %}>{% trans "Pending" %}</option>
                     <option value="rejected" {% if approval == 'rejected' %}selected{% endif %}>{% trans "Rejected" %}</option>
                   </select>
-                </div>
+      </div>
 
-                <!-- Date Range Filter -->
-                <div class="mb-3">
-                  <label class="mb-3" for="start_date">{% trans "Cheque Date Range" %}</label>
-                  <!-- From Date -->
-                  <div class="mb-3">
-                    <label for="start_date">{% trans "From" %}</label>
-                    <input type="date" class="form-control" name="start_date" value="{{ start_date }}">
-                  </div>
-                  <!-- To Date -->
-                  <div>
-                    <label for="end_date">{% trans "To" %}</label>
-                    <input type="date" class="form-control" name="end_date" value="{{ end_date }}">
-                  </div>
-                </div>
+      <!-- Cheque Date Range -->
+      <div class="col-md-4">
+        <label for="start_date">{% trans "Cheque Date" %} - {% trans "From" %}</label>
+        <input type="date" class="form-control" name="start_date" value="{{ start_date }}">
+      </div>
+
+      <div class="col-md-4">
+        <label for="end_date">{% trans "Cheque Date" %} - {% trans "To" %}</label>
+        <input type="date" class="form-control" name="end_date" value="{{ end_date }}">
+      </div>
+
+      <!-- Apply Button -->
+      <div class="col-md-12 text-end">
+        <button type="submit" class="btn btn-primary">{% trans "Apply Filters" %}</button>
+      </div>
+      
+    </form>
+  </div>
+</div>
+<!-- End Search and Filters Section -->
+
+
+
   
-                <!-- Submit Button -->
-                <div class="d-grid">
-                  <button type="submit" class="btn btn-primary">{% trans "Apply Filters" %}</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-        <!-- End Filters and Search Section -->
+       
 
         <!-- Template List Section -->
-      <div class="col-md-9">
+        
 
-        <div class="card">
+          <div class="card">
             <div class="card-header">
               <h3 class="card-title">{% trans "Cheque Issue List" %}</h3>
             </div>
@@ -280,12 +281,39 @@
             <!-- End Pagination -->
 
           </div>
-        </div>
-        <!-- End Template List Section -->
-            
-          </div>
-      </div>
+        
+          <!-- End Template List Section -->
     </div>
+
+
+  
+<!-- JavaScript to Toggle Filters & Persist State -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    let filterSection = document.getElementById("filterSection");
+    let buttonText = document.getElementById("filterButtonText");
+    let toggleButton = document.getElementById("toggleFilters");
+
+    // Check localStorage for filter state
+    if (localStorage.getItem("filtersVisible") === "true") {
+      filterSection.style.display = "block";
+      buttonText.innerText = "{% trans 'Hide Filters' %}";
+    }
+
+    // Toggle function
+    toggleButton.addEventListener("click", function () {
+      if (filterSection.style.display === "none" || filterSection.style.display === "") {
+        filterSection.style.display = "block";
+        buttonText.innerText = "{% trans 'Hide Filters' %}";
+        localStorage.setItem("filtersVisible", "true");
+      } else {
+        filterSection.style.display = "none";
+        buttonText.innerText = "{% trans 'Show Filters' %}";
+        localStorage.setItem("filtersVisible", "false");
+      }
+    });
+  });
+</script>
 
 
 

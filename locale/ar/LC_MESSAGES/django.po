@@ -1247,3 +1247,14 @@ msgstr "أدخل مبلغ الشيك بالعملة المحددة."
 
 msgid "Add a note or purpose for issuing this cheque."
 msgstr "أضف ملاحظة أو سببًا لإصدار هذا الشيك."
+
+
+msgid "Search cheques"
+msgstr "البحث عن الشيكات"
+
+
+msgid "Show Filters"
+msgstr "إظهار الفلاتر"
+
+msgid "Hide Filters"
+msgstr "إخفاء الفلاتر"
