@@ -109,7 +109,7 @@
               </div>
             </div>
 
-
+            {% if request.user.is_superuser %}
             <div class="pl-lg-4 mt-3">
               <div class="row">
                 <div class="col-md-6">
@@ -123,7 +123,7 @@
                     <!-- Signature Preview -->
                     <div id="sign-preview" class="mt-3">
                       <img id="sign-image" 
-                        src="{{ request.user.auth_sign.url }}" 
+                        src="{% if request.user.auth_sign %}{{ request.user.auth_sign.url }}{% endif %}" 
                         alt="Signature" 
                         style="max-width: 100%; height: auto; border: 1px solid #ddd; padding: 5px; 
                                {% if request.user.auth_sign %} display: block; {% else %} display: none; {% endif %}">
@@ -154,6 +154,8 @@
             </script>
             
             <!-- image script -->
+
+            {% endif %}
 
             <div class="text-right mt-3 ">
               <button type="submit" class="btn btn-primary">{% trans "Save Changes" %}</button>

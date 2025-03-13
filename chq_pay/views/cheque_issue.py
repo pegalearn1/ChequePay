@@ -160,7 +160,7 @@ def cheque_issue(request):
                 issue_amount = issue_amount,
                 issue_issue_date=date.today(),
                 issue_naration=issue_naration,
-                # issue_sign=issue_sign,
+                issue_sign=issue_sign,
                 created_by = request.user.id,
                 created_date = datetime.now(),
                 modified_by = request.user.id,
@@ -410,6 +410,22 @@ def print_cheque(request, cheque_id):
     )
 
     issue_amount_wrd_title = issue_amount_wrd.title()
+    
+    
+    if cheque_issue.issue_sign and isapproved:
+        aprvd_by = cheque_issue.issue_approv_rejectby
+        usr = User.objects.filter(id=aprvd_by).first()
+
+        if usr and usr.auth_sign:
+            sign_url = request.build_absolute_uri(usr.auth_sign.url)
+            print("Signature URL:", sign_url)
+        else:
+            messages.error(request, 'Signature is not uploaded, please upload a signature image via profile.')
+            return redirect(request.META.get('HTTP_REFERER'))
+
+
+
+            
 
     context = {
         'template': template.background_image,
@@ -426,7 +442,7 @@ def print_cheque(request, cheque_id):
             'amount_num': (cheque_text.amtnum_x_position, cheque_text.amtnum_y_position),
             'sign': (cheque_text.sign_x_position, cheque_text.sign_y_position),
         },
-        'sign_url': cheque_issue.issue_sign.url if cheque_issue.issue_sign else None,
+        'sign_url': sign_url if sign_url else None,
         'cheque_id': cheque_id,
         'issue_currency':issue_currency,
         

@@ -165,9 +165,10 @@
     {% if positions.sign.0 is not None %}
     <!-- Signature -->
     {% if sign_url %}
-    <div class="cheque-sign" style="position: absolute; left: {{ positions.sign.0|unlocalize }}mm; top: {{ positions.sign.1|unlocalize }}mm;">
+    <span class="cheque-sign" style="position: absolute; left: {{ positions.sign.0|unlocalize }}mm; top: {{ positions.sign.1|unlocalize }}mm;">
         <img src="{{ sign_url }}"  alt="Signature">
-    </div>
+        
+    </span>
     {% endif %}
     {% endif %}
 
