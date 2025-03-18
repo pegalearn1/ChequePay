@@ -3,16 +3,21 @@ in 2024-2025.'''
 
 from .imp_libs import *
 from django.utils.crypto import get_random_string
-from chq_pay.models import Payee, Company_Setup, ChequeIssue, TempDatas
+from chq_pay.models import Payee, Company_Setup, ChequeIssue, TempDatas, Banks
 
 
 @login_required
 def add_payee(request):
     if request.method == "POST":
         payee_name = request.POST.get("payee_name")
+        payee_bank = request.POST.get("payee_bank")
+        payee_acc_no = request.POST.get("payee_acc_no")
         mobile_no = request.POST.get("payee_mobile_no")
         email = request.POST.get("payee_email")
         address = request.POST.get("payee_address")
+
+        print("accc - ", payee_acc_no)
+        
         
         payee_exist = Payee.objects.filter(payee_name = payee_name)
 
@@ -33,9 +38,16 @@ def add_payee(request):
 
             )
 
+            if payee_acc_no:
+                payee.payee_acc_no = payee_acc_no  # Assign the value correctly
+
+            if payee_bank:
+                payee.payee_bank = get_object_or_404(Banks, id=payee_bank)  # Assign to the payee object
+
             if address:
-                payee.address = address
-                payee.save()
+                payee.address = address  # Assign the new address
+
+            payee.save()
             messages.success(request,('Payee Created Successfully!!!'))
             return JsonResponse({"success": True})
     return JsonResponse({"success": False})
@@ -44,6 +56,7 @@ def add_payee(request):
 @login_required
 def payee_list(request):
     payees = Payee.objects.all().order_by('payee_name')
+    banks = Banks.objects.all()
 
     #pagination
     per_page = 25
@@ -52,7 +65,7 @@ def payee_list(request):
     payee_list = paginator.get_page(page_number)
     #pagination
 
-    return render(request,"Payees/payee_list_new.html",{'payees':payee_list})
+    return render(request,"Payees/payee_list_new.html",{'payees':payee_list, 'banks':banks})
 
 
 @login_required
@@ -74,10 +87,12 @@ def edit_payee(request):
     if request.method == "POST":
         payee_id = request.POST.get("payee_id")
         payee_name = request.POST.get("payee_name")
+        payee_bank = request.POST.get("payee_bank")
+        payee_acc_no = request.POST.get("payee_acc_no")
         mobile_no = request.POST.get("payee_mobile_no")
         email = request.POST.get("payee_email")
         address = request.POST.get("payee_address")
-        print("payeee = ",payee_id)
+        print("payeee acc= ",type(payee_acc_no))
         
         # Update the bank in the database
         try:
@@ -87,6 +102,13 @@ def edit_payee(request):
             payee.email = email
             payee.modified_by = request.user.id
             payee.modified_date = datetime.now()
+
+            if payee_acc_no:
+                payee.payee_acc_no = payee_acc_no
+
+
+            if payee_bank:
+                payee.payee_bank = get_object_or_404(Banks, id = payee_bank)
 
             if address:
                 payee.address = address

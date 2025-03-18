@@ -1258,3 +1258,19 @@ msgstr "إظهار الفلاتر"
 
 msgid "Hide Filters"
 msgstr "إخفاء الفلاتر"
+
+msgid "Payee Bank"
+msgstr "بنك المستفيد"
+
+msgid "Payee Account No."
+msgstr "رقم حساب المستفيد"
+
+msgid "Payee Bank and Account"
+msgstr "بنك وحساب المستفيد"
+
+msgid "Include signature"
+msgstr "تضمين التوقيع"
+
+msgid "No Templates found."
+msgstr "لم يتم العثور على قوالب."
+

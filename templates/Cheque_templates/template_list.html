@@ -145,7 +145,7 @@
               {% endfor %}
               {% else %}
               <tr>
-                <td colspan="5" class="text-center">{% trans "No Templates found" %}.</td>
+                <td colspan="5" class="text-center">{% trans "No Templates found." %}</td>
               </tr>
               {% endif %}
             </tbody>
@@ -235,36 +235,36 @@
                 {% csrf_token %}
                 
                 <div class="form-group mb-3">
-                    <label for="name" class="form-label">{% trans "Cheque Template Name" %}</label>
+                    <label for="name" class="form-label">{% trans "Cheque Template Name" %}<span class="mandatory">*</span></label>
                     <input type="text" class="form-control" id="name" name="name" required>
                     <small class="form-text text-muted">{% trans "Enter a unique name for this cheque template." %}</small>
                 </div>
             
                 <div class="form-group mb-3">
-                    <label for="width" class="form-label">{% trans "Cheque Width (mm)" %}</label>
+                    <label for="width" class="form-label">{% trans "Cheque Width (mm)" %}<span class="mandatory">*</span></label>
                     <input type="text" class="form-control" id="width" name="width" required>
                     <small class="form-text text-muted">{% trans "Specify the width of the cheque in millimeters (mm)." %}</small>
                 </div>
             
                 <div class="form-group mb-3">
-                    <label for="height" class="form-label">{% trans "Cheque Height (mm)" %}</label>
+                    <label for="height" class="form-label">{% trans "Cheque Height (mm)" %}<span class="mandatory">*</span></label>
                     <input type="text" class="form-control" id="height" name="height" required>
                     <small class="form-text text-muted">{% trans "Specify the height of the cheque in millimeters (mm)." %}</small>
                 </div>
             
                 <div class="form-group mb-3">
-                    <label for="bank" class="form-label">{% trans "Bank" %}</label>
+                    <label for="bank" class="form-label">{% trans "Bank" %}<span class="mandatory">*</span></label>
                     <select class="form-control" name="bank" id="bank" required>
                         <option value="" disabled>{% trans "Select Bank" %}</option>
                         {% for bank in banks %}
-                        <option value="{{bank.id}}">{{bank.bank_name_e}}</option>
+                        <option value="{{bank.id}}">{{bank.bank_name_e}}<span class="mandatory">*</span></option>
                         {% endfor %}
                     </select>
                     <small class="form-text text-muted">{% trans "Choose the bank associated with this cheque template." %}</small>
                 </div>
             
                 <div class="form-group mb-3">
-                    <label for="currency" class="form-label">{% trans "Currency" %}</label>
+                    <label for="currency" class="form-label">{% trans "Currency" %}<span class="mandatory">*</span></label>
                     <select class="form-control" name="currency" id="currency" required>
                         <option value="" disabled>{% trans "Select Currency" %}</option>
                         {% for curr in currencies  %}
@@ -275,7 +275,7 @@
                 </div>
             
                 <div class="form-group mb-3">
-                    <label for="background_image" class="form-label">{% trans "Cheque Background Image" %}</label>
+                    <label for="background_image" class="form-label">{% trans "Cheque Background Image" %}<span class="mandatory">*</span></label>
                     <input type="file" name="background_image" id="id_background_image" class="form-control-file" 
                            style="max-width: 400px; width: 100%;" required accept="image/*" 
                            onchange="addpreviewImage(event)">

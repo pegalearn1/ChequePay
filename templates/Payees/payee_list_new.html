@@ -91,6 +91,8 @@
                   <tr>
                     <th></th>
                     <th>{% trans "Payee Name" %}</th>
+                    <th>{% trans "Payee Bank" %}</th>
+                    <th>{% trans "Payee Account No." %}</th>
                     <th>{% trans "Mobile Number" %}</th>
                     <th>{% trans "Email" %}</th>
                     <th>{% trans "Address" %}</th>
@@ -112,11 +114,13 @@
                         <a class="dropdown-item" href="#" data-bs-toggle="modal"  
                         data-bs-target="#editPayeeModal" 
                         data-id="{{ payee.id }}" 
-                        data-payee-name="{{ payee.payee_name }}" 
+                        data-payee-name="{{ payee.payee_name }}"
+                        data-payee-bank-id="{{ payee.payee_bank.id }}"
+                        data-payee-acc-no="{{ payee.payee_acc_no}}" 
                         data-mobile-no="{{ payee.mobile_no }}" 
                         data-email="{{ payee.email }}"
                         data-address="{{ payee.address }}">
-                          {% trans "Edit Payee" %}
+                          {% trans "Edit Payee" %}  
                         </a>
                         <a class="dropdown-item" onclick="return confirm('{% trans "Are you sure? Want to delete?" %} {{ payee.payee_name }}')" 
                         href="{% url 'delete_payee' payee.id %}">
@@ -128,6 +132,8 @@
                   </td>
                   
                     <td>{{ payee.payee_name }}</td>
+                    <td>{{ payee.payee_bank.bank_name_e}}</td>
+                    <td>{% if payee.payee_acc_no is not none %}{{ payee.payee_acc_no }}{% endif %} </td>
                     <td>{{ payee.mobile_no }}</td>
                     <td>{{ payee.email }}</td>
                     <td>
@@ -227,13 +233,33 @@
           <form id="addPayeeForm" method="POST" action="{% url 'add_payee' %}">
             {% csrf_token %}
             <div class="form-group mb-3">
-                <label for="payee_name" class="form-label">{% trans "Payee Name" %}</label>
+                <label for="payee_name" class="form-label">{% trans "Payee Name" %}<span class="mandatory">*</span></label>
                 <input type="text" class="form-control" id="payee_name" name="payee_name" required>
                 <small class="form-text text-muted">{% trans "Enter the full name of the payee." %}</small>
             </div>
+
+            <div class="form-group mb-3">
+              <label for="payee_bank" class="form-label">{% trans "Payee Bank" %}</label>
+              <select class="form-control" name="payee_bank" id="payee_bank" >
+                  <option value="" >{% trans "Select Bank" %}</option>
+                  {% for bank in banks %}
+                  <option value="{{bank.id}}">{{bank.bank_name_e}}</option>
+                  {% endfor %}
+              </select>
+              <small class="form-text text-muted">{% trans "Choose the bank associated with the payee." %}</small>
+            </div>
+
+
+            <div class="form-group mb-3">
+              <label for="payee_acc_no" class="form-label">{% trans "Payee Account No." %}</label>
+              <input type="text" class="form-control" id="payee_acc_no" name="payee_acc_no" >
+              <small class="form-text text-muted">{% trans "Enter the account number associated with th payee." %}</small>
+          </div>
+
+
             <div class="form-group mb-3">
                 <label for="payee_mobile_no" class="form-label">{% trans "Mobile Number" %}</label>
-                <input type="text" class="form-control" id="payee_mobile_no" name="payee_mobile_no" required>
+                <input type="text" class="form-control" id="payee_mobile_no" name="payee_mobile_no" >
                 <small class="form-text text-muted">{% trans "Provide the mobile number with country code if applicable." %}</small>
             </div>
             <div class="form-group mb-3">
@@ -275,18 +301,38 @@
             {% csrf_token %}
             <input type="hidden" id="edit_payee_id" name="payee_id">
             <div class="form-group mb-3">
-                <label for="edit_payee_name" class="form-label">{% trans "Payee Name" %}</label>
+                <label for="edit_payee_name" class="form-label">{% trans "Payee Name" %}<span class="mandatory">*</span></label>
                 <input type="text" class="form-control" id="edit_payee_name" name="payee_name" required>
                 <small class="form-text text-muted">{% trans "Enter the full name of the payee." %}</small>
             </div>
+
+            <div class="form-group mb-3">
+              <label for="payee_bank" class="form-label">{% trans "Payee Bank" %}</label>
+              <select class="form-control" name="payee_bank" id="edit_payee_bank" >
+                  <option value="" >{% trans "Select Bank" %}</option>
+                  {% for bank in banks %}
+                  <option value="{{bank.id}}">{{bank.bank_name_e}}</option>
+                  {% endfor %}
+              </select>
+              <small class="form-text text-muted">{% trans "Choose the bank associated with the payee." %}</small>
+            </div>
+
+
+            <div class="form-group mb-3">
+              <label for="payee_acc_no" class="form-label">{% trans "Payee Account No." %}</label>
+              <input type="text" class="form-control" id="edit_payee_acc_no" name="payee_acc_no" >
+              <small class="form-text text-muted">{% trans "Enter the account number associated with th payee." %}</small>
+          </div>
+
+
             <div class="form-group mb-3">
                 <label for="edit_payee_mobile_no" class="form-label">{% trans "Mobile Number" %}</label>
-                <input type="text" class="form-control" id="edit_payee_mobile_no" name="payee_mobile_no" required>
+                <input type="text" class="form-control" id="edit_payee_mobile_no" name="payee_mobile_no" >
                 <small class="form-text text-muted">{% trans "Provide the mobile number with country code if applicable." %}</small>
             </div>
             <div class="form-group mb-3">
                 <label for="edit_payee_email" class="form-label">{% trans "Email" %}</label>
-                <input type="email" class="form-control" id="edit_payee_email" name="payee_email" required>
+                <input type="email" class="form-control" id="edit_payee_email" name="payee_email" >
                 <small class="form-text text-muted">{% trans "Provide the mobile number with country code if applicable." %}</small>
             </div>
             <div class="form-group mb-3">
@@ -376,9 +422,13 @@
         const button = $(event.relatedTarget);
         const id = button.data('id');
         const payeeName = button.data('payee-name');
+        const payeeBank = button.data('payee-bank-id');
+        const payeeAccno = button.data('payee-acc-no');
         const mobileNo = button.data('mobile-no');
         const email = button.data('email');
         const address = button.data('address');
+
+        console.log(payeeBank);
 
         const modal = $(this);
         modal.find('#edit_payee_id').val(id);
@@ -386,6 +436,8 @@
         modal.find('#edit_payee_mobile_no').val(mobileNo);
         modal.find('#edit_payee_email').val(email);
         modal.find('#edit_payee_address').val(address);
+        modal.find('#edit_payee_acc_no').val(payeeAccno);
+        modal.find('#edit_payee_bank').val(payeeBank);
     });
 
     // Handle Edit Payee Form Submission
