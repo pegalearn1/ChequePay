@@ -3,7 +3,7 @@ in 2024-2025.'''
 
 from .imp_libs import *
 from chq_pay.models import ChequeTemplate, ChequeText, Banks, Currencies, Payee, ChequeIssue, Company_Setup
-
+from decimal import Decimal, ROUND_DOWN
 #user model
 User = get_user_model()
 
@@ -143,7 +143,8 @@ def cheque_issue(request):
         issue_amount_wrd = amount_in_words(issue_amount, issue_currency_char, 'en')
         
 
-        print(issue_amount_wrd)
+        if cheque_issue_temp.currency.currency_char != "KWD":
+            issue_amount = Decimal(issue_amount).quantize(Decimal("0.01"), rounding=ROUND_DOWN)
 
 
 
@@ -250,6 +251,9 @@ def cheque_issue_list(request):
     paginator = Paginator(cheques, per_page)
     page_number = request.GET.get('page')
     cheques_issued = paginator.get_page(page_number)
+
+    for x in cheques:
+        print('chequee - ', x.issue_amount)
 
     # Context for the template
     context = {
@@ -377,6 +381,7 @@ def get_cheque_text(request):
 @login_required
 @csrf_exempt
 def print_cheque(request, cheque_id):
+    sign_url = None  # Initialize with a default value
     cheque_issue = get_object_or_404(ChequeIssue, id=cheque_id)
     isapproved = cheque_issue.issue_is_approved
     template = cheque_issue.issue_template
@@ -442,7 +447,7 @@ def print_cheque(request, cheque_id):
             'amount_num': (cheque_text.amtnum_x_position, cheque_text.amtnum_y_position),
             'sign': (cheque_text.sign_x_position, cheque_text.sign_y_position),
         },
-        'sign_url': sign_url if sign_url else None,
+        'sign_url': sign_url,
         'cheque_id': cheque_id,
         'issue_currency':issue_currency,
         

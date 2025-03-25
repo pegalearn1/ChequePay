@@ -205,7 +205,15 @@
                     <td>{{cheque.issue_accountnum}}</td>
                     <td>{{cheque.issue_payee}}</td>
                     <td>{{cheque.issue_cheque_date}}</td>
-                    <td>{{cheque.issue_amount}} {{cheque.issue_currency}}</td>
+                    <td>
+                      {% if cheque.issue_currency.currency_char != 'KWD' %}
+                          {{ cheque.issue_amount|floatformat:"2" }}
+                      {% else %}
+                          {{ cheque.issue_amount }}
+                      {% endif %}
+                      {{ cheque.issue_currency.currency_char }}
+                  </td>
+                  
                     <td>{{cheque.issue_issue_date}}</td>
                     <td>{% if cheque.issue_is_approved %}{% trans "Approved" %}{% elif cheque.issue_is_approved is None %}{% trans "Pending" %}{% else %}{% trans "Rejected" %}{% endif %}</td>
                     <td> {{cheque.app_rej_by}}</td>
@@ -404,10 +412,33 @@
                 </div>
 
                 <div class="form-group mb-3">
-                  <label for="chq_date" class="form-label">{% trans "Cheque Date" %}<span class="mandatory">*</span></label>
+                  <label for="chq_date" class="form-label">
+                      {% trans "Cheque Date" %}<span class="mandatory">*</span>
+                  </label>
                   <input type="date" class="form-control w-25" id="chq_date" name="chq_date" required>
                   <small class="form-text text-muted">{% trans "Select the date on the issued cheque." %}</small>
-                </div>
+              </div>
+              
+              <!-- To restrict the user for selecting previos month date -->
+              <script>
+                  document.addEventListener("DOMContentLoaded", function () {
+                      let chqDateInput = document.getElementById("chq_date");
+              
+                      let today = new Date();
+                      let year = today.getFullYear();
+                      let month = today.getMonth() + 1; // JavaScript months are 0-based
+                      let day = today.getDate();
+              
+                      // Get the first day of the previous month
+                      let lastMonth = new Date(year, month - 1, 1);
+                      let minDate = `${lastMonth.getFullYear()}-${(lastMonth.getMonth() + 1).toString().padStart(2, '0')}-01`;
+              
+                      // Apply only the min restriction, allowing future dates
+                      chqDateInput.setAttribute("min", minDate);
+                  });
+              </script>
+              <!-- To restrict the user for selecting previos month date -->
+              
 
                 <div class="form-group mb-3">
                   <label for="chq_no" class="form-label">{% trans "Cheque Number" %}<span class="mandatory">*</span></label>

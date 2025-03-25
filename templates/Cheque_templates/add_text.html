@@ -50,6 +50,12 @@
                 <div class="row">
                     <!-- Left column: Cheque template -->
                     <div class="col-md-9 border rounded p-3">
+
+                        <div class = "mb-4">
+                        <button type="submit" form = "chequeTextForm" class="btn btn-primary mt-2">{% trans "Save Positions" %}</button>
+                        <button type="button" onclick="window.location='{% url 'template_detail' template.id %}';" class="btn btn-danger mt-2">{% trans "Cancel" %}</button>
+                        </div>
+
                         <form method="post" id="chequeTextForm">
                             {% csrf_token %}
 
@@ -120,12 +126,6 @@
                                 value="{{ text.sign_x_position}}">
                             <input type="hidden" name="sign_y_position" id="sign_y_position"
                                 value="{{ text.sign_y_position}}">
-        
-                            <button type="submit" class="btn btn-primary mt-2">{% trans "Save Positions" %}</button>
-                            <button type="button" onclick="window.location='{% url 'template_detail' template.id %}';" class="btn btn-danger mt-2">{% trans "Cancel" %}</button>
-
-
-
 
 
                         </form>

@@ -29,7 +29,15 @@
             </div>
             <div class="card-body">
 
-             <div style="position: relative; display: inline-block; background-image: url('{{ template.background_image.url }}'); background-size: contain; background-repeat: no-repeat; width: {{ template.width|unlocalize }}mm; height: {{ template.height|unlocalize }}mm;">
+
+              <div class = "mb-4">
+                <a onclick="if (confirm('{% trans "Are you sure? Want to reset the text positions?" %}')) {return true;} else {event.stopPropagation(); event.preventDefault();};" href="{% url 'reset_text' template.id %}" class="btn btn-warning">{% trans "Reset" %}</a>
+                <a href="{% url 'add_text_to_template' template.id %}" class="btn btn-primary">{% trans "Set Text Positions" %}</a>
+                <a href="{% url "template_list" %}" class="btn btn-danger">{% trans "Cancel" %}</a>
+                </div><br> 
+             
+             
+              <div style="position: relative; display: inline-block; background-image: url('{{ template.background_image.url }}'); background-size: contain; background-repeat: no-repeat; width: {{ template.width|unlocalize }}mm; height: {{ template.height|unlocalize }}mm;">
 
                   
                   <!-- Render each text on the cheque at its specific position -->
@@ -64,11 +72,7 @@
               </div>
               
               
-              <div class = "mt-4">
-              <a onclick="if (confirm('{% trans "Are you sure? Want to reset the text positions?" %}')) {return true;} else {event.stopPropagation(); event.preventDefault();};" href="{% url 'reset_text' template.id %}" class="btn btn-warning">{% trans "Reset" %}</a>
-              <a href="{% url 'add_text_to_template' template.id %}" class="btn btn-primary">{% trans "Set Text Positions" %}</a>
-              <a href="{% url "template_list" %}" class="btn btn-danger">{% trans "Cancel" %}</a>
-              </div><br> 
+              
               <h2 class="text-primary">{% trans "Text Positions" %}</h2>
               <!-- Light table -->
               <div class="table-responsive">

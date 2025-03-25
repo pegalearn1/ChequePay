@@ -88,17 +88,17 @@ def reports(request):
             # Process approved cheques
             for cheque in chq_payees.filter(issue_is_approved=True):
                 currency = cheque.issue_currency.currency_char
-                summary_total_approved[currency] = summary_total_approved.get(currency, 0) + cheque.issue_amount
+                summary_total_approved[currency] = summary_total_approved.get(currency, 0) + (cheque.issue_amount if currency == 'KWD' else round(cheque.issue_amount, 2))
 
             # Process pending cheques
             for cheque in chq_payees.filter(issue_is_approved=None):
                 currency = cheque.issue_currency.currency_char
-                summary_total_pending[currency] = summary_total_pending.get(currency, 0) + cheque.issue_amount
+                summary_total_pending[currency] = summary_total_pending.get(currency, 0) + (cheque.issue_amount if currency == 'KWD' else round(cheque.issue_amount, 2))
 
             # Process rejected cheques
             for cheque in chq_payees.filter(issue_is_approved=False):
                 currency = cheque.issue_currency.currency_char
-                summary_total_rejected[currency] = summary_total_rejected.get(currency, 0) + cheque.issue_amount
+                summary_total_rejected[currency] = summary_total_rejected.get(currency, 0) + (cheque.issue_amount if currency == 'KWD' else round(cheque.issue_amount, 2))
 
             
             
@@ -126,7 +126,7 @@ def reports(request):
                         currency = p.issue_currency.currency_char
                         if currency not in total_approved:
                             total_approved[currency] = 0
-                        total_approved[currency] += p.issue_amount
+                        total_approved[currency] += (p.issue_amount if currency == 'KWD' else round(p.issue_amount, 2))
 
                 if selected_approval == 'approved' or selected_approval == '':
                     # Store total amounts in a separate variable and append the results
@@ -203,12 +203,16 @@ def export_payee_report(request, file_format):
         ["Payee Name", "Bank", "Account#", "Cheque#", "Amount", "Currency", "Cheque Date", "Approval"]
     ]
     for chq in cheques:
+
+        issue_amount = f"{chq.issue_amount:.3f}" if chq.issue_currency.currency_char == 'KWD' else f"{chq.issue_amount:.2f}"
+
+
         data.append([
             chq.issue_payee.payee_name,
             chq.issue_bank.bank_name_e,
             chq.issue_accountnum,
             chq.issue_cheque_no,
-            chq.issue_amount,
+            issue_amount,
             chq.issue_currency.currency_char,
             chq.issue_cheque_date.strftime('%Y-%m-%d'),
             "Approved" if chq.issue_is_approved else "Pending" if chq.issue_is_approved is None else "Rejected",

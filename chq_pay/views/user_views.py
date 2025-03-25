@@ -96,7 +96,7 @@ def edit_user(request):
                 if is_admin == "true":
                     edit_usr.is_superuser = True
                     edit_usr.is_staff = True
-                elif User.objects.count()<=1:
+                elif User.objects.filter(is_superuser=True).count() <= 1:
                     messages.warning(request,('There Needs To Be Atleast One Admin.'))
                 else:
                     edit_usr.is_superuser = False

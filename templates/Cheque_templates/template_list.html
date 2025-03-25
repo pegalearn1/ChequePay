@@ -100,6 +100,7 @@
                 <th>{% trans "Size" %}</th>
                 <th>{% trans "Bank" %}</th>
                 <th>{% trans "Currency" %}</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -133,7 +134,7 @@
                     </a>
                     <div class="flex-fill">
                       <div class="font-weight-medium">
-                        <a href="{% url 'template_detail' template.id %}">{{ template.name }}</a>
+                        {{ template.name }}
                       </div>
                     </div>
                   </div>
@@ -141,6 +142,7 @@
                 <td>({{ template.width }}mm x {{ template.height }}mm)</td>
                 <td>{{ template.bank }}</td>
                 <td>{{ template.currency }}</td>
+                <td><a href="{% url 'add_text_to_template' template.id %}" class = "btn btn-primary">{% trans "Set Text Positions" %}</a></td>
               </tr>
               {% endfor %}
               {% else %}
@@ -257,7 +259,7 @@
                     <select class="form-control" name="bank" id="bank" required>
                         <option value="" disabled>{% trans "Select Bank" %}</option>
                         {% for bank in banks %}
-                        <option value="{{bank.id}}">{{bank.bank_name_e}}<span class="mandatory">*</span></option>
+                        <option value="{{bank.id}}">{{bank.bank_name_e}}</option>
                         {% endfor %}
                     </select>
                     <small class="form-text text-muted">{% trans "Choose the bank associated with this cheque template." %}</small>
