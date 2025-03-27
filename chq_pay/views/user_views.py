@@ -6,11 +6,13 @@ from django.db.migrations.executor import MigrationExecutor
 from chq_pay.models import AppUser, Company_Setup
 from datetime import datetime
 
+
+
 # Get the custom user model
 User = get_user_model()
 
-
 @login_required
+@custom_permission_required
 def users_list(request):
     present_users = User.objects.all().order_by('username')
 
@@ -25,6 +27,7 @@ def users_list(request):
 
 
 @login_required
+@custom_permission_required
 def add_user(request):
     if request.method == "POST":
         first_name = request.POST.get("user_first_name")
@@ -67,6 +70,7 @@ def add_user(request):
 
 
 @login_required
+@custom_permission_required
 def edit_user(request):
     if request.method == "POST":
         user_id = request.POST.get("user_id")
@@ -107,8 +111,17 @@ def edit_user(request):
                     edit_usr.profile_picture = profile_picture
 
                 edit_usr.save()
+
+                print("logged user id -  ", request.user.id)
+                print("given user id -  ",user_id )
+                
+                if request.user.id == int(user_id):
+                    request.session.flush()
+                    logout(request)
+                
                 messages.success(request,('User Details Updated Successfully!!!'))
                 return JsonResponse({"success": True})
+                
             except Company_Setup.DoesNotExist:
                 return JsonResponse({"success": False, "error": "User not found"})
     return JsonResponse({"success": False, "error": "Invalid request"})
@@ -116,6 +129,7 @@ def edit_user(request):
 
 
 @login_required
+@custom_permission_required
 def delete_user(request, user_id):
     usr = get_object_or_404(User, id=user_id)
 

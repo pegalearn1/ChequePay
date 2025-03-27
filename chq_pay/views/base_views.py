@@ -167,6 +167,8 @@ def remove_background(image_file):
 
 
 def profile(request):
+    from django.db import connection
+    print("Database in use start:", connection.settings_dict['NAME'])
     if request.method == 'POST':
         username = request.POST.get('username')
         email = request.POST.get('email')
@@ -183,6 +185,9 @@ def profile(request):
         print("First Name: ", first_name)
         print("Last Name: ", last_name)
         print("Password: ", password)
+
+        print("Session data:", request.session.items())  # Debug session data
+        print("Using Database:", connection.settings_dict['NAME'])  # Show the database in use
         
 
         try:
@@ -206,21 +211,22 @@ def profile(request):
                 if not password.startswith(('pbkdf2_sha256$', 'bcrypt', 'sha1$', 'argon2$')):  # Check for common hash identifiers
                     # If it's plain text, hash it before saving
                     usr.set_password(password)
+                    usr.save(using=request.session.get('reg_code', 'default'))  # Save immediately
                 else:
                     # If the password is already hashed, do nothing
                     print("Password is already hashed, no need to rehash.")
+            print("Database in use Mid:", connection.settings_dict['NAME'])
 
-            usr.save()
+            usr.save(using=request.session.get('reg_code', 'default'))
+
+            print("Database in use End:", connection.settings_dict['NAME'])
+            
             messages.success(request, "Profile Updated Successfully")
+            return redirect ('profile')
 
         except Exception as e:
 
             print("ussr error - ", str(e))
-
-
-        
-
-
 
     return render(request, "home/profile.html")
 

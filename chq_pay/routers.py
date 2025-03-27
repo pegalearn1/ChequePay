@@ -15,12 +15,14 @@ class SessionDatabaseRouter:
         """
         request = get_current_request()
         if not request:
-            logger.warning("No request found; defaulting to 'default' database.")
+            logger.info("No request found; defaulting to 'default' database.")
+            print("No request found; defaulting to 'default' database.")
             return 'default'
 
         db_key = request.session.get('reg_code', 'default')
         if db_key in settings.DATABASES:
-            logger.debug(f"Routing read operation to database: {db_key}")
+            logger.info(f"Routing read operation to database: {db_key}")
+            print(f"Routing read operation to database: {db_key}")
             return db_key
 
         logger.warning(f"Invalid db_key '{db_key}' in session; defaulting to 'default' database.")
@@ -32,15 +34,18 @@ class SessionDatabaseRouter:
         """
         request = get_current_request()
         if not request:
-            logger.warning("No request found; defaulting to 'default' database.")
+            logger.info("No request found; defaulting to 'default' database.")
+            print("No request found; defaulting to 'default' database.")
             return 'default'
 
         db_key = request.session.get('reg_code', 'default')
         if db_key in settings.DATABASES:
-            logger.debug(f"Routing write operation to database: {db_key}")
+            logger.info(f"Routing write operation to database: {db_key}")
+            print(f"Routing write operation to database: {db_key}")
             return db_key
 
-        logger.warning(f"Invalid db_key '{db_key}' in session; defaulting to 'default' database.")
+        logger.info(f"Invalid db_key '{db_key}' in session; defaulting to 'default' database.")
+        print(f"Invalid db_key '{db_key}' in session; defaulting to 'default' database.")
         return 'default'
 
     def allow_relation(self, obj1, obj2, **hints):
@@ -50,5 +55,6 @@ class SessionDatabaseRouter:
         db_set = {obj1._state.db, obj2._state.db}
         if len(db_set) == 1:
             return True
-        logger.warning(f"Disallowing relation between objects in databases: {db_set}")
+        logger.info(f"Disallowing relation between objects in databases: {db_set}")
+        print(f"Disallowing relation between objects in databases: {db_set}")
         return False
