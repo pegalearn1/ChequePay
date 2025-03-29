@@ -162,13 +162,10 @@ def remove_background(image_file):
 
 
 
-
-
-
-
 def profile(request):
     from django.db import connection
     print("Database in use start:", connection.settings_dict['NAME'])
+
     if request.method == 'POST':
         username = request.POST.get('username')
         email = request.POST.get('email')
@@ -178,7 +175,6 @@ def profile(request):
         profile_picture = request.FILES.get('profile_picture')
         sign = request.FILES.get('sign')
 
-       
         print("POST values:")
         print("Username: ", username)
         print("Email: ", email)
@@ -188,45 +184,36 @@ def profile(request):
 
         print("Session data:", request.session.items())  # Debug session data
         print("Using Database:", connection.settings_dict['NAME'])  # Show the database in use
-        
 
-        try:
-            usr = get_object_or_404(User, username = username)
+        usr = get_object_or_404(User, username=username)
 
-            usr.email = email
-            usr.first_name = first_name
-            usr.last_name = last_name
+        usr.email = email
+        usr.first_name = first_name
+        usr.last_name = last_name
 
-            if profile_picture:
-                usr.profile_picture = profile_picture
+        if profile_picture:
+            usr.profile_picture = profile_picture
 
-            if sign:
-                processed_sign = remove_background(sign)  # Remove background
-                if processed_sign:
-                    usr.auth_sign = processed_sign
+        if sign:
+            processed_sign = remove_background(sign)  # Remove background
+            if processed_sign:
+                usr.auth_sign = processed_sign
 
-            # Check if a password was provided
-            if password:
-                # Check if the provided password is already hashed
-                if not password.startswith(('pbkdf2_sha256$', 'bcrypt', 'sha1$', 'argon2$')):  # Check for common hash identifiers
-                    # If it's plain text, hash it before saving
-                    usr.set_password(password)
-                    usr.save(using=request.session.get('reg_code', 'default'))  # Save immediately
-                else:
-                    # If the password is already hashed, do nothing
-                    print("Password is already hashed, no need to rehash.")
-            print("Database in use Mid:", connection.settings_dict['NAME'])
+        password_changed = False
 
-            usr.save(using=request.session.get('reg_code', 'default'))
-
-            print("Database in use End:", connection.settings_dict['NAME'])
+        if password:
+            if not password.startswith(('pbkdf2_sha256$', 'bcrypt', 'sha1$', 'argon2$')):  
+                usr.set_password(password)  # Hash and set new password
+                password_changed = True  # Mark password change
             
-            messages.success(request, "Profile Updated Successfully")
-            return redirect ('profile')
+        usr.save(using=request.session.get('reg_code', 'default'))  
+        messages.success(request, "Profile Updated Successfully")
 
-        except Exception as e:
-
-            print("ussr error - ", str(e))
+        if password_changed:
+            logout(request)  # Log out user after password change
+            messages.info(request, "Password changed successfully. Please log in again.")
+            return redirect('login')  # Redirect to login page
+        
+        return redirect('profile')  # Redirect to profile if no password change
 
     return render(request, "home/profile.html")
-
