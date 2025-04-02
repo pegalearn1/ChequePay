@@ -199,6 +199,19 @@ def user_login(request):
                         templates_api,expdt, cmpny, phn, addrs
                     )
 
+                    from django.db import connections
+
+                    db_alias = registcode
+
+                    # Ensure the connection exists
+                    if db_alias in connections.databases:
+                        connections[db_alias].ensure_connection()
+                        logger.info(f"Database alias {db_alias} connection made")
+                        print(f"Database alias {db_alias} connection made")
+                    else:
+                        logger.info(f"Database alias {db_alias} is not found in Django settings.")
+                        return redirect('login')
+
                     
                     user = User.objects.using(registcode).get(username=username)
 

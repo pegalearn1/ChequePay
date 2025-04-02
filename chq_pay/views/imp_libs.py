@@ -126,17 +126,23 @@ def check_reg_update_sett(request):
     logger.info("View function check_reg_update_sett called.")
 
     try:
-        logger.info("Checking request method: %s", request.method)
-        if request.method != "POST":
-            logger.warning("Invalid request method: %s", request.method)
+        if request.method == "GET":
+            logger.info("Received GET request. Extracting reg_code from URL parameters...")
+            reg_code = request.GET.get('reg_code', '').strip()
+            logger.info(" reg_code extracted from GET: %s", reg_code)
+        elif request.method == "POST":
+            logger.info("Received POST request. Parsing JSON body...")
+            try:
+                data = json.loads(request.body)
+                reg_code = data.get('reg_code', '').strip()
+                logger.info("reg_code extracted from POST: %s", reg_code)
+            except json.JSONDecodeError:
+                logger.info("Invalid JSON format in request body.")
+                return JsonResponse({"status": "error", "message": "Invalid JSON format"}, status=400)
+        else:
+            logger.info("Invalid request method: %s", request.method)
             return JsonResponse({"status": "error", "message": "Invalid request method"}, status=405)
 
-        logger.info("Parsing request body...")
-        data = json.loads(request.body)
-        logger.info("Request body parsed successfully: %s", data)
-
-        reg_code = data.get('reg_code')
-        logger.info("Registration code retrieved: %s", reg_code)
 
         if not reg_code or len(reg_code) < 4:
             logger.warning("Invalid registration code: %s", reg_code)
@@ -198,3 +204,6 @@ def set_language(request):
            
             return response
     return redirect(request.META.get('HTTP_REFERER', '/'))
+
+
+

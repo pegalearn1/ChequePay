@@ -1,6 +1,15 @@
 from django import forms
 from .models import Banks, Currencies, Payee
 
+#reset password
+
+from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
+from django.conf import settings
+
+
+
 
 class BankForm(forms.ModelForm):
     class Meta:
@@ -60,4 +69,56 @@ class PayeeForm(forms.ModelForm):
         widgets = {
             'address': forms.Textarea(attrs={'rows': 3}),
         }
+
+
+
+
+
+User = get_user_model()
+
+class CustomPasswordResetForm(PasswordResetForm):
+    reg_code = forms.CharField(max_length=10, required=True, label="Company Code")
+
+    def clean(self):
+        cleaned_data = super().clean()
+        email = cleaned_data.get('email')
+        reg_code = cleaned_data.get('reg_code')
+
+        print("Debug - reg_code:", reg_code)  # Check input
+        print("Debug - email:", email)
+
+        # Check if reg_code is in settings.DATABASES
+        if reg_code not in settings.DATABASES:
+            raise ValidationError("Invalid Registration Code. Please check and try again.")
+        
+        # Fetch the user query result once
+        query_result = User.objects.using(reg_code).filter(email=email)
+
+        # Debug: Print actual database query being executed
+        print("Debug - Query SQL:", str(query_result.query))  # Check the actual query
+
+        # Check if the user exists in the specified database
+        if not query_result.exists():
+            print("Debug - User NOT FOUND in", reg_code)  # Debugging
+            raise ValidationError("No user with this email exists for the provided Company Code.")
+        else:
+            print("Debug - User FOUND in", reg_code)
+
+        return cleaned_data
+
+    def save(self, *args, **kwargs):
+        """Ensure the password reset process uses the correct database."""
+        reg_code = self.cleaned_data['reg_code']
+        email = self.cleaned_data['email']
+
+        print(f"🔍 Sending password reset email for {email} using DB: {reg_code}")
+
+        kwargs['use_https'] = True  # Ensure HTTPS in the reset email
+        kwargs['extra_email_context'] = {'database': reg_code}
+
+        try:
+            super().save(*args, **kwargs)
+            print("Password reset email function executed!")
+        except Exception as e:
+            print(f"Error sending email: {e}")
 

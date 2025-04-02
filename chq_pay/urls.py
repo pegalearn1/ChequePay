@@ -19,6 +19,8 @@ from chq_pay.views import base_views, authentic_views, cheque_views, bank_views,
 from django.contrib.auth.views import LogoutView
 from chq_pay.forms import BankForm, CurrencyForm, PayeeForm
 from chq_pay.views.wizard_views import AppSetupWizard
+from django.contrib.auth import views as auth_views
+
 
 urlpatterns = [
     #base/home urls
@@ -111,8 +113,5 @@ urlpatterns = [
     #Language Switcher
 
     path('set_language/', imp_libs.set_language, name='set_language'),
-
-
-
 
 ]
