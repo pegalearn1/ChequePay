@@ -2,7 +2,6 @@
 in 2024-2025.'''
 
 from .imp_libs import *
-from django.db.migrations.executor import MigrationExecutor
 from chq_pay.models import AppUser, Company_Setup
 from datetime import datetime
 
@@ -114,6 +113,7 @@ def edit_user(request):
 
                 print("logged user id -  ", request.user.id)
                 print("given user id -  ",user_id )
+                
                 
                 if request.user.id == int(user_id):
                     request.session.flush()

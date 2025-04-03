@@ -1194,6 +1194,13 @@ msgstr "أدخل عنوان بريد إلكتروني صالحًا للمستف�
 msgid "Enter the complete postal address of the payee."
 msgstr "أدخل العنوان البريدي الكامل للمستفيد."
 
+msgid "Enter the account number associated with the payee."
+msgstr "أدخل رقم الحساب المرتبط بالمستفيد."
+
+msgid "Choose the bank associated with the payee."
+msgstr "اختر البنك المرتبط بالمستفيد."
+
+
 
 #for currency help texts
 

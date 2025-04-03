@@ -80,7 +80,7 @@
                     <thead class="thead-light">
                       <tr>
                         <th scope="col" class="sort" >{% trans "Attributes" %}</th>
-                        <th scope="col" class="sort" >{% trans "Position" %}</th>
+                        {% comment %} <th scope="col" class="sort" >{% trans "Position" %}</th> {% endcomment %}
                         <th scope="col"></th>
                       </tr>
                     </thead>
@@ -96,9 +96,9 @@
                             {% trans "Date" %}
                             </td>
                         
-                            <td class="budget">
+                            {% comment %} <td class="budget">
                           X: {{ texts.date_x_position|unlocalize }}mm, Y: {{ texts.date_y_position|unlocalize }}mm
-                        </td>
+                        </td> {% endcomment %}
                         
                         <td class="budget">
                           <a href="{% url "delete_text" texts.id texts.template.id%}?text_atrrb=Date" class="btn btn-danger">{% trans "Delete text" %}</a>

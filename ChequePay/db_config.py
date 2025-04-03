@@ -2,6 +2,10 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 DATABASES = {
+    '3151': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR/'chqpaydb_3151.sqlite3',
+    },
     '3122': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR/'chqpaydb_3122.sqlite3',

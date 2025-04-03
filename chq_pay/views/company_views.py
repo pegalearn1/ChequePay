@@ -80,6 +80,15 @@ def delete_company(request, company_id):
         if model.objects.filter(company=company).exists():
             messages.error(request, 'Cannot delete the company as it is referenced in other records.')
             return redirect('company_list')
+
+    if company.is_selected:
+        messages.error(request, 'Cannot delete the selected company. Please switch to another company first.')
+        return redirect('company_list')
+    
+    if Company_Setup.objects.count() == 1:
+        messages.error(request, 'There should be atleast one existing company.')
+        return redirect('company_list')
+    
     
     # If no references exist, delete the company
     company.delete()
