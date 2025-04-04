@@ -19,7 +19,7 @@ def add_payee(request):
         print("accc - ", payee_acc_no)
         
         
-        payee_exist = Payee.objects.filter(payee_name = payee_name)
+        payee_exist = Payee.objects.filter(payee_name = payee_name, mobile_no = mobile_no)
 
         
         if payee_exist:
@@ -113,8 +113,8 @@ def edit_payee(request):
             if address:
                 payee.address = address
             
-            payee_exist = Payee.objects.filter(payee_name = payee_name).exclude(id=payee_id)
-
+            payee_exist = Payee.objects.filter(payee_name = payee_name, mobile_no = mobile_no).exclude(id=payee_id)
+            
             if payee_exist:
                 messages.warning(request,('Payee with the name already exits!!'))
 

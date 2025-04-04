@@ -257,11 +257,78 @@
           </div>
 
 
-            <div class="form-group mb-3">
-                <label for="payee_mobile_no" class="form-label">{% trans "Mobile Number" %}</label>
-                <input type="text" class="form-control" id="payee_mobile_no" name="payee_mobile_no" >
+          <!-- for the validation of payee Account Number -->
+
+          <script>
+            const addpayeeAccno = document.getElementById("payee_acc_no");
+          
+            addpayeeAccno.addEventListener("keydown", function (event) {
+              const allowedKeys = [
+                "Backspace", "Delete", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Tab", "Enter"
+              ];
+          
+              const isModifierKey = event.ctrlKey || event.altKey || event.metaKey;
+          
+              // Allow modifier keys, navigation keys, or if key is a digit
+              if (
+                allowedKeys.includes(event.key) ||
+                isModifierKey ||
+                /^\d$/.test(event.key)
+              ) {
+                // Prevent typing more than 15 digits (unless deleting)
+                if (/^\d$/.test(event.key) && this.value.length >= 34) {
+                  event.preventDefault();
+                }
+                return; // allow the key
+              }
+          
+              // Block any other key
+              event.preventDefault();
+            });
+          </script>
+
+          <!-- for the validation of Payee Account number -->
+          
+          
+          <div class="form-group mb-3">
+                <label for="payee_mobile_no" class="form-label">{% trans "Mobile Number" %}<span class="mandatory">*</span></label>
+                <input type="text" class="form-control" id="payee_mobile_no" name="payee_mobile_no" required >
                 <small class="form-text text-muted">{% trans "Provide the mobile number with country code if applicable." %}</small>
             </div>
+
+            <!-- for the validation of payee phone -->
+
+            <script>
+              const payeeMobileInput = document.getElementById("payee_mobile_no");
+            
+              payeeMobileInput.addEventListener("keydown", function (event) {
+                const allowedKeys = [
+                  "Backspace", "Delete", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Tab", "Enter"
+                ];
+            
+                const isModifierKey = event.ctrlKey || event.altKey || event.metaKey;
+            
+                // Allow modifier keys, navigation keys, or if key is a digit
+                if (
+                  allowedKeys.includes(event.key) ||
+                  isModifierKey ||
+                  /^\d$/.test(event.key)
+                ) {
+                  // Prevent typing more than 15 digits (unless deleting)
+                  if (/^\d$/.test(event.key) && this.value.length >= 15) {
+                    event.preventDefault();
+                  }
+                  return; // allow the key
+                }
+            
+                // Block any other key
+                event.preventDefault();
+              });
+            </script>
+
+            <!-- for the validation of Payee phone -->
+
+
             <div class="form-group mb-3">
                 <label for="payee_email" class="form-label">{% trans "Email" %}</label>
                 <input type="email" class="form-control" id="payee_email" name="payee_email">
@@ -325,11 +392,81 @@
           </div>
 
 
-            <div class="form-group mb-3">
-                <label for="edit_payee_mobile_no" class="form-label">{% trans "Mobile Number" %}</label>
-                <input type="text" class="form-control" id="edit_payee_mobile_no" name="payee_mobile_no" >
+          <!-- for the validation of payee Account Number -->
+
+          <script>
+            const editpayeeAccno = document.getElementById("edit_payee_acc_no");
+          
+            editpayeeAccno.addEventListener("keydown", function (event) {
+              const allowedKeys = [
+                "Backspace", "Delete", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Tab", "Enter"
+              ];
+          
+              const isModifierKey = event.ctrlKey || event.altKey || event.metaKey;
+          
+              // Allow modifier keys, navigation keys, or if key is a digit
+              if (
+                allowedKeys.includes(event.key) ||
+                isModifierKey ||
+                /^\d$/.test(event.key)
+              ) {
+                // Prevent typing more than 15 digits (unless deleting)
+                if (/^\d$/.test(event.key) && this.value.length >= 34) {
+                  event.preventDefault();
+                }
+                return; // allow the key
+              }
+          
+              // Block any other key
+              event.preventDefault();
+            });
+          </script>
+
+          <!-- for the validation of Payee Account number -->
+          
+          
+          <div class="form-group mb-3">
+                <label for="edit_payee_mobile_no" class="form-label">{% trans "Mobile Number" %}<span class="mandatory">*</span></label>
+                <input type="text" class="form-control" id="edit_payee_mobile_no" name="payee_mobile_no" required>
                 <small class="form-text text-muted">{% trans "Provide the mobile number with country code if applicable." %}</small>
             </div>
+            
+            <!-- for the validation of payee phone -->
+
+            <script>
+              const editpayeeMobileInput = document.getElementById("edit_payee_mobile_no");
+            
+              editpayeeMobileInput.addEventListener("keydown", function (event) {
+                const allowedKeys = [
+                  "Backspace", "Delete", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Tab", "Enter"
+                ];
+            
+                const isModifierKey = event.ctrlKey || event.altKey || event.metaKey;
+            
+                // Allow modifier keys, navigation keys, or if key is a digit
+                if (
+                  allowedKeys.includes(event.key) ||
+                  isModifierKey ||
+                  /^\d$/.test(event.key)
+                ) {
+                  // Prevent typing more than 15 digits (unless deleting)
+                  if (/^\d$/.test(event.key) && this.value.length >= 15) {
+                    event.preventDefault();
+                  }
+                  return; // allow the key
+                }
+            
+                // Block any other key
+                event.preventDefault();
+              });
+            </script>
+
+            <!-- for the validation of Payee code -->
+            
+            
+            
+            
+            
             <div class="form-group mb-3">
                 <label for="edit_payee_email" class="form-label">{% trans "Email" %}</label>
                 <input type="email" class="form-control" id="edit_payee_email" name="payee_email" >

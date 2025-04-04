@@ -215,18 +215,23 @@ def user_login(request):
                     
                     user = User.objects.using(registcode).get(username=username)
 
-                    if user.check_password(password):
-                        logger.info("User exists and password is correct.")
+                    if user:
+                        if user.check_password(password):
+                            logger.info("User exists and password is correct.")
 
-                        login(request, user)
-                        
+                            login(request, user)
+                            
 
-                        logger.info(f"Logged In with {user}.")
+                            logger.info(f"Logged In with {user}.")
 
-                        return redirect('setup_wizard')
+                            return redirect('setup_wizard')
+                        else:
+                            logger.info("Invalid login credentials: Incorrect password!!")
+                            messages.error(request, 'Invalid login credentials: Incorrect password!!')
                     else:
-                        logger.info("Invalid login credentials: Incorrect password.")
-                        messages.error(request, 'Invalid login credentials!!')
+                        logger.info("Invalid login credentials: User does not exist!!")
+                        messages.error(request, 'Invalid login credentials: User does not exist!!')
+
                     
                 else:
                     logger.info("License expired.")

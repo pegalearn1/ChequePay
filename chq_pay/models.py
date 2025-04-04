@@ -8,7 +8,7 @@ from decimal import ROUND_DOWN, Decimal
 
 class ChqpayUser(AbstractUser):
     profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
-    privilege_role = models.CharField(max_length=100, null=True, blank=True)  # or use choices for predefined roles
+    privilege_role = models.CharField(max_length=30, null=True, blank=True)  # or use choices for predefined roles
     auth_sign = models.ImageField(upload_to ='Signatures/', blank = True, null=True )
     
     def __str__(self):

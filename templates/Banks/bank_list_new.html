@@ -212,6 +212,42 @@
               <input type="text" class="form-control" id="tel_no" name="tel_no" >
               <small class="form-text text-muted">{% trans "Provide a contact number with country code if necessary." %}</small>
             </div>
+
+            
+            
+            <!-- for the validation of bank phone -->
+
+            <script>
+              const bankPhoneInput = document.getElementById("tel_no");
+            
+              bankPhoneInput.addEventListener("keydown", function (event) {
+                const allowedKeys = [
+                  "Backspace", "Delete", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Tab", "Enter"
+                ];
+            
+                const isModifierKey = event.ctrlKey || event.altKey || event.metaKey;
+            
+                // Allow modifier keys, navigation keys, or if key is a digit
+                if (
+                  allowedKeys.includes(event.key) ||
+                  isModifierKey ||
+                  /^\d$/.test(event.key)
+                ) {
+                  // Prevent typing more than 15 digits (unless deleting)
+                  if (/^\d$/.test(event.key) && this.value.length >= 15) {
+                    event.preventDefault();
+                  }
+                  return; // allow the key
+                }
+            
+                // Block any other key
+                event.preventDefault();
+              });
+            </script>
+
+            <!-- for the validation of bank phone -->
+            
+            
             <div class="form-group mb-3">
               <label for="address" class="form-label">{% trans "Address" %}</label>
               <textarea class="form-control" id="address" name="address" ></textarea>
@@ -264,6 +300,45 @@
               <input type="text" class="form-control" id="edit_tel_no" name="tel_no" >
               <small class="form-text text-muted">{% trans "Provide a contact number with country code if necessary." %}</small>
             </div>
+            
+            <!-- for the validation of bank phone -->
+
+            <script>
+              const editbankPhoneInput = document.getElementById("edit_tel_no");
+            
+              editbankPhoneInput.addEventListener("keydown", function (event) {
+                const allowedKeys = [
+                  "Backspace", "Delete", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Tab", "Enter"
+                ];
+            
+                const isModifierKey = event.ctrlKey || event.altKey || event.metaKey;
+            
+                // Allow modifier keys, navigation keys, or if key is a digit
+                if (
+                  allowedKeys.includes(event.key) ||
+                  isModifierKey ||
+                  /^\d$/.test(event.key)
+                ) {
+                  // Prevent typing more than 15 digits (unless deleting)
+                  if (/^\d$/.test(event.key) && this.value.length >= 15) {
+                    event.preventDefault();
+                  }
+                  return; // allow the key
+                }
+            
+                // Block any other key
+                event.preventDefault();
+              });
+            </script>
+
+            <!-- for the validation of bank phone -->
+            
+            
+            
+            
+            
+            
+            
             <div class="form-group mb-3">
               <label for="edit_address" class="form-label">{% trans "Address" %}</label>
               <textarea class="form-control" id="edit_address" name="address" ></textarea>
