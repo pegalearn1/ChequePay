@@ -112,7 +112,7 @@ class CustomPasswordResetForm(PasswordResetForm):
 
         print(f"🔍 Sending password reset email for {email} using DB: {reg_code}")
 
-        kwargs['use_https'] = True
+        kwargs['use_https'] = False
         kwargs['extra_email_context'] = {'database': reg_code}
 
         # Patch: Temporarily override get_users to use correct DB
