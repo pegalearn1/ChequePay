@@ -23,7 +23,7 @@ def add_payee(request):
 
         
         if payee_exist:
-            messages.warning(request,('Payee with same name or mobile number already exists!!'))
+            messages.warning(request,('Payee with same account number or mobile number already exists!!'))
 
         else:
             # Save to the database
@@ -116,7 +116,7 @@ def edit_payee(request):
             payee_exist = Payee.objects.filter(Q(payee_acc_no=payee_acc_no) | Q(mobile_no=mobile_no)).exclude(id=payee_id).exists()
             
             if payee_exist:
-                messages.warning(request,('Payee with same name or mobile number already exists!!'))
+                messages.warning(request,('Payee with same account number or mobile number already exists!!'))
 
             else:
                 payee.save()
