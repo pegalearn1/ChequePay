@@ -72,6 +72,7 @@
                     <input type="text" id="input-username" name="username" class="form-control" value="{{ request.user.username }}" readonly>
                   </div>
                 </div>
+
                 <div class="col-md-6">
                   <div class="form-group">
                     <label for="input-email">{% trans "Email" %}</label>
@@ -89,6 +90,25 @@
                     <input type="text" id="input-fname" name="first_name" class="form-control" value="{{ request.user.first_name }}" >
                   </div>
                 </div>
+
+                <!-- to enter atleast 3 characters -->
+                <script>
+                  document.getElementById("input-fname").addEventListener("input", function () {
+                      const length = this.value.length;
+                  
+                      if (length < 3) {
+                          this.setCustomValidity("First name must be at least 3 characters long.");
+                      } else if (length > 20) {
+                          this.setCustomValidity("First name must not exceed 20 characters.");
+                      } else {
+                          this.setCustomValidity("");
+                      }
+                  });
+                  </script>
+          
+            <!-- to enter atleast 3 characters -->
+
+
                 <div class="col-md-6">
                   <div class="form-group">
                     <label for="input-email">{% trans "Last Name" %}</label>
@@ -97,6 +117,21 @@
                 </div>
               </div>
             </div>
+
+            <!-- to enter atleast 3 characters -->
+            <script>
+              document.getElementById("input-lname").addEventListener("input", function () {
+                  const length = this.value.length;
+              
+                  if (length > 20) {
+                      this.setCustomValidity("Last name must not exceed 20 characters.");
+                  } else {
+                      this.setCustomValidity("");
+                  }
+              });
+              </script>
+      
+        <!-- to enter atleast 3 characters -->
 
             <div class="pl-lg-4 mt-3">
               <div class="row">

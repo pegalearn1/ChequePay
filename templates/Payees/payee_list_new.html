@@ -238,6 +238,23 @@
                 <small class="form-text text-muted">{% trans "Enter the full name of the payee." %}</small>
             </div>
 
+            <!-- to enter atleast 3 characters -->
+            <script>
+              document.getElementById("payee_name").addEventListener("input", function () {
+                  const length = this.value.length;
+              
+                  if (length < 3) {
+                      this.setCustomValidity("Payee name must be at least 3 characters long.");
+                  } else if (length > 30) {
+                      this.setCustomValidity("Payee name must not exceed 30 characters.");
+                  } else {
+                      this.setCustomValidity("");
+                  }
+              });
+              </script>
+              <!-- to enter atleast 3 characters -->
+              
+
             <div class="form-group mb-3">
               <label for="payee_bank" class="form-label">{% trans "Payee Bank" %}</label>
               <select class="form-control" name="payee_bank" id="payee_bank" >
@@ -372,6 +389,23 @@
                 <input type="text" class="form-control" id="edit_payee_name" name="payee_name" required>
                 <small class="form-text text-muted">{% trans "Enter the full name of the payee." %}</small>
             </div>
+
+            <!-- to enter atleast 3 characters -->
+            <script>
+              document.getElementById("edit_payee_name").addEventListener("input", function () {
+                  const length = this.value.length;
+              
+                  if (length < 3) {
+                      this.setCustomValidity("Payee name must be at least 3 characters long.");
+                  } else if (length > 30) {
+                      this.setCustomValidity("Payee name must not exceed 30 characters.");
+                  } else {
+                      this.setCustomValidity("");
+                  }
+              });
+              </script>
+              
+              <!-- to enter atleast 3 characters -->
 
             <div class="form-group mb-3">
               <label for="payee_bank" class="form-label">{% trans "Payee Bank" %}</label>

@@ -189,11 +189,43 @@
                 <label for="user_first_name" class="form-label">{% trans "First" %} {% trans "Name" %}</label>
                 <input type="text" class="form-control" id="user_first_name" name="user_first_name" placeholder = "{% trans "Your" %} {% trans "First Name" %}" required>
             </div>
+             
+            <!-- to enter atleast 3 characters -->
+             <script>
+              document.getElementById("user_first_name").addEventListener("input", function () {
+                  const length = this.value.length;
+              
+                  if (length < 3) {
+                      this.setCustomValidity("User first name must be at least 3 characters long.");
+                  } else if (length > 20) {
+                      this.setCustomValidity("User first name must not exceed 20 characters.");
+                  } else {
+                      this.setCustomValidity("");
+                  }
+              });
+              </script>
+              
+              <!-- to enter atleast 3 characters -->
 
             <div class="form-group mb-2">
               <label for="user_last_name" class="form-label">{% trans "Last" %} {% trans "Name" %}</label>
               <input type="text" class="form-control" id="user_last_name" name="user_last_name" placeholder = "{% trans "Your" %} {% trans "Last Name" %}" >
           </div>
+
+           <!-- to enter atleast 3 characters -->
+           <script>
+            document.getElementById("user_last_name").addEventListener("input", function () {
+                const length = this.value.length;
+            
+                 if (length > 20) {
+                    this.setCustomValidity("User last name must not exceed 20 characters.");
+                } else {
+                    this.setCustomValidity("");
+                }
+            });
+            </script>
+            
+            <!-- to enter atleast 3 characters -->
             
             <div class="form-group mb-2">
               <label for="user_email" class="form-label">{% trans "Email" %}</label>
@@ -204,6 +236,23 @@
               <label for="user_role" class="form-label"> {% trans "Role" %}</label>
               <input type="text" class="form-control" id="user_role" name="user_role" placeholder = "{% trans "Your" %} {% trans "User Role" %}" required>
             </div>
+
+            <!-- to enter atleast 3 characters -->
+           <script>
+            document.getElementById("user_role").addEventListener("input", function () {
+                const length = this.value.length;
+            
+                if (length < 3) {
+                    this.setCustomValidity("USer role must be at least 3 characters long.");
+                } else if (length > 20) {
+                    this.setCustomValidity("User role must not exceed 20 characters.");
+                } else {
+                    this.setCustomValidity("");
+                }
+            });
+            </script>
+            
+            <!-- to enter atleast 3 characters -->
 
             <div class="form-group mb-2">
               <label for="user_password" class="form-label"> {% trans "Password" %}</label>
@@ -278,11 +327,43 @@
             <input type="text" class="form-control" id="edit_user_first_name" name="user_first_name" placeholder="{% trans "Your First Name" %}" required>
           </div>
 
+           <!-- to enter atleast 3 characters -->
+           <script>
+            document.getElementById("edit_user_first_name").addEventListener("input", function () {
+                const length = this.value.length;
+            
+                if (length < 3) {
+                    this.setCustomValidity("User first name must be at least 3 characters long.");
+                } else if (length > 20) {
+                    this.setCustomValidity("User first name must not exceed 20 characters.");
+                } else {
+                    this.setCustomValidity("");
+                }
+            });
+            </script>
+            
+            <!-- to enter atleast 3 characters -->
+
           <!-- Last Name -->
           <div class="form-group mb-2">
             <label for="edit_user_last_name" class="form-label">{% trans "Last Name" %}</label>
             <input type="text" class="form-control" id="edit_user_last_name" name="user_last_name" placeholder="{% trans "Your Last Name" %}">
           </div>
+
+           <!-- to enter atleast 3 characters -->
+           <script>
+            document.getElementById("edit_user_last_name").addEventListener("input", function () {
+                const length = this.value.length;
+            
+                if (length > 20) {
+                    this.setCustomValidity("User last name must not exceed 20 characters.");
+                } else {
+                    this.setCustomValidity("");
+                }
+            });
+            </script>
+            
+            <!-- to enter atleast 3 characters -->
 
           <!-- Email -->
           <div class="form-group mb-2">
@@ -295,6 +376,25 @@
             <label for="edit_user_role" class="form-label">{% trans "Role" %}</label>
             <input type="text" class="form-control" id="edit_user_role" name="user_role" placeholder="{% trans "Your Role" %}" required>
           </div>
+
+           <!-- to enter atleast 3 characters -->
+           <script>
+            document.getElementById("edit_user_role").addEventListener("input", function () {
+                const length = this.value.length;
+            
+                if (length < 3) {
+                    this.setCustomValidity("User role must be at least 3 characters long.");
+                } else if (length > 20) {
+                    this.setCustomValidity("User role must not exceed 20 characters.");
+                } else {
+                    this.setCustomValidity("");
+                }
+            });
+            </script>
+            
+            <!-- to enter atleast 3 characters -->
+
+          
 
           <!-- Admin Checkbox -->
           <div class="form-group mb-2">
