@@ -107,18 +107,27 @@ class CustomPasswordResetForm(PasswordResetForm):
         return cleaned_data
 
     def save(self, *args, **kwargs):
-        """Ensure the password reset process uses the correct database."""
         reg_code = self.cleaned_data['reg_code']
         email = self.cleaned_data['email']
 
         print(f"🔍 Sending password reset email for {email} using DB: {reg_code}")
 
-        kwargs['use_https'] = True  # Ensure HTTPS in the reset email
+        kwargs['use_https'] = True
         kwargs['extra_email_context'] = {'database': reg_code}
 
+        # Patch: Temporarily override get_users to use correct DB
+        original_get_users = self.get_users
+        def custom_get_users(email):
+            return User.objects.using(reg_code).filter(email__iexact=email, is_active=True)
+        self.get_users = custom_get_users
+
         try:
+            print("📨 About to call super().save() to trigger email...")
             super().save(*args, **kwargs)
-            print("Password reset email function executed!")
+            print("✅ Password reset email function executed!")
         except Exception as e:
-            print(f"Error sending email: {e}")
+            print(f"❌ Error sending email: {e}")
+        finally:
+            self.get_users = original_get_users  # Restore original
+
 

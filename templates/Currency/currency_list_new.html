@@ -174,11 +174,70 @@
                 <small class="form-text text-muted">{% trans "Enter the short code for the currency (e.g., USD, EUR, INR)." %}</small>
             </div>
             
+            <!-- to prevent number input and restrict to 5 characters -->
+            <script>
+              document.addEventListener("DOMContentLoaded", function () {
+                const currencyCharInput = document.getElementById("currency_char");
+            
+                // Enforce input restrictions
+                currencyCharInput.addEventListener("input", function () {
+                  this.value = this.value.toUpperCase(); // Auto uppercase
+            
+                  const value = this.value;
+                  const isAlpha = /^[A-Z]*$/.test(value); // Only A–Z
+            
+                  if (!isAlpha) {
+                    this.setCustomValidity("Currency code must contain only alphabetic characters (A-Z).");
+                  } else if (value.length < 2) {
+                    this.setCustomValidity("Currency code must be at least 2 characters long.");
+                  } else if (value.length > 5) {
+                    this.setCustomValidity("Currency code must not exceed 5 characters.");
+                  } else {
+                    this.setCustomValidity(""); // Valid
+                  }
+                });
+              });
+            </script>
+
+            <!-- to prevent number input and restrict to 5 characters -->
+
+
+            
             <div class="form-group mb-3">
                 <label for="currency_name" class="form-label">{% trans "Currency Name" %}<span class="mandatory">*</span></label>
                 <input type="text" class="form-control" id="currency_name" name="currency_name" required>
                 <small class="form-text text-muted">{% trans "Enter the full name of the currency (e.g., US Dollar, Euro, Indian Rupee)." %}</small>
             </div>
+
+
+            <!-- to prevent number input and restrict to 20 characters -->
+            <script>
+              document.addEventListener("DOMContentLoaded", function () {
+                const currencyCharInput = document.getElementById("currency_name");
+            
+                // Enforce input restrictions
+                currencyCharInput.addEventListener("input", function () {
+                  this.value = this.value.toUpperCase(); // Auto uppercase
+            
+                  const value = this.value;
+                  const isAlpha = /^[A-Z]*$/.test(value); // Only A–Z
+            
+                  if (!isAlpha) {
+                    this.setCustomValidity("Currency Name must contain only alphabetic characters (A-Z).");
+                  } else if (value.length < 2) {
+                    this.setCustomValidity("Currency Name must be at least 2 characters long.");
+                  } else if (value.length > 20) {
+                    this.setCustomValidity("Currency Name must not exceed 20 characters.");
+                  } else {
+                    this.setCustomValidity(""); // Valid
+                  }
+                });
+              });
+            </script>
+              
+
+            <!-- to prevent number input and restrict to 20 characters -->
+            
             <div class="modal-footer">
             <button type="button" class="btn me-auto" data-bs-dismiss="modal">{% trans "Close" %}</button>
             <button type="submit" class="btn btn-primary">{% trans "Save Changes" %}</button>
@@ -211,11 +270,71 @@
                 <input type="text" class="form-control" id="edit_currency_char" name="currency_char" required>
                 <small class="form-text text-muted">{% trans "Enter the short code for the currency (e.g., USD, EUR, INR)." %}</small>
             </div>
+
+            <!-- to prevent number input and restrict to 5 characters -->
+            <script>
+              document.addEventListener("DOMContentLoaded", function () {
+                const currencyCharInput = document.getElementById("edit_currency_char");
+            
+                // Enforce input restrictions
+                currencyCharInput.addEventListener("input", function () {
+                  this.value = this.value.toUpperCase(); // Auto uppercase
+            
+                  const value = this.value;
+                  const isAlpha = /^[A-Z]*$/.test(value); // Only A–Z
+            
+                  if (!isAlpha) {
+                    this.setCustomValidity("Currency code must contain only alphabetic characters (A-Z).");
+                  } else if (value.length < 2) {
+                    this.setCustomValidity("Currency code must be at least 2 characters long.");
+                  } else if (value.length > 5) {
+                    this.setCustomValidity("Currency code must not exceed 5 characters.");
+                  } else {
+                    this.setCustomValidity(""); // Valid
+                  }
+                });
+              });
+            </script>
+
+            <!-- to prevent number input and restrict to 5 characters -->
+
+
+
             <div class="form-group mb-3">
                 <label for="edit_currency_name" class="form-label">{% trans "Currency Name" %}<span class="mandatory">*</span></label>
                 <input type="text" class="form-control" id="edit_currency_name" name="currency_name" required>
                 <small class="form-text text-muted">{% trans "Enter the full name of the currency (e.g., US Dollar, Euro, Indian Rupee)." %}</small>
             </div>
+
+            <!-- to prevent number input and restrict to 20 characters -->
+            <script>
+              document.addEventListener("DOMContentLoaded", function () {
+                const currencyCharInput = document.getElementById("edit_currency_name");
+            
+                // Enforce input restrictions
+                currencyCharInput.addEventListener("input", function () {
+                  this.value = this.value.toUpperCase(); // Auto uppercase
+            
+                  const value = this.value;
+                  const isAlpha = /^[A-Z]*$/.test(value); // Only A–Z
+            
+                  if (!isAlpha) {
+                    this.setCustomValidity("Currency Name must contain only alphabetic characters (A-Z).");
+                  } else if (value.length < 2) {
+                    this.setCustomValidity("Currency Name must be at least 2 characters long.");
+                  } else if (value.length > 20) {
+                    this.setCustomValidity("Currency Name must not exceed 20 characters.");
+                  } else {
+                    this.setCustomValidity(""); // Valid
+                  }
+                });
+              });
+            </script>
+            <!-- to prevent number input and restrict to 20 characters -->
+
+
+
+
             <div class="modal-footer">
               <button type="button" class="btn me-auto" data-bs-dismiss="modal">{% trans "Close" %}</button>
             <button type="submit" class="btn btn-primary">{% trans "Update" %}</button>
