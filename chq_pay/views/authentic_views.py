@@ -36,26 +36,19 @@ def apply_migrations_to_db(connection):
         print(f"Migration error: {e}")
 
 
-def create_user_if_needed(reg_code, email, password, name, license_key, cust_id, country_id, country_name, allowed_templates,expiry_date, company, phone, address):
-    """
-    If the table doesn't exist in the specified database, apply migrations to create it.
-    Then create a new user if the table was successfully created.
-    """
+def create_user_if_needed(reg_code, email, password, name, license_key, cust_id, country_id, country_name, allowed_templates, expiry_date, company, phone, address):
     connection = connections[reg_code]
     print(f"Using database: {connection.alias}")
 
-    # Check if the table exists in the specified database
     if not check_table_exists(reg_code):
         print("Table does not exist. Applying migrations...")
         try:
             apply_migrations_to_db(connection)
         except Exception as e:
-            print("migration error - ", str(e) )
-        
-        # After migrations, recheck the table existence
+            print("migration error - ", str(e))
+
         if check_table_exists(reg_code):
             print("Table created successfully.")
-
 
             AppUser.objects.using(connection.alias).create(
                 reg_code=reg_code,
@@ -66,10 +59,10 @@ def create_user_if_needed(reg_code, email, password, name, license_key, cust_id,
                 country_id=country_id,
                 country_name=country_name,
                 allowed_templates=allowed_templates,
-                expiry_date = expiry_date
+                expiry_date=expiry_date
             )
-            print("App User Updated")
-            
+            print("App User Created")
+
             Company_Setup.objects.using(connection.alias).create(
                 registration_id=reg_code,
                 company_name=company,
@@ -82,7 +75,6 @@ def create_user_if_needed(reg_code, email, password, name, license_key, cust_id,
                 modified_by=1,
                 modified_date=datetime.now()
             )
-
             print("Company Created")
 
             user = User.objects.using(connection.alias).create(
@@ -95,14 +87,19 @@ def create_user_if_needed(reg_code, email, password, name, license_key, cust_id,
                 is_staff=True
             )
             print("User Created")
-
-           
             return user
-        
         else:
             print("Table creation failed after migrations.")
+            return None
+    else:
+        print("Table already exists. Skipping creation.")
+        try:
+            user = User.objects.using(connection.alias).get(username=email)
+            return user
+        except User.DoesNotExist:
+            print("User does not exist, but table exists. You might want to create it.")
+            return None
 
-    return None
 
 
 
@@ -213,25 +210,21 @@ def user_login(request):
                         return redirect('login')
 
                     
-                    user = User.objects.using(registcode).get(username=username)
+                    try:
+                        user = User.objects.using(registcode).get(username=username)
 
-                    if user:
                         if user.check_password(password):
                             logger.info("User exists and password is correct.")
-
                             login(request, user)
-                            
-
                             logger.info(f"Logged In with {user}.")
-
                             return redirect('setup_wizard')
                         else:
                             logger.info("Invalid login credentials: Incorrect password!!")
                             messages.error(request, 'Invalid login credentials: Incorrect password!!')
-                    else:
+
+                    except User.DoesNotExist:
                         logger.info("Invalid login credentials: User does not exist!!")
                         messages.error(request, 'Invalid login credentials: User does not exist!!')
-
                     
                 else:
                     logger.info("License expired.")
@@ -241,6 +234,7 @@ def user_login(request):
                 messages.error(request, 'Invalid Registration Code!!')
         except Exception as e:
             logger.info("Exception during login: %s", str(e))
+            messages.error(request, "Exception during login: %s", str(e))
             return redirect('login')
 
     return render(request, "Login/login.html",{'registration_code_url':registration_code_url})
