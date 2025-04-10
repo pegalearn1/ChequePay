@@ -8,7 +8,7 @@ from decimal import Decimal, ROUND_DOWN
 User = get_user_model()
 
 
-
+#To convert the amount to words
 def amount_in_words(amount, currency, lang):
     """
     Convert a numeric amount into words for a given currency and language.
@@ -114,6 +114,40 @@ def amount_in_words(amount, currency, lang):
 
     else:
         raise ValueError(f"Unsupported currency {currency} or language {lang}")
+    
+
+#to split the words for payee or amount in words in two lines
+def split_text_preserving_words(text: str, max_line_length: int = 52) -> str:
+    """
+    Splits the given text into two lines without breaking words,
+    where the first line fits within max_line_length characters.
+
+    Args:
+        text (str): The text to be split.
+        max_line_length (int): Max character length for the first line.
+
+    Returns:
+        str: The formatted text with two lines.
+    """
+    words = text.split()
+    first_line = ''
+    second_line = ''
+    current_len = 0
+
+    for word in words:
+        # +1 accounts for the space if first_line already has content
+        if current_len + len(word) + (1 if current_len > 0 else 0) <= max_line_length:
+            if first_line:
+                first_line += ' '
+            first_line += word
+            current_len = len(first_line)
+        else:
+            if second_line:
+                second_line += ' '
+            second_line += word
+
+    return first_line + '\n' + second_line
+
 
 
 
@@ -377,7 +411,7 @@ def get_cheque_text(request):
         return JsonResponse({'error': 'Cheque text not found for this template'}, status=404)
     
 
-
+#To preview the cheque and print it
 @login_required
 @csrf_exempt
 def print_cheque(request, cheque_id):
@@ -399,10 +433,12 @@ def print_cheque(request, cheque_id):
             selected_language = data.get("language", "en")
             issue_amount_wrd = amount_in_words(cheque_issue.issue_amount, issue_currency, selected_language)
             issue_amount_wrd_title = issue_amount_wrd.title()
+            ammmt = '**' + issue_amount_wrd_title + '**'
+            formatted_amount_word = split_text_preserving_words(ammmt, max_line_length=52)
 
             return JsonResponse({
                 "success": True,
-                "amount_word": '*' + '*' + issue_amount_wrd_title + '*' + '*',
+                "amount_word": formatted_amount_word,
             })
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)}, status=400)
@@ -415,6 +451,14 @@ def print_cheque(request, cheque_id):
     )
 
     issue_amount_wrd_title = issue_amount_wrd.title()
+
+    ammmt = '**' + issue_amount_wrd_title + '**'
+    formatted_amount_word = split_text_preserving_words(ammmt, max_line_length=52)
+    print("Formatted Amount Word:", formatted_amount_word)
+
+    #Format the payee name if the character limit exceeds
+    payee_name = '*' + '*' + cheque_issue.issue_payee.payee_name + '*' + '*'
+    formatted_payee_name = split_text_preserving_words(payee_name, max_line_length=52)
     
     
     if cheque_issue.issue_sign and isapproved:
@@ -428,18 +472,14 @@ def print_cheque(request, cheque_id):
             messages.error(request, 'Signature is not uploaded, please upload a signature image via profile.')
             return redirect(request.META.get('HTTP_REFERER'))
 
-
-
-            
-
     context = {
         'template': template.background_image,
         'width': template.width,
         'height': template.height,
         'date': '  '.join([char for char in cheque_issue.issue_cheque_date.strftime('%d%m%Y')]),
-        'payee': '*' + '*' + cheque_issue.issue_payee.payee_name + '*' + '*',
+        'payee': formatted_payee_name,
         'amount': '*' + '*' + str(cheque_issue.issue_amount) + '*' + '*',
-        'amount_word': '*' + '*' + issue_amount_wrd_title + '*' + '*',
+        'amount_word': formatted_amount_word,
         'positions': {
             'date': (cheque_text.date_x_position, cheque_text.date_y_position),
             'payee': (cheque_text.payee_x_position, cheque_text.payee_y_position),

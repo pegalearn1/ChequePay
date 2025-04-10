@@ -116,7 +116,7 @@
                         data-id="{{ payee.id }}" 
                         data-payee-name="{{ payee.payee_name }}"
                         data-payee-bank-id="{{ payee.payee_bank.id }}"
-                        data-payee-acc-no="{{ payee.payee_acc_no}}" 
+                        data-payee-acc-no="{{ payee.payee_acc_no|default:'' }}" 
                         data-mobile-no="{{ payee.mobile_no }}" 
                         data-email="{{ payee.email }}"
                         data-address="{{ payee.address }}">

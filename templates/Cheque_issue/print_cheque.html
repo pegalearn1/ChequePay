@@ -151,7 +151,7 @@
     {% if positions.amount_word.0 is not None %}
     <!-- Amount in Words -->
     <span class="cheque-text" data-type="amount-word" style="left: {{ positions.amount_word.0|unlocalize }}mm; top: {{ positions.amount_word.1|unlocalize }}mm;">
-        {{ amount_word }}
+        {{ amount_word|linebreaksbr }}
     </span>
     {% endif %}
 
@@ -238,7 +238,7 @@
                 console.log("Parsed response data:", data);
                 if (data.success) {
                     // Update the "amount in words" span with the new value
-                    amountWordSpan.textContent = data.amount_word;
+                    amountWordSpan.innerHTML = data.amount_word.replace(/\n/g, "<br>");
                     console.log("Amount in words updated:", data.amount_word);
                 } else {
                     alert("Failed to update the amount in words.");
