@@ -243,6 +243,17 @@
                 // Block any other key
                 event.preventDefault();
               });
+
+              bankPhoneInput.addEventListener("input", function () {
+                const value = this.value;
+
+                if (value.length > 0 && value.length < 7) {
+                  this.setCustomValidity("Phone number must be at least 7 digits long.");
+                } else {
+                  this.setCustomValidity(""); // valid
+                }
+              });
+
             </script>
 
             <!-- for the validation of bank phone -->
@@ -329,6 +340,17 @@
                 // Block any other key
                 event.preventDefault();
               });
+
+              editbankPhoneInput.addEventListener("input", function () {
+                const value = this.value;
+
+                if (value.length > 0 && value.length < 7) {
+                  this.setCustomValidity("Phone number must be at least 7 digits long.");
+                } else {
+                  this.setCustomValidity(""); // valid
+                }
+              });
+
             </script>
 
             <!-- for the validation of bank phone -->

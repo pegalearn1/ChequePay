@@ -21,9 +21,9 @@ def add_bank(request):
         else:
             # Save to the database
             bank = Banks.objects.create(
-                bank_char=bank_char,
-                bank_name_e=bank_name_e,
-                bank_name_l=bank_name_l,
+                bank_char=bank_char.upper(),
+                bank_name_e=bank_name_e.title(),
+                bank_name_l=bank_name_l.title(),
                 tel_no=tel_no,
                 address=address,
                 created_by = request.user.id,
@@ -77,9 +77,9 @@ def edit_bank(request):
         # Update the bank in the database
         try:
             bank = Banks.objects.get(id=bank_id)
-            bank.bank_char = bank_char
-            bank.bank_name_e = bank_name_e
-            bank.bank_name_l = bank_name_l
+            bank.bank_char = bank_char.upper()
+            bank.bank_name_e = bank_name_e.title()
+            bank.bank_name_l = bank_name_l.title()
             bank.tel_no = tel_no
             bank.address = address
             bank.modified_by = request.user.id

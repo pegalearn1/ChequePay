@@ -114,6 +114,7 @@ def amount_in_words(amount, currency, lang):
 
     else:
         raise ValueError(f"Unsupported currency {currency} or language {lang}")
+        
     
 
 #to split the words for payee or amount in words in two lines
@@ -190,7 +191,7 @@ def cheque_issue(request):
                 issue_cheque_no=issue_cheque_no,
                 issue_currency= issue_currency,
                 issue_cheque_date = issue_cheque_date,
-                issue_payee = get_object_or_404(Payee, id = issue_payee),
+                issue_payee = (get_object_or_404(Payee, id = issue_payee)).title(),
                 issue_bank=get_object_or_404(Banks, id = cheque_issue_temp.bank.id),
                 issue_amount = issue_amount,
                 issue_issue_date=date.today(),
@@ -219,6 +220,7 @@ def cheque_issue(request):
                 print("responseee = ",response)
                 return JsonResponse(response)
         except Exception as e:
+            messages.error(request,('Cheque Issued Failed!! : ', str(e)))
             print("error : ",str(e))
     return JsonResponse({"success": False})
 
@@ -471,6 +473,13 @@ def print_cheque(request, cheque_id):
         else:
             messages.error(request, 'Signature is not uploaded, please upload a signature image via profile.')
             return redirect(request.META.get('HTTP_REFERER'))
+        
+    
+    if cheque_issue.issue_currency.currency_char != "KWD":
+        issue_amount = "{:.2f}".format(cheque_issue.issue_amount)
+    else:
+        issue_amount = cheque_issue.issue_amount
+
 
     context = {
         'template': template.background_image,
@@ -478,7 +487,7 @@ def print_cheque(request, cheque_id):
         'height': template.height,
         'date': '  '.join([char for char in cheque_issue.issue_cheque_date.strftime('%d%m%Y')]),
         'payee': formatted_payee_name,
-        'amount': '*' + '*' + str(cheque_issue.issue_amount) + '*' + '*',
+        'amount': '*' + '*' + str(issue_amount) + '*' + '*',
         'amount_word': formatted_amount_word,
         'positions': {
             'date': (cheque_text.date_x_position, cheque_text.date_y_position),

@@ -3,6 +3,7 @@ in 2024-2025.'''
 
 from .imp_libs import *
 from chq_pay.models import Currencies, Company_Setup, ChequeTemplate
+from chq_pay.views.currency_lists import currency_characters, currency_names
 
 @login_required
 def add_currency(request):
@@ -17,7 +18,7 @@ def add_currency(request):
         else:
             # Save to the database
             currency = Currencies.objects.create(
-                currency_char=currency_char,
+                currency_char=currency_char.upper(),
                 currency_name=currency_name,
                 created_by = request.user.id,
                 created_date = datetime.now(),
@@ -41,7 +42,12 @@ def currency_list(request):
     currency_list = paginator.get_page(page_number)
     #pagination
 
-    return render(request,"Currency/currency_list_new.html",{'currencies':currency_list})
+    context = {
+        'currencies': currency_list,
+        'currency_characters': currency_characters,
+        'currency_names': currency_names,}
+
+    return render(request,"Currency/currency_list_new.html", context)
 
 
 @login_required
@@ -71,7 +77,7 @@ def edit_currency(request):
         # Update the bank in the database
         try:
             currency = Currencies.objects.get(id=currency_id)
-            currency.currency_char = currency_char
+            currency.currency_char = currency_char.upper()
             currency.currency_name = currency_name
             currency.modified_by = request.user.id
             currency.modified_date = datetime.now()

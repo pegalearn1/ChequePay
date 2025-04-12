@@ -341,6 +341,17 @@
                 // Block any other key
                 event.preventDefault();
               });
+
+              // Enforce at least 7 digits before form submission
+              payeeMobileInput.addEventListener("input", function () {
+                const value = this.value;
+
+                if (value.length > 0 && value.length < 7) {
+                  this.setCustomValidity("Mobile number must be at least 7 digits long.");
+                } else {
+                  this.setCustomValidity(""); // valid
+                }
+              });
             </script>
 
             <!-- for the validation of Payee phone -->
@@ -492,6 +503,16 @@
             
                 // Block any other key
                 event.preventDefault();
+              });
+
+              editpayeeMobileInput.addEventListener("input", function () {
+                const value = this.value;
+
+                if (value.length > 0 && value.length < 7) {
+                  this.setCustomValidity("Mobile number must be at least 7 digits long.");
+                } else {
+                  this.setCustomValidity(""); // valid
+                }
               });
             </script>
 

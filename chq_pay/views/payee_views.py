@@ -40,7 +40,7 @@ def add_payee(request):
 
             # Create payee
             payee = Payee.objects.create(
-                payee_name=payee_name,
+                payee_name=payee_name.title(),
                 payee_acc_no=payee_acc_no,
                 mobile_no=mobile_no,
                 email=email,
@@ -106,66 +106,74 @@ def edit_payee(request):
         mobile_no = request.POST.get("payee_mobile_no")
         email = request.POST.get("payee_email")
         address = request.POST.get("payee_address")
-        print("payeee acc= ",type(payee_acc_no))
-        
-        # Update the bank in the database
+
         try:
             payee = Payee.objects.get(id=payee_id)
-            payee.payee_name = payee_name
-            payee.mobile_no = mobile_no
-            payee.email = email
-            payee.modified_by = request.user.id
-            payee.modified_date = datetime.now()
+            cheque_issued = ChequeIssue.objects.filter(issue_payee=payee_id).exists()
 
-            if payee_acc_no:
-                payee.payee_acc_no = payee_acc_no
-
-
-            if payee_bank:
-                payee.payee_bank = get_object_or_404(Banks, id = payee_bank)
-
-            if address:
-                payee.address = address
-            
-            # Build queries separately
+            # Uniqueness checks
             acc_no_exists = (
                 Payee.objects.filter(payee_acc_no=payee_acc_no)
                 .exclude(id=payee_id)
                 .exists()
-                if payee_acc_no is not None
-                else False
+                if payee_acc_no is not None else False
             )
-
             mobile_exists = (
                 Payee.objects.filter(mobile_no=mobile_no)
                 .exclude(id=payee_id)
                 .exists()
-                if mobile_no
-                else False
+                if mobile_no else False
             )
 
             if acc_no_exists or mobile_exists:
-                messages.warning(
-                    request,
-                    "Payee with same account number or mobile number already exists!!"
-                )
-
-            cheque_issued = ChequeIssue.objects.filter(issue_payee=payee_id).exists()
-            if cheque_issued:
-                messages.error(request, ('Cannot update as a cheque has been already issued for the payee. '))
+                messages.warning(request, "Payee with same account number or mobile number already exists!!")
                 return JsonResponse({"success": False})
 
+            if cheque_issued:
+                # Only restrict editing of payee_name
+                payee.mobile_no = mobile_no
+                payee.email = email
+                payee.payee_acc_no = payee_acc_no if payee_acc_no else None
+
+                if payee_bank:
+                    payee.payee_bank = get_object_or_404(Banks, id=payee_bank)
+                if address:
+                    payee.address = address
+
+                payee.modified_by = request.user.id
+                payee.modified_date = datetime.now()
+
+                payee.save()
+                messages.success(request, "Payee updated (name not editable due to issued cheque).")
+                return JsonResponse({"success": True})
 
             else:
+                # Full update allowed
+                payee.payee_name = payee_name
+                payee.mobile_no = mobile_no
+                payee.email = email
+                payee.payee_acc_no = payee_acc_no if payee_acc_no else None
+
+                if payee_bank:
+                    payee.payee_bank = get_object_or_404(Banks, id=payee_bank)
+                if address:
+                    payee.address = address
+
+                payee.modified_by = request.user.id
+                payee.modified_date = datetime.now()
+
                 payee.save()
-                messages.success(request,('Payee Details Updated Successfully!!!'))
+                messages.success(request, "Payee Details Updated Successfully!!!")
                 return JsonResponse({"success": True})
+
         except Payee.DoesNotExist:
             return JsonResponse({"success": False, "error": "Payee not found"})
         except Exception as e:
             print(f"Error updating payee: {str(e)}")
             return JsonResponse({"success": False, "error": str(e)})
+
     return JsonResponse({"success": False, "error": "Invalid request"})
+
 
 
 
