@@ -191,7 +191,7 @@ def cheque_issue(request):
                 issue_cheque_no=issue_cheque_no,
                 issue_currency= issue_currency,
                 issue_cheque_date = issue_cheque_date,
-                issue_payee = (get_object_or_404(Payee, id = issue_payee)).title(),
+                issue_payee = (get_object_or_404(Payee, id = issue_payee)),
                 issue_bank=get_object_or_404(Banks, id = cheque_issue_temp.bank.id),
                 issue_amount = issue_amount,
                 issue_issue_date=date.today(),
@@ -429,19 +429,48 @@ def print_cheque(request, cheque_id):
     
     issue_currency = cheque_issue.issue_currency.currency_char
 
+    #to format the decimals according to the currency 
+    if cheque_issue.issue_currency.currency_char != "KWD":
+        issue_amount = "{:.2f}".format(cheque_issue.issue_amount)
+    else:
+        issue_amount = cheque_issue.issue_amount
+
     if request.method == "POST":
         try:
             data = json.loads(request.body)
-            selected_language = data.get("language", "en")
-            issue_amount_wrd = amount_in_words(cheque_issue.issue_amount, issue_currency, selected_language)
-            issue_amount_wrd_title = issue_amount_wrd.title()
-            ammmt = '**' + issue_amount_wrd_title + '**'
-            formatted_amount_word = split_text_preserving_words(ammmt, max_line_length=52)
+            
+            # Language change
+            if "language" in data:
+                selected_language = data.get("language", "en")
+                issue_amount_wrd = amount_in_words(issue_amount, issue_currency, selected_language)
+                issue_amount_wrd_title = issue_amount_wrd.title()
+                ammmt = '**' + issue_amount_wrd_title + '**'
+                formatted_amount_word = split_text_preserving_words(ammmt, max_line_length=52)
 
-            return JsonResponse({
-                "success": True,
-                "amount_word": formatted_amount_word,
-            })
+                return JsonResponse({
+                    "success": True,
+                    "amount_word": formatted_amount_word,
+                })
+            
+
+             # Date format change
+            if "date_format" in data:
+                selected_format = data.get("date_format", "spaced")
+                
+                if selected_format == "spaced":
+                    formatted_date = '  '.join([char for char in cheque_issue.issue_cheque_date.strftime('%d%m%Y')])
+                elif selected_format == "slashed":
+                    formatted_date = cheque_issue.issue_cheque_date.strftime('%d/%m/%Y')
+                elif selected_format == "dashed":
+                    formatted_date = cheque_issue.issue_cheque_date.strftime('%d-%m-%Y')
+
+                return JsonResponse({
+                    "success": True,
+                    "date": formatted_date,
+                })
+
+            return JsonResponse({"success": False, "error": "Invalid request."}, status=400)
+
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)}, status=400)
     
@@ -449,7 +478,7 @@ def print_cheque(request, cheque_id):
 
     # Handle GET request (initial page load)
     issue_amount_wrd = amount_in_words(
-        cheque_issue.issue_amount, issue_currency, 'en'
+        issue_amount, issue_currency, 'en'
     )
 
     issue_amount_wrd_title = issue_amount_wrd.title()
@@ -473,12 +502,6 @@ def print_cheque(request, cheque_id):
         else:
             messages.error(request, 'Signature is not uploaded, please upload a signature image via profile.')
             return redirect(request.META.get('HTTP_REFERER'))
-        
-    
-    if cheque_issue.issue_currency.currency_char != "KWD":
-        issue_amount = "{:.2f}".format(cheque_issue.issue_amount)
-    else:
-        issue_amount = cheque_issue.issue_amount
 
 
     context = {

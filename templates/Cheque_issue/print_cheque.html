@@ -125,10 +125,19 @@
 
             <div style="margin-left: 20px; margin-top: 20px;">
                 <select name="" id="language-dropdown" style="margin-right: 20px;">
+                    <option value="" disabled>{% trans "Languages" %}</option>
                     <option value="en">{% trans "English" %}</option>
                     {% if issue_currency == 'KWD' or issue_currency == 'AED' or issue_currency == 'SAR' %}
                     <option value="ar">العربية</option>
                     {% endif %}
+                </select>
+
+                <select name="dateformat" id="dateformat-dropdown" style="margin-right: 20px;">
+                    <option value="" disabled>{% trans "Date Format" %}</option>
+                    <option value="spaced">{% trans "D D M M Y Y Y Y" %}</option>
+                    <option value="slashed">{% trans "DD/MM/YYYY" %}</option>
+                    <option value="dashed">{% trans "DD-MM-YYYY" %}</option>
+                    
                 </select>
             </div>
 
@@ -136,7 +145,7 @@
     
     {% if positions.date.0 is not None %}
     <!-- Date -->
-    <span class="cheque-text cheque-date" style="left: {{ positions.date.0|unlocalize }}mm; top: {{ positions.date.1|unlocalize }}mm;">
+    <span class="cheque-text cheque-date" data-type='format-date' style="left: {{ positions.date.0|unlocalize }}mm; top: {{ positions.date.1|unlocalize }}mm;">
         {{ date }}
     </span>
     {% endif %}
@@ -191,6 +200,7 @@
 
 {% block scripts %}
 
+<!-- script for language toggle -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         console.log("DOMContentLoaded event fired");
@@ -250,6 +260,70 @@
         });
     });
     
+</script>
+
+
+<!-- script for date format toggle -->
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        console.log("DOMContentLoaded event fired");
+    
+        // Get the dropdown and target span element
+        const dateFormatDropdown = document.querySelector("select#dateformat-dropdown");
+        const dateSpan = document.querySelector(".cheque-text[data-type='format-date']");
+    
+        // Check if elements are found
+        if (!dateFormatDropdown) {
+            console.error("Date format dropdown not found.");
+            return;
+        }
+        if (!dateSpan) {
+            console.error("Date span not found.");
+            return;
+        }
+    
+        console.log("Adding event listener to the date-format dropdown");
+    
+        // Add the change event listener
+        dateFormatDropdown.addEventListener("change", function () {
+            console.log("Date Format dropdown changed");
+    
+            const selectedDateFormat = dateFormatDropdown.value;
+            console.log("Selected Date Format:", selectedDateFormat);
+    
+            // Perform a fetch request to update the amount in words dynamically
+            fetch("{% url 'print_cheque' cheque_id=cheque_id %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}", // CSRF token from Django template
+                },
+                body: JSON.stringify({ date_format: selectedDateFormat }),
+            })
+            .then(response => {
+                console.log("Response received:", response);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json(); // Parse JSON response
+            })
+            .then(data => {
+                console.log("Parsed response data:", data);
+                if (data.success) {
+                    // Update the "amount in words" span with the new value
+                    dateSpan.innerHTML = data.date;
+                    console.log("Date format updated updated:", data.date);
+                } else {
+                    alert("Failed to update the date format.");
+                }
+            })
+            .catch(error => {
+                console.error("Error during fetch request:", error);
+            });
+        });
+    });
+
 </script>
 
 {% endblock scripts %}

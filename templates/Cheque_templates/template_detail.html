@@ -112,9 +112,9 @@
                         <td class="budget">
                           {% trans "Payee" %}
                           </td>
-                      <td class="budget">
+                      {% comment %} <td class="budget">
                         X: {{ texts.payee_x_position|unlocalize }}mm, Y: {{ texts.payee_y_position|unlocalize }}mm
-                      </td>
+                      </td> {% endcomment %}
                       
                       <td class="budget">
                         <a href="{% url "delete_text" texts.id texts.template.id%}?text_atrrb=Payee" class="btn btn-danger">{% trans "Delete text" %}</a>
@@ -128,9 +128,9 @@
                         {% trans "Amount In Words" %}
                         </td>
                     
-                        <td class="budget">
+                        {% comment %} <td class="budget">
                       X: {{ texts.amtwrds_x_position|unlocalize }}mm, Y: {{ texts.amtwrds_y_position|unlocalize }}mm
-                    </td>
+                    </td> {% endcomment %}
                     
                     <td class="budget">
                       <a href="{% url "delete_text" texts.id texts.template.id%}?text_atrrb=Amt_Wrds" class="btn btn-danger">{% trans "Delete text" %}</a>
@@ -144,9 +144,9 @@
                       {% trans "Amount in Numbers" %}
                       </td>
                   
-                      <td class="budget">
+                      {% comment %} <td class="budget">
                     X: {{ texts.amtnum_x_position|unlocalize }}mm, Y: {{ texts.amtnum_y_position|unlocalize }}mm
-                  </td>
+                  </td> {% endcomment %}
                   
                   <td class="budget">
                     <a href="{% url "delete_text" texts.id texts.template.id%}?text_atrrb=Amt_Num" class="btn btn-danger">{% trans "Delete text" %}</a>
@@ -160,9 +160,9 @@
                     {% trans "Signature" %}
                     </td>
                 
-                    <td class="budget">
+                    {% comment %} <td class="budget">
                   X: {{ texts.sign_x_position|unlocalize}}mm, Y: {{ texts.sign_y_position|unlocalize }}mm
-                </td>
+                </td> {% endcomment %}
                 
                 <td class="budget">
                   <a href="{% url "delete_text" texts.id texts.template.id%}?text_atrrb=Sign" class="btn btn-danger">{% trans "Delete text" %}</a>

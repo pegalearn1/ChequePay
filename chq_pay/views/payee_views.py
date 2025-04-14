@@ -149,7 +149,7 @@ def edit_payee(request):
 
             else:
                 # Full update allowed
-                payee.payee_name = payee_name
+                payee.payee_name = payee_name.title()
                 payee.mobile_no = mobile_no
                 payee.email = email
                 payee.payee_acc_no = payee_acc_no if payee_acc_no else None
@@ -284,7 +284,7 @@ def save_valid_data_payee(request):
             
             for row in valid_data:
                 Payee.objects.create(
-                    payee_name=row['payee_name'],
+                    payee_name=row['payee_name'].title(),
                     mobile_no=row['mobile_no'],
                     email=row['email'],
                     address=row['address'],

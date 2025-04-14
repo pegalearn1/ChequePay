@@ -7,6 +7,7 @@ from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.conf import settings
+from chq_pay.views.currency_lists import currency_characters, currency_names
 
 
 
@@ -36,10 +37,28 @@ class BankForm(forms.ModelForm):
         }
 
 
+
+# Create tuples for dropdown choices
+CURRENCY_CHAR_CHOICES = [(char, char) for char in currency_characters]
+CURRENCY_NAME_CHOICES = [(name, name) for name in currency_names]
+
 class CurrencyForm(forms.ModelForm):
+    currency_char = forms.ChoiceField(
+        choices=CURRENCY_CHAR_CHOICES,
+        label="Currency Characters",
+        help_text="Select the short code for the currency (e.g., USD, EUR, INR).",
+        widget=forms.Select(attrs={"class": "form-control"})
+    )
+    currency_name = forms.ChoiceField(
+        choices=CURRENCY_NAME_CHOICES,
+        label="Currency Name",
+        help_text="Select the full name of the currency (e.g., US Dollar, Euro, Indian Rupee).",
+        widget=forms.Select(attrs={"class": "form-control"})
+    )
+
     class Meta:
         model = Currencies
-        fields = ['currency_char', 'currency_name']
+        fields = ['currency_char', 'currency_name']  # Must be included
         labels = {
             'currency_char': 'Currency Characters',
             'currency_name': 'Currency Name',
