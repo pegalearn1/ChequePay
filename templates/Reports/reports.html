@@ -86,10 +86,11 @@
                 </div>
 
                 <!-- Approval Status Filter -->
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label for="approvalFilter">{% trans "Approval Status" %}</label>
                     <select class="form-select" name="approval">
                         <option value="">{% trans "Select Approval Status" %}</option>
+                        <option value="all" {% if approval == 'all' %}selected{% endif %}>{% trans "All" %}</option>
                         <option value="approved" {% if approval == 'approved' %}selected{% endif %}>{% trans "Approved" %}</option>
                         <option value="pending" {% if approval == 'pending' %}selected{% endif %}>{% trans "Pending" %}</option>
                         <option value="rejected" {% if approval == 'rejected' %}selected{% endif %}>{% trans "Rejected" %}</option>
@@ -103,6 +104,15 @@
                         <input type="date" class="form-control" name="start_date" value="{{ start_date }}" placeholder="{% trans 'From' %}">
                         <input type="date" class="form-control" name="end_date" value="{{ end_date }}" placeholder="{% trans 'To' %}">
                     </div>
+                </div>
+                <div class="col-md d-flex justify-content-center align-items-center">
+                    <a href="{% url 'reports' %}" class="icon icon-tabler icons-tabler-outline icon-tabler-refresh text-secondary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" />
+                            <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" />
+                        </svg>
+                    </a>
                 </div>
 
                 {% comment %} <!-- Apply Filters Button -->
@@ -153,9 +163,9 @@
                             <li class="nav-item">
                                 <a class="nav-link active" data-bs-toggle="tab" href="#payee-table">{% trans "Payee Report " %}</a>
                             </li>
-                            {% comment %} <li class="nav-item">
-                                <a class="nav-link" data-bs-toggle="tab" href="#account-table">{% trans "Account Report" %}</a>
-                            </li> {% endcomment %}
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#bank-table">{% trans "Bank Report" %}</a>
+                            </li>
                         </ul>
                     </div>
                     
@@ -237,39 +247,47 @@
                         </div>
                         <!-- payee-table -->
 
-                        <!-- account-table -->
-                        <div class="tab-pane fade show" id="account-table">
+                        <!-- bank-table -->
+                        <div class="tab-pane fade show" id="bank-table">
 
-                            {% if accounts %}
+                            {% if banks %}
 
-                        <div style="margin-left: 10px;">
+                            <div style="margin-left: 10px;">
+                                <button type="submit" form="bankForm" class="btn btn-primary">{% trans "Generate Report" %}</button>
+                                
+                                <button type="button" class="btn btn-success" onclick="downloadReport('csv')">
+                                    {% trans "Download CSV" %}
+                                </button>
+                                
+                                <button type="button" class="btn btn-warning" onclick="downloadReport('xls')">
+                                    {% trans "Download Excel" %}
+                                </button>
+                            </div>
 
-                            <button type="submit" form="accountForm" class="btn btn-success">{% trans "Generate Report" %}</button>
-
-                        </div>
-
-                            <form method="post" id="accountForm">
+                            <form method="post" id="bankForm" action="{% url 'reports' %}" target="_blank">
                                 {% csrf_token %}
                                 <!-- table -->
                                 <div class="table-responsive" >
-                                    <table class="table card-table table-vcenter text-nowrap datatable" id="accountDataTable">
+                                    <table class="table card-table table-vcenter text-nowrap datatable" id="bankDataTable">
                                     <thead>
                                         <tr>
-                                        <th><input type="checkbox" id="selectAllAccount" action="{% url 'reports' %}"></th>
-                                        <th>{% trans "Account Number" %}</th>
-                                        <th>{% trans "Bank" %}</th>
+                                        <th><input type="checkbox" id="selectAllBank" action="{% url 'reports' %}"></th>
+                                        <th>{% trans "Bank Char" %}</th>
+                                        <th>{% trans "Bank Name" %}</th>
+                                        <th>{% trans "Bank Address" %}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                            {% for account, bank in accounts %}
+                                            {% for bank_id, bank_char, bank_name, bank_address in banks_4_report %}
                                         <tr>
                     
                                         <td class="text-start">
-                                            <input type="checkbox" name="selected_accounts" value="{{account}}" class="rowCheckboxAccount">
+                                            <input type="checkbox" name="report_selected_banks" value="{{bank_id}}" class="rowCheckboxBank">
                                         </td>
                                         
-                                        <td>{{ account }}</td>
-                                        <td>{{ bank }}</td>
+                                        <td>{{ bank_char }}</td>
+                                        <td>{{ bank_name }}</td>
+                                        <td>{{ bank_address }}</td>
                                         
                                         
                                         </tr>
@@ -283,12 +301,12 @@
                             {% else %}
                             <table class="table card-table table-vcenter text-nowrap datatable">
                                 <tr>
-                                    <td colspan="4" class="text-center">{% trans "No Accounts found" %}</td>
+                                    <td colspan="4" class="text-center">{% trans "No Banks found" %}</td>
                                 </tr>
                             </table>
                                 {% endif %}
                         </div>
-                        <!-- account-table -->
+                        <!-- bank-table -->
 
                     </div>
                 </div>
@@ -333,10 +351,10 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
-//for Account table
+//for Bank table
 //Initialize DataTable on page load
 document.addEventListener('DOMContentLoaded', function () {
-  $('#accountDataTable').DataTable({
+  $('#bankDataTable').DataTable({
     paging: true, // Enable pagination
     pageLength: 10, // Number of rows per page
     lengthChange: true, // Allow changing number of rows per page
@@ -422,14 +440,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-//for Account table
+//for Bank table
 $(document).ready(function () {
     // Check if DataTable is already initialized and destroy it before reinitializing
-    if ($.fn.DataTable.isDataTable('#accountDataTable')) {
-        $('#accountDataTable').DataTable().destroy();
+    if ($.fn.DataTable.isDataTable('#bankDataTable')) {
+        $('#bankDataTable').DataTable().destroy();
     }
 
-    var accountTable = $('#accountDataTable').DataTable({
+    var bankTable = $('#bankDataTable').DataTable({
         paging: true,
         pageLength: 10,
         lengthChange: true,
@@ -446,10 +464,10 @@ $(document).ready(function () {
             lengthMenu: "{% trans 'Show _MENU_ entries' %}",
         },
         initComplete: function () {
-            if (!$('#selectAllGlobalAccount').length) {
-                $("#accountDataTable_length").append(
+            if (!$('#selectAllGlobalBank').length) {
+                $("#bankDataTable_length").append(
                     '<label style="margin-left: 15px;">' +
-                    '<input type="checkbox" id="selectAllGlobalAccount"> {% trans "Select All" %}' +
+                    '<input type="checkbox" id="selectAllGlobalBank"> {% trans "Select All" %}' +
                     '</label>'
                 );
             }
@@ -457,30 +475,30 @@ $(document).ready(function () {
     });
 
     // Select/Deselect All Rows on Current Page
-    $('#selectAllAccount').on('click', function () {
+    $('#selectAllBank').on('click', function () {
         var isChecked = this.checked;
-        $('.rowCheckboxAccount').prop('checked', isChecked);
+        $('.rowCheckboxBank').prop('checked', isChecked);
     });
 
     // Select/Deselect All Rows Across All Pages
-    $(document).on('click', '#selectAllGlobalAccount', function () {
+    $(document).on('click', '#selectAllGlobalBank', function () {
         var isChecked = this.checked;
-        $('.rowCheckboxAccount').prop('checked', isChecked);
+        $('.rowCheckboxBank').prop('checked', isChecked);
 
         // Select all checkboxes across all pages using DataTables API
-        accountTable.rows().every(function () {
-            $(this.node()).find('.rowCheckboxAccount').prop('checked', isChecked);
+        bankTable.rows().every(function () {
+            $(this.node()).find('.rowCheckboxBank').prop('checked', isChecked);
         });
     });
 
     // If any row checkbox is unchecked, uncheck the selectAll checkboxes
-    $(document).on('click', '.rowCheckboxAccount', function () {
-        if ($('.rowCheckboxAccount:checked').length === $('.rowCheckboxAccount').length) {
-            $('#selectAllAccount').prop('checked', true);
-            $('#selectAllGlobalAccount').prop('checked', true);
+    $(document).on('click', '.rowCheckboxBank', function () {
+        if ($('.rowCheckboxBank:checked').length === $('.rowCheckboxBank').length) {
+            $('#selectAllBank').prop('checked', true);
+            $('#selectAllGlobalBank').prop('checked', true);
         } else {
-            $('#selectAllAccount').prop('checked', false);
-            $('#selectAllGlobalAccount').prop('checked', false);
+            $('#selectAllBank').prop('checked', false);
+            $('#selectAllGlobalBank').prop('checked', false);
         }
     });
 });
@@ -493,7 +511,7 @@ $(document).ready(function () {
     document.addEventListener("DOMContentLoaded", function () {
     function copyFiltersToForm(targetFormId) {
         var filterForm = document.getElementById("report"); // Get filter form
-        var targetForm = document.getElementById(targetFormId); // Get the target form (payeeForm or accountForm)
+        var targetForm = document.getElementById(targetFormId); // Get the target form (payeeForm or bankForm)
 
         // Remove existing hidden inputs (to avoid duplicates)
         targetForm.querySelectorAll(".filter-hidden-input").forEach(input => input.remove());
@@ -513,15 +531,15 @@ $(document).ready(function () {
         targetForm.submit(); // Submit the selected form
     }
 
-    // Attach event listeners to payee and account form buttons
+    // Attach event listeners to payee and bank form buttons
     document.getElementById("payeeForm").addEventListener("submit", function (event) {
         event.preventDefault();
         copyFiltersToForm("payeeForm");
     });
 
-    document.getElementById("accountForm").addEventListener("submit", function (event) {
+    document.getElementById("bankForm").addEventListener("submit", function (event) {
         event.preventDefault();
-        copyFiltersToForm("accountForm");
+        copyFiltersToForm("bankForm");
     });
 });
 

@@ -11,6 +11,7 @@ User = get_user_model()
 def reports(request):
     cheques = ChequeIssue.objects.all().filter(Q(company__is_selected=True)).order_by('-issue_cheque_date')
     banks = ChequeIssue.objects.filter(Q(company__is_selected=True)).values_list('issue_bank__id','issue_bank__bank_name_e').distinct()
+    banks_4_report = ChequeIssue.objects.filter(Q(company__is_selected=True)).values_list('issue_bank__id','issue_bank__bank_char', 'issue_bank__bank_name_e', 'issue_bank__address').distinct()
     accounts = ChequeIssue.objects.filter(Q(company__is_selected=True)).values_list('issue_accountnum', 'issue_bank__bank_name_e').distinct()
     payees = ChequeIssue.objects.filter(Q(company__is_selected=True)).values('issue_payee__id','issue_payee__payee_name', 'issue_payee__mobile_no','issue_payee__email','issue_payee__address').distinct()
 
@@ -28,7 +29,9 @@ def reports(request):
 
     # Filter by approval status
     if selected_approval:
-        if selected_approval == 'approved':
+        if selected_approval == 'all':
+            cheques = cheques
+        elif selected_approval == 'approved':
             cheques = cheques.filter(issue_is_approved=True)
         elif selected_approval == 'pending':
             cheques = cheques.filter(issue_is_approved=None)
@@ -55,7 +58,7 @@ def reports(request):
     # If POST request, get selected checkboxes
     if request.method == 'POST':
         selected_payees = request.POST.getlist('selected_payees')
-        selected_accounts = request.POST.getlist('selected_accounts')
+        report_selected_banks = request.POST.getlist('report_selected_banks')
         company = Company_Setup.objects.filter(is_selected = True).first()
         
         bank_name = 'All'
@@ -128,7 +131,7 @@ def reports(request):
                             total_approved[currency] = 0
                         total_approved[currency] += (p.issue_amount if currency == 'KWD' else round(p.issue_amount, 2))
 
-                if selected_approval == 'approved' or selected_approval == '':
+                if selected_approval == 'approved' or selected_approval == '' or selected_approval == 'all':
                     # Store total amounts in a separate variable and append the results
                     payee_cheques[payee_name].append({"total_approved": total_approved})
 
@@ -151,13 +154,14 @@ def reports(request):
             return render(request, "Reports/payee_report.html", context)
 
         else:
-            messages.warning(request, "Please select some records") 
+            messages.warning(request, "Please select some payees to generate the report.") 
         
 
     # Context for the template
     context = {
         'cheques': cheques,
         'banks': banks,
+        'banks_4_report': banks_4_report,
         'accounts': accounts,
         'payees': payees,
         'sel_bank':int(selected_bank) if selected_bank else None,
