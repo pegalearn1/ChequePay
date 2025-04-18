@@ -153,8 +153,93 @@ def reports(request):
             # After the loop, render the template with the gathered `all_chq_payees`
             return render(request, "Reports/payee_report.html", context)
 
-        else:
-            messages.warning(request, "Please select some payees to generate the report.") 
+        elif not selected_payees and not report_selected_banks:
+            messages.warning(request, "Please select some payees to generate the report.")
+
+
+        
+
+        if report_selected_banks:
+
+
+            # Initialize dictionaries to store cumulative sums by currency
+            summary_total_approved = {}
+            summary_total_pending = {}
+            summary_total_rejected = {}
+            
+
+            # Fetch cheques filtered by the selected payees
+            chq_banks = cheques.filter(issue_bank__in=report_selected_banks)
+            summary_total_bank = len(report_selected_banks)
+
+            # Process approved cheques
+            for cheque in chq_banks.filter(issue_is_approved=True):
+                currency = cheque.issue_currency.currency_char
+                summary_total_approved[currency] = summary_total_approved.get(currency, 0) + (cheque.issue_amount if currency == 'KWD' else round(cheque.issue_amount, 2))
+
+            # Process pending cheques
+            for cheque in chq_banks.filter(issue_is_approved=None):
+                currency = cheque.issue_currency.currency_char
+                summary_total_pending[currency] = summary_total_pending.get(currency, 0) + (cheque.issue_amount if currency == 'KWD' else round(cheque.issue_amount, 2))
+
+            # Process rejected cheques
+            for cheque in chq_banks.filter(issue_is_approved=False):
+                currency = cheque.issue_currency.currency_char
+                summary_total_rejected[currency] = summary_total_rejected.get(currency, 0) + (cheque.issue_amount if currency == 'KWD' else round(cheque.issue_amount, 2))
+
+            
+            
+            # Initialize a dictionary to group cheques by payee
+            bank_cheques = {}
+            
+
+            # Fetch cheques filtered by the selected payees
+            for bank in report_selected_banks:
+                
+                chq_bank = cheques.filter(issue_bank=bank)
+                
+
+                bank_name = Banks.objects.filter(id=bank).values_list('bank_name_e', flat=True).first()
+
+                total_approved = {}
+
+                for p in chq_bank:
+                    if bank_name not in bank_cheques:
+                        bank_cheques[bank_name] = []
+                    bank_cheques[bank_name].append(p)
+
+                    # Sum approved cheque amounts per currency for each payee
+                    if p.issue_is_approved:
+                        currency = p.issue_currency.currency_char
+                        if currency not in total_approved:
+                            total_approved[currency] = 0
+                        total_approved[currency] += (p.issue_amount if currency == 'KWD' else round(p.issue_amount, 2))
+
+                if selected_approval == 'approved' or selected_approval == '' or selected_approval == 'all':
+                    # Store total amounts in a separate variable and append the results
+                    bank_cheques[bank_name].append({"total_approved": total_approved})
+
+            
+            context = {
+                'chq_bank': bank_cheques.items(),
+                'company':company,
+                 'bank':bank_name,
+                 'approval':approval,
+                 'st_date':st_date,
+                 'ed_date':ed_date,
+                 'summary_total_payee':summary_total_bank,
+                 'summary_approved_amt':summary_total_approved.items(),
+                 'summary_pending_amt':summary_total_pending.items(),
+                 'summary_rejected_amt':summary_total_rejected.items()
+                 
+            }
+            
+            # After the loop, render the template with the gathered `all_chq_payees`
+            return render(request, "Reports/bank_report.html", context)
+
+        elif not report_selected_banks and not selected_payees:
+            messages.warning(request, "Please select some banks to generate the report.")
+
         
 
     # Context for the template
@@ -252,6 +337,94 @@ def export_payee_report(request, file_format):
         workbook = openpyxl.Workbook()
         sheet = workbook.active
         sheet.title = "Payee Report"
+
+        for row in data:
+            sheet.append(row)
+
+        workbook.save(response)
+        return response
+
+    else:
+        return HttpResponse("Invalid file format", status=400)
+
+
+
+
+@login_required
+def export_bank_report(request, file_format):
+    # Fetch filtered cheques from session (or reapply filters)
+    report_selected_banks = request.GET.getlist('report_selected_banks')
+
+    print("banks - ", report_selected_banks)
+    selected_approval = request.GET.get('approval', '')
+    start_date = request.GET.get('start_date', '')
+    end_date = request.GET.get('end_date', '')
+
+    cheques = ChequeIssue.objects.all().filter(Q(company__is_selected=True)).order_by('-issue_cheque_date')
+
+    # Apply filters
+    if selected_approval:
+        if selected_approval == 'approved':
+            cheques = cheques.filter(issue_is_approved=True)
+        elif selected_approval == 'pending':
+            cheques = cheques.filter(issue_is_approved=None)
+        elif selected_approval == 'rejected':
+            cheques = cheques.filter(issue_is_approved=False)
+    if start_date and end_date:
+        cheques = cheques.filter(issue_cheque_date__range=[start_date, end_date])
+    if report_selected_banks:
+        cheques = cheques.filter(issue_bank__in=report_selected_banks)
+
+    # Data to export
+    data = [
+        ["Bank", "Payee Name", "Account#", "Cheque#", "Amount", "Currency", "Cheque Date", "Approval"]
+    ]
+    for chq in cheques:
+
+        issue_amount = f"{chq.issue_amount:.3f}" if chq.issue_currency.currency_char == 'KWD' else f"{chq.issue_amount:.2f}"
+
+
+        data.append([
+            chq.issue_bank.bank_name_e,
+            chq.issue_payee.payee_name,
+            chq.issue_accountnum,
+            chq.issue_cheque_no,
+            issue_amount,
+            chq.issue_currency.currency_char,
+            chq.issue_cheque_date.strftime('%Y-%m-%d'),
+            "Approved" if chq.issue_is_approved else "Pending" if chq.issue_is_approved is None else "Rejected",
+        ])
+
+    # Export as CSV
+    if file_format == "csv":
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="bank_report.csv"'
+        writer = csv.writer(response)
+        for row in data:
+            writer.writerow(row)
+        return response
+
+    # Export as XLS (Excel)
+    elif file_format == "xls":
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="bank_report.xls"'
+        workbook = xlwt.Workbook()
+        sheet = workbook.add_sheet('Bank Report')
+
+        for row_num, row_data in enumerate(data):
+            for col_num, cell_data in enumerate(row_data):
+                sheet.write(row_num, col_num, cell_data)
+        
+        workbook.save(response)
+        return response
+
+    # Export as XLSX (Newer Excel format)
+    elif file_format == "xlsx":
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename="Bank_report.xlsx"'
+        workbook = openpyxl.Workbook()
+        sheet = workbook.active
+        sheet.title = "Bank Report"
 
         for row in data:
             sheet.append(row)

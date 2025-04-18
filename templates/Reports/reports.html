@@ -77,13 +77,14 @@
                 <!-- Bank Filter -->
                 <div class="col-md-4">
                     <label for="bankFilter">{% trans "Bank" %}</label>
-                    <select class="form-select" name="bank">
+                    <select class="form-select" name="bank" id="bankFilterSelect">
                         <option value="">{% trans "Select Bank" %}</option>
                         {% for bankid, bankname in banks %}
                         <option value="{{ bankid }}" {% if bankid == sel_bank %}selected{% endif %}>{{ bankname }}</option>
                         {% endfor %}
                     </select>
                 </div>
+                
 
                 <!-- Approval Status Filter -->
                 <div class="col-md-3">
@@ -151,23 +152,49 @@
     });
   });
 </script>
-
-
             
             
             <!-- Tabs Section -->
             
                 <div class="card">
                     <div class="card-header">
-                        <ul class="nav nav-tabs" id="reportTabs">
+                        <ul class="nav nav-tabs" id="reportTabs" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" data-bs-toggle="tab" href="#payee-table">{% trans "Payee Report " %}</a>
+                                <a class="nav-link active" data-bs-toggle="tab" href="#payee-table"  role="tab">{% trans "Payee Report " %}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" data-bs-toggle="tab" href="#bank-table">{% trans "Bank Report" %}</a>
+                                <a class="nav-link" data-bs-toggle="tab" href="#bank-table"  role="tab">{% trans "Bank Report" %}</a>
                             </li>
                         </ul>
                     </div>
+
+                    
+                    
+                    <!-- When bank table is selected, the bank filter will be disabled so to not interfere with the report. -->
+
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                          const bankSelect = document.getElementById("bankFilterSelect");
+                      
+                          const tabLinks = document.querySelectorAll('[data-bs-toggle="tab"]');
+                      
+                          tabLinks.forEach(function (tab) {
+                            tab.addEventListener("shown.bs.tab", function (event) {
+                              const targetTab = event.target.getAttribute("href");
+                      
+                              if (targetTab === "#bank-table") {
+                                bankSelect.disabled = true;
+                              } else {
+                                bankSelect.disabled = false;
+                              }
+                            });
+                          });
+                        });
+                      </script>
+
+                <!-- When bank table is selected, the bank filter will be disabled so to not interfere with the report. -->
+
+
                     
                     <div class="tab-content mt-3">
                         
@@ -187,18 +214,6 @@
                                     {% trans "Download Excel" %}
                                 </button>
                             </div>
-                            
-                            <script>
-                                function downloadReport(format) {
-                                    // Get the form element
-                                    let form = document.getElementById('payeeForm');
-                                    let formData = new FormData(form);
-                                    let queryString = new URLSearchParams(formData).toString();
-                            
-                                    // Redirect with the form data as query parameters
-                                    window.location.href = `{% url 'export_payee_report' '__FORMAT__' %}`.replace('__FORMAT__', format) + '?' + queryString;
-                                }
-                            </script>
                             
                             
                             <form method="post" id="payeeForm" action="{% url 'reports' %}" target="_blank">
@@ -246,7 +261,8 @@
                             {% endif %}
                         </div>
                         <!-- payee-table -->
-
+                        
+                        
                         <!-- bank-table -->
                         <div class="tab-pane fade show" id="bank-table">
 
@@ -255,14 +271,15 @@
                             <div style="margin-left: 10px;">
                                 <button type="submit" form="bankForm" class="btn btn-primary">{% trans "Generate Report" %}</button>
                                 
-                                <button type="button" class="btn btn-success" onclick="downloadReport('csv')">
+                                <button type="button" class="btn btn-success" onclick="downloadBankReport('csv')">
                                     {% trans "Download CSV" %}
                                 </button>
                                 
-                                <button type="button" class="btn btn-warning" onclick="downloadReport('xls')">
+                                <button type="button" class="btn btn-warning" onclick="downloadBankReport('xls')">
                                     {% trans "Download Excel" %}
                                 </button>
                             </div>
+
 
                             <form method="post" id="bankForm" action="{% url 'reports' %}" target="_blank">
                                 {% csrf_token %}
@@ -310,10 +327,28 @@
 
                     </div>
                 </div>
-            
-       
     </div>
 </div>
+
+
+<!-- To download the report, the user can select the format (CSV or Excel) for payee and bank report. -->
+<script>
+    function downloadReport(format) {
+        const form = document.getElementById('payeeForm');
+        const formData = new FormData(form);
+        const queryString = new URLSearchParams(formData).toString();
+        window.location.href = `{% url 'export_payee_report' '__FORMAT__' %}`.replace('__FORMAT__', format) + '?' + queryString;
+    }
+
+    function downloadBankReport(format) {
+        const form = document.getElementById('bankForm');
+        const formData = new FormData(form);
+        const queryString = new URLSearchParams(formData).toString();
+        window.location.href = `{% url 'export_bank_report' '__FORMAT__' %}`.replace('__FORMAT__', format) + '?' + queryString;
+    }
+</script>
+
+<!-- To download the report, the user can select the format (CSV or Excel) for payee and bank report. -->
 
 {% endblock content %}
 

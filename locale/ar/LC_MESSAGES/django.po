@@ -1281,3 +1281,10 @@ msgstr "تضمين التوقيع"
 msgid "No Templates found."
 msgstr "لم يتم العثور على قوالب."
 
+msgid "Bank Name"
+msgstr "اسم البنك"
+
+msgid "Bank Report"
+msgstr "تقرير البنك"
+
+

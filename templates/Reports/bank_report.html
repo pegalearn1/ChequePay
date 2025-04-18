@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% trans "Payee Report" %}- Cheque Pay - Cheque Printing Solutions.</title>
+    <title>{% trans "Bank Report" %}- Cheque Pay - Cheque Printing Solutions.</title>
     <link rel="shortcut icon" href="{% static 'Cheque_Pay_Fevi.png' %}" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
@@ -229,29 +229,26 @@
             {% endif %}
             <h2 class="company-name">{{ company.company_name }}</h2>
         </div>
-        <div class="header-right">
-            <h3>{% trans "Payee Report" %}</h3>
+        <div class="header-right" style="text-align: right;">
+            <h3 style="margin-bottom: 10px;">{% trans "Bank Report" %}</h3>
             <div class="search-parameters">
-                {% if bank %}
-                <span><strong>{% trans "Bank" %}:</strong>{{bank}}</span>
-                {% endif %}
                 {% if st_date and ed_date %}
-                <span><strong>{% trans "Date Range" %}:</strong> {{st_date}} - {{ed_date}}</span>
-                {% endif %}
-                {% if approval %}
-                <span><strong>{% trans "Approval" %}:</strong> {{approval}}</span>
-                {% endif %}
+            <span><strong>{% trans "Date Range" %}:</strong> {{st_date}} - {{ed_date}}</span>
+            {% endif %}
+            {% if approval %}
+            <span><strong>{% trans "Approval" %}:</strong> {{approval}}</span>
+            {% endif %}
             </div>
         </div>
     </div>
 
     <!-- Payee Sections -->
 
-    {% for payee_name, cheques in chq_payee %}
+    {% for bank_name, cheques in chq_bank %}
     <!-- Payee Section 1 -->
     <div class="payee-section">
         <div class="sub-header">
-            <h4>{% trans "Payee Name" %}: {{payee_name}}</h4>
+            <h4>{% trans "Bank Name" %}: {{bank_name}}</h4>
         </div>
         <div class="sub-heading">
             <span>{% trans "Cheque Details" %}</span>
@@ -260,7 +257,7 @@
         <table>
             <thead>
                 <tr>
-                    <th>{% trans "Bank" %}</th>
+                    <th>{% trans "Payee" %}</th>
                     <th>{% trans "Account#" %}</th>
                     <th>{% trans "Cheque#" %}</th>
                     <th>{% trans "Amount" %}</th>
@@ -273,7 +270,7 @@
                 {% for chq_details in cheques  %}
                 {% if not chq_details.total_approved %}
                 <tr>
-                    <td>{{chq_details.issue_bank.bank_name_e}}</td>
+                    <td>{{chq_details.issue_payee.payee_name}}</td>
                     <td>{{chq_details.issue_accountnum}}</td>
                     <td>{{chq_details.issue_cheque_no}}</td>
                     <td> {% if chq_details.issue_currency.currency_char != "KWD" %}
