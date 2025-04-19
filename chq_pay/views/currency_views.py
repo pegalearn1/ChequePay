@@ -42,10 +42,13 @@ def currency_list(request):
     currency_list = paginator.get_page(page_number)
     #pagination
 
+    currency_dict = dict(zip(currency_characters, currency_names))
+
     context = {
         'currencies': currency_list,
         'currency_characters': currency_characters,
-        'currency_names': currency_names,}
+        'currency_names': currency_names,
+        'currency_dict': json.dumps(currency_dict),}
 
     return render(request,"Currency/currency_list_new.html", context)
 

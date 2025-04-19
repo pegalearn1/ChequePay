@@ -169,93 +169,46 @@
           <form id="addCurrencyForm" method="POST" action="{% url 'add_currency' %}">
             {% csrf_token %}
             <div class="form-group mb-3">
-                <label for="currency_char" class="form-label">{% trans "Currency Char" %}<span class="mandatory">*</span></label>
-                <input type="text" class="form-control" id="currency_char" name="currency_char" list="currency_char_list" required>
-                <small class="form-text text-muted">{% trans "Enter the short code for the currency (e.g., USD, EUR, INR)." %}</small>
-                
-                <datalist id="currency_char_list">
+              <label for="currency_char" class="form-label">
+                  {% trans "Currency" %}<span class="mandatory">*</span>
+              </label>
+              <select class="form-control" id="currency_char" name="currency_char" required>
+                  <option value="">{% trans "Select a currency" %}</option>
                   {% for code in currency_characters %}
-                    <option value="{{ code }}">
+                      <option value="{{ code }}">{{ code }}</option>
                   {% endfor %}
-                </datalist>
-              
-            </div>
+              </select>
+              <small class="form-text text-muted">{% trans "Select the currency code (e.g., USD, INR)." %}</small>
+          </div>
+
             
-            <!-- to prevent number input and restrict to 5 characters -->
+          <div class="form-group mb-3">
+            <label for="currency_name" class="form-label">{% trans "Currency Name" %}</label>
+            <input type="text" class="form-control" id="currency_name" name="currency_name" readonly>
+        </div>
+
+
+            <!--  to update the currency name as per character -->
             <script>
               document.addEventListener("DOMContentLoaded", function () {
-                const currencyCharInput = document.getElementById("currency_char");
-
-                const validCurrencyCodes = {{currency_characters|safe}}; 
+                const currencyCharSelect = document.getElementById("currency_char");
+                const currencyNameInput = document.getElementById("currency_name");
             
-                // Enforce input restrictions
-                currencyCharInput.addEventListener("input", function () {
-                  this.value = this.value.toUpperCase(); // Auto uppercase
+                const currencyDict = {{ currency_dict|safe }};
             
-                  const value = this.value;
-                  const isAlpha = /^[A-Z]*$/.test(value); // Only A–Z
-            
-                  if (!isAlpha) {
-                    this.setCustomValidity("Currency code must contain only alphabetic characters (A-Z).");
-                  } else if (value.length < 3 || value.length > 3) {
-                    this.setCustomValidity("Currency code must be 3 characters.");
-                  } else if (!validCurrencyCodes.includes(value)) {
-                    this.setCustomValidity("Invalid or unsupported currency code.");
+                currencyCharSelect.addEventListener("change", function () {
+                  const selectedChar = this.value;
+                  if (currencyDict[selectedChar]) {
+                    currencyNameInput.value = currencyDict[selectedChar];
                   } else {
-                    this.setCustomValidity(""); // Valid
-                  }
-                });
-              });
-            </script>
-
-            <!-- to prevent number input and restrict to 5 characters -->
-
-
-            
-            <div class="form-group mb-3">
-                <label for="currency_name" class="form-label">{% trans "Currency Name" %}<span class="mandatory">*</span></label>
-                <input type="text" class="form-control" id="currency_name" name="currency_name" list="currency_name_list" required>
-                <small class="form-text text-muted">{% trans "Enter the full name of the currency (e.g., US Dollar, Euro, Indian Rupee)." %}</small>
-
-                <datalist id="currency_name_list">
-                  {% for name in currency_names %}
-                    <option value="{{ name }}">
-                  {% endfor %}
-                </datalist>
-            
-            </div>
-
-
-            <!-- to prevent number input and restrict to 20 characters -->
-            <script>
-              document.addEventListener("DOMContentLoaded", function () {
-                const currencyCharInput = document.getElementById("currency_name");
-            
-                const validCurrencyNames = {{currency_names|safe}}.map(name => name.toLowerCase());
-                
-                // Enforce input restrictions
-                currencyCharInput.addEventListener("input", function () {
-                 
-                  const value = this.value;
-                  const isAlpha = /^[A-Za-z ]*$/.test(value); // Only A–Z
-            
-                  if (!isAlpha) {
-                    this.setCustomValidity("Currency Name must contain only alphabetic characters (A-Z).");
-                  } else if (value.length < 3) {
-                    this.setCustomValidity("Currency Name must be at least 3 characters long.");
-                  } else if (value.length > 30) {
-                    this.setCustomValidity("Currency Name must not exceed 30 characters.");
-                  } else if (!validCurrencyNames.includes(value.toLowerCase())) {
-                    this.setCustomValidity("Invalid or unsupported currency name.");
-                  } else {
-                    this.setCustomValidity(""); // Valid
+                    currencyNameInput.value = "";
                   }
                 });
               });
             </script>
               
 
-            <!-- to prevent number input and restrict to 20 characters -->
+            <!--  to update the currency name as per character-->
             
             <div class="modal-footer">
             <button type="button" class="btn me-auto" data-bs-dismiss="modal">{% trans "Close" %}</button>
@@ -284,77 +237,54 @@
           <form id="editCurrencyForm" method="POST" action="{% url 'edit_currency' %}">
             {% csrf_token %}
             <input type="hidden" id="edit_currency_id" name="currency_id">
+            
             <div class="form-group mb-3">
-                <label for="edit_currency_char" class="form-label">{% trans "Currency Char" %}<span class="mandatory">*</span></label>
-                <input type="text" class="form-control" id="edit_currency_char" name="currency_char" list="currency_char_list" required>
-                <small class="form-text text-muted">{% trans "Enter the short code for the currency (e.g., USD, EUR, INR)." %}</small>
-            </div>
+              <label for="edit_currency_char" class="form-label">
+                  {% trans "Currency Char" %}<span class="mandatory">*</span>
+              </label>
+              <select class="form-control" id="edit_currency_char" name="currency_char" required>
+                  <option value="">{% trans "Select a currency" %}</option>
+                  {% for code in currency_characters %}
+                      <option value="{{ code }}">{{ code }}</option>
+                  {% endfor %}
+              </select>
+              <small class="form-text text-muted">{% trans "Select the currency code (e.g., USD, EUR, INR)." %}</small>
+          </div>
 
-            <!-- to prevent number input and restrict to 5 characters -->
+
+
+          <div class="form-group mb-3">
+            <label for="edit_currency_name" class="form-label">{% trans "Currency Name" %}</label>
+            <input type="text" class="form-control" id="edit_currency_name" name="currency_name" readonly>
+        </div>
+
+            <!-- to update the currency name as per character -->
             <script>
               document.addEventListener("DOMContentLoaded", function () {
-                const currencyCharInput = document.getElementById("edit_currency_char");
+                const editCharSelect = document.getElementById("edit_currency_char");
+                const editNameInput = document.getElementById("edit_currency_name");
             
-                const validCurrencyCodes = {{currency_characters|safe}};
-                
-                // Enforce input restrictions
-                currencyCharInput.addEventListener("input", function () {
-                  this.value = this.value.toUpperCase(); // Auto uppercase
+                const currencyDict = {{ currency_dict|safe }};
             
-                  const value = this.value;
-                  const isAlpha = /^[A-Z]*$/.test(value); // Only A–Z
+                // Update name when dropdown is changed
+                editCharSelect.addEventListener("change", function () {
+                  const selectedChar = this.value;
+                  editNameInput.value = currencyDict[selectedChar] || "";
+                });
             
-                  if (!isAlpha) {
-                    this.setCustomValidity("Currency code must contain only alphabetic characters (A-Z).");
-                  } else if (value.length < 3 || value.length > 3) {
-                    this.setCustomValidity("Currency code must be 3 characters.");
-                  } else if (!validCurrencyCodes.includes(value)) {
-                    this.setCustomValidity("Invalid or unsupported currency code.");
-                  } else {
-                    this.setCustomValidity(""); // Valid
-                  }
+                // Also update on modal open in case it's pre-filled
+                $('#editCurrencyModal').on('show.bs.modal', function (event) {
+                    const button = $(event.relatedTarget);
+                    const currencyChar = button.data('currency-char');
+                    const currencyName = button.data('currency-name');
+                    
+                    const modal = $(this);
+                    modal.find('#edit_currency_char').val(currencyChar);
+                    modal.find('#edit_currency_name').val(currencyDict[currencyChar] || currencyName || '');
                 });
               });
             </script>
-
-            <!-- to prevent number input and restrict to 5 characters -->
-
-
-
-            <div class="form-group mb-3">
-                <label for="edit_currency_name" class="form-label">{% trans "Currency Name" %}<span class="mandatory">*</span></label>
-                <input type="text" class="form-control" id="edit_currency_name" name="currency_name" list="currency_name_list" required>
-                <small class="form-text text-muted">{% trans "Enter the full name of the currency (e.g., US Dollar, Euro, Indian Rupee)." %}</small>
-            </div>
-
-            <!-- to prevent number input and restrict to 20 characters -->
-            <script>
-              document.addEventListener("DOMContentLoaded", function () {
-                const currencyCharInput = document.getElementById("edit_currency_name");
-            
-                const validCurrencyNames = {{currency_names|safe}}.map(name => name.toLowerCase());
-                
-                // Enforce input restrictions
-                currencyCharInput.addEventListener("input", function () {
-                  
-                  const value = this.value;
-                  const isAlpha = /^[A-Za-z ]*$/.test(value); // Only A–Z
-            
-                  if (!isAlpha) {
-                    this.setCustomValidity("Currency Name must contain only alphabetic characters (A-Z).");
-                  } else if (value.length < 3) {
-                    this.setCustomValidity("Currency Name must be at least 3 characters long.");
-                  } else if (value.length > 30) {
-                    this.setCustomValidity("Currency Name must not exceed 30 characters.");
-                  } else if (!validCurrencyNames.includes(value.toLowerCase())) {
-                    this.setCustomValidity("Invalid or unsupported currency name.");
-                  } else {
-                    this.setCustomValidity(""); // Valid
-                  }
-                });
-              });
-            </script>
-            <!-- to prevent number input and restrict to 20 characters -->
+            <!--  to update the currency name as per character -->
 
 
 
