@@ -492,6 +492,8 @@ def print_cheque(request, cheque_id):
                 
                 if selected_format == "spaced":
                     formatted_date = '  '.join([char for char in cheque_issue.issue_cheque_date.strftime('%d%m%Y')])
+                elif selected_format == "date-spaced":
+                    formatted_date = cheque_issue.issue_cheque_date.strftime('%d %m %Y')
                 elif selected_format == "slashed":
                     formatted_date = cheque_issue.issue_cheque_date.strftime('%d/%m/%Y')
                 elif selected_format == "dashed":

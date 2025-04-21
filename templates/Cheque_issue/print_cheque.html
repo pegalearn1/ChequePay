@@ -7,13 +7,16 @@
 {% block stylesheet %}
 
 <style>
-    /* Ensure the page size and margin are fixed for printing */
     @page {
         size: {{ width|unlocalize }}mm {{ height|unlocalize }}mm;
-        
+        margin: 0;
     }
 
-    /* Cheque container */
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
     .cheque-container {
         background-image: url({{ template.url }});
         background-size: contain;
@@ -21,17 +24,16 @@
         position: relative;
         width: {{ width|unlocalize }}mm;
         height: {{ height|unlocalize }}mm;
-        margin: 20px;
+        margin: 0;
+        padding: 0;
     }
 
-    /* Text styling */
     .cheque-text {
         position: absolute;
         font-family: "Times New Roman", serif;
         font-size: 12pt;
     }
 
-    /* Date styling */
     .cheque-date {
         display: inline-block;
         font-family: monospace;
@@ -41,13 +43,11 @@
         white-space: nowrap;
     }
 
-    /* Signature styling */
     .cheque-sign img {
         max-height: 30mm;
         width: auto;
     }
 
-    /* Buttons */
     .buttons {
         margin-top: 20px;
     }
@@ -71,31 +71,38 @@
         color: white;
     }
 
-    /* Print-specific styles */
+    @media screen {
+        .cheque-container {
+            margin: 20px; /* Visual margin only for screen */
+        }
+    }
+
     @media print {
-        /* Hide everything except the cheque container */
+        html, body {
+            width: {{ width|unlocalize }}mm;
+            height: {{ height|unlocalize }}mm;
+            margin: 0;
+            padding: 0;
+        }
+
         body * {
             visibility: hidden;
         }
-        
-        /* Make sure the cheque container is visible during printing */
+
         .cheque-container, .cheque-container * {
             visibility: visible;
         }
 
-        /* Ensure the cheque container is positioned correctly in print */
         .cheque-container {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
             margin: 0;
             padding: 0;
         }
     }
-    
 </style>
+
 
 {% endblock stylesheet %}
 
@@ -135,6 +142,7 @@
                 <select name="dateformat" id="dateformat-dropdown" style="margin-right: 20px;">
                     <option value="" disabled>{% trans "Date Format" %}</option>
                     <option value="spaced">{% trans "D D M M Y Y Y Y" %}</option>
+                    <option value="date-spaced">{% trans "DD MM YYYY" %}</option>
                     <option value="slashed">{% trans "DD/MM/YYYY" %}</option>
                     <option value="dashed">{% trans "DD-MM-YYYY" %}</option>
                     
