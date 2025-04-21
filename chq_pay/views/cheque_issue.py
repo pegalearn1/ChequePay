@@ -4,116 +4,149 @@ in 2024-2025.'''
 from .imp_libs import *
 from chq_pay.models import ChequeTemplate, ChequeText, Banks, Currencies, Payee, ChequeIssue, Company_Setup
 from decimal import Decimal, ROUND_DOWN
+from chq_pay.views.currency_lists import currency_data
 #user model
 User = get_user_model()
 
 
-#To convert the amount to words
+# #To convert the amount to words
+# def amount_in_words(amount, currency, lang):
+#     """
+#     Convert a numeric amount into words for a given currency and language.
+#     Args:
+#         amount (float): The numeric amount.
+#         currency (str): The currency code (e.g., "INR", "KWD").
+#         lang (str): The language code (e.g., "en", "hi", "ar").
+#     Returns:
+#         str: The amount in words.
+#     """
+#     amount_parts = str(amount).split('.')
+#     whole_part = int(amount_parts[0])
+#     fractional_part = int(amount_parts[1]) if len(amount_parts) > 1 else 0
+
+#     if currency == "INR" and lang == "en":  # Indian Rupees in Hindi
+#         rupees = num2words(whole_part, lang="en")
+#         if fractional_part > 0:
+#             paise = num2words(fractional_part, lang="en")
+#             return f"{rupees} Rupees and {paise} Paise"
+#         return f"{rupees} Rupees"
+    
+#     elif currency == "INR" and lang == "hi":  # Indian Rupees in Hindi
+#         rupees = num2words(whole_part, lang="hi")
+#         if fractional_part > 0:
+#             paise = num2words(fractional_part, lang="hi")
+#             return f"{rupees} रुपये और {paise} पैसे"
+#         return f"{rupees} रुपये"
+
+#     elif currency == "KWD" and lang == "en":  # Kuwaiti Dinar in English
+#         dinars = num2words(whole_part, lang="en")
+#         if fractional_part > 0:
+#             fils = num2words(fractional_part, lang="en")
+#             return f"{dinars} Dinar and {fils} Fils"
+#         return f"{dinars} Dinar"
+
+#     elif currency == "KWD" and lang == "ar":  # Kuwaiti Dinar in Arabic
+#         dinars = num2words(whole_part, lang="ar")
+#         if fractional_part > 0:
+#             fils = num2words(fractional_part, lang="ar")
+#             return f"{dinars} دينار كويتي و {fils} فلس"
+#         return f"{dinars} دينار كويتي"
+    
+#     elif currency == "USD" and lang == "en":  # US Dollars in English
+#         dollars = num2words(whole_part, lang="en")
+#         if fractional_part > 0:
+#             cents = num2words(fractional_part, lang="en")
+#             result = f"{dollars} Dollars And {cents} Cents"
+#         else:
+#             result = f"{dollars} Dollars"
+
+#         return result
+
+#     elif currency == "EUR" and lang == "en":  # Euros in English
+#         euros = num2words(whole_part, lang="en")
+#         if fractional_part > 0:
+#             cents = num2words(fractional_part, lang="en")
+#             result = f"{euros} Euros And {cents} Cents"
+#         else:
+#             result = f"{euros} Euros"
+
+#         return result
+
+#     elif currency == "AED" and lang == "en":  # UAE Dirhams in Arabic
+#         dirhams = num2words(whole_part, lang="en")
+#         if fractional_part > 0:
+#             fils = num2words(fractional_part, lang="en")
+#             result = f"{dirhams} Dirhams And {fils} Fils"
+#         else:
+#             result = f"{dirhams} Dirhams"
+
+#         return result
+    
+    
+#     elif currency == "AED" and lang == "ar":  # UAE Dirhams in Arabic
+#         dirhams = num2words(whole_part, lang="ar")
+#         if fractional_part > 0:
+#             fils = num2words(fractional_part, lang="ar")
+#             result = f"{dirhams} درهم إماراتي و {fils} فلس"
+#         else:
+#             result = f"{dirhams} درهم إماراتي"
+
+#         return result
+
+#     elif currency == "SAR" and lang == "en":  # Saudi Riyals in Arabic
+#         riyals = num2words(whole_part, lang="en")
+#         if fractional_part > 0:
+#             halalas = num2words(fractional_part, lang="en")
+#             result = f"{riyals} Riyals And {halalas} Halala"
+#         else:
+#             result = f"{riyals} ريال سعودي"
+
+#         return result
+    
+#     elif currency == "SAR" and lang == "ar":  # Saudi Riyals in Arabic
+#         riyals = num2words(whole_part, lang="ar")
+#         if fractional_part > 0:
+#             halalas = num2words(fractional_part, lang="ar")
+#             result = f"{riyals} ريال سعودي و {halalas} هللة"
+#         else:
+#             result = f"{riyals} ريال سعودي"
+
+#         return result
+
+#     else:
+#         raise ValueError(f"Unsupported currency {currency} or language {lang}")
+
+
 def amount_in_words(amount, currency, lang):
-    """
-    Convert a numeric amount into words for a given currency and language.
-    Args:
-        amount (float): The numeric amount.
-        currency (str): The currency code (e.g., "INR", "KWD").
-        lang (str): The language code (e.g., "en", "hi", "ar").
-    Returns:
-        str: The amount in words.
-    """
     amount_parts = str(amount).split('.')
     whole_part = int(amount_parts[0])
     fractional_part = int(amount_parts[1]) if len(amount_parts) > 1 else 0
 
-    if currency == "INR" and lang == "en":  # Indian Rupees in Hindi
-        rupees = num2words(whole_part, lang="en")
-        if fractional_part > 0:
-            paise = num2words(fractional_part, lang="en")
-            return f"{rupees} Rupees and {paise} Paise"
-        return f"{rupees} Rupees"
-    
-    elif currency == "INR" and lang == "hi":  # Indian Rupees in Hindi
-        rupees = num2words(whole_part, lang="hi")
-        if fractional_part > 0:
-            paise = num2words(fractional_part, lang="hi")
-            return f"{rupees} रुपये और {paise} पैसे"
-        return f"{rupees} रुपये"
+    # Get currency info or fallback
+    info = currency_data.get(currency, {
+        "main": {lang: currency},
+        "sub": {lang: ""}
+    })
 
-    elif currency == "KWD" and lang == "en":  # Kuwaiti Dinar in English
-        dinars = num2words(whole_part, lang="en")
-        if fractional_part > 0:
-            fils = num2words(fractional_part, lang="en")
-            return f"{dinars} Dinar and {fils} Fils"
-        return f"{dinars} Dinar"
+    main_unit = info['main'].get(lang, currency)
+    sub_unit = info['sub'].get(lang, "")
 
-    elif currency == "KWD" and lang == "ar":  # Kuwaiti Dinar in Arabic
-        dinars = num2words(whole_part, lang="ar")
-        if fractional_part > 0:
-            fils = num2words(fractional_part, lang="ar")
-            return f"{dinars} دينار كويتي و {fils} فلس"
-        return f"{dinars} دينار كويتي"
-    
-    elif currency == "USD" and lang == "en":  # US Dollars in English
-        dollars = num2words(whole_part, lang="en")
-        if fractional_part > 0:
-            cents = num2words(fractional_part, lang="en")
-            result = f"{dollars} Dollars And {cents} Cents"
-        else:
-            result = f"{dollars} Dollars"
+    try:
+        whole_word = num2words(whole_part, lang=lang).title()
+        fractional_word = num2words(fractional_part, lang=lang).title() if fractional_part > 0 else ""
+    except NotImplementedError:
+        raise ValueError(f"Language '{lang}' is not supported for conversion.")
 
-        return result
-
-    elif currency == "EUR" and lang == "en":  # Euros in English
-        euros = num2words(whole_part, lang="en")
-        if fractional_part > 0:
-            cents = num2words(fractional_part, lang="en")
-            result = f"{euros} Euros And {cents} Cents"
-        else:
-            result = f"{euros} Euros"
-
-        return result
-
-    elif currency == "AED" and lang == "en":  # UAE Dirhams in Arabic
-        dirhams = num2words(whole_part, lang="en")
-        if fractional_part > 0:
-            fils = num2words(fractional_part, lang="en")
-            result = f"{dirhams} Dirhams And {fils} Fils"
-        else:
-            result = f"{dirhams} Dirhams"
-
-        return result
-    
-    
-    elif currency == "AED" and lang == "ar":  # UAE Dirhams in Arabic
-        dirhams = num2words(whole_part, lang="ar")
-        if fractional_part > 0:
-            fils = num2words(fractional_part, lang="ar")
-            result = f"{dirhams} درهم إماراتي و {fils} فلس"
-        else:
-            result = f"{dirhams} درهم إماراتي"
-
-        return result
-
-    elif currency == "SAR" and lang == "en":  # Saudi Riyals in Arabic
-        riyals = num2words(whole_part, lang="en")
-        if fractional_part > 0:
-            halalas = num2words(fractional_part, lang="en")
-            result = f"{riyals} Riyals And {halalas} Halala"
-        else:
-            result = f"{riyals} ريال سعودي"
-
-        return result
-    
-    elif currency == "SAR" and lang == "ar":  # Saudi Riyals in Arabic
-        riyals = num2words(whole_part, lang="ar")
-        if fractional_part > 0:
-            halalas = num2words(fractional_part, lang="ar")
-            result = f"{riyals} ريال سعودي و {halalas} هللة"
-        else:
-            result = f"{riyals} ريال سعودي"
-
-        return result
-
+    if fractional_part > 0:
+        connector = {
+            "en": "and",
+            "hi": "और",
+            "ar": "و"
+        }.get(lang, "and")
+        return f"{whole_word} {main_unit} {connector} {fractional_word} {sub_unit}".strip()
     else:
-        raise ValueError(f"Unsupported currency {currency} or language {lang}")
+        return f"{whole_word} {main_unit}".strip()
+
         
     
 

@@ -401,6 +401,10 @@
                   // Fetch bank name and account number from data attributes
                   let bank = selectedOption.getAttribute('data-bank') || '';
                   let account = selectedOption.getAttribute('data-account') || '';
+
+                  // Convert "None" to empty string
+                  bank = (bank === 'None') ? '' : bank;
+                  account = (account === 'None') ? '' : account;
                   
                   // Update the input fields
                   document.getElementById('payee_bank').value = bank;
