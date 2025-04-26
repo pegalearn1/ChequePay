@@ -6,7 +6,8 @@ from chq_pay.models import Banks, Payee, ChequeTemplate, ChequeIssue, Currencies
 from django.contrib.auth.hashers import check_password
 
 
-from rembg import remove
+# from rembg import remove
+from django.core.files.base import ContentFile
 from PIL import Image
 import io
 from django.core.files.base import ContentFile
@@ -136,30 +137,60 @@ def index(request):
     return render(request, "home/index.html", context)
 
 
+# def remove_background(image_file):
+#     """
+#     Removes background from the uploaded image file and returns a processed image.
+#     """
+#     try:
+#         # Open the image
+#         img = Image.open(image_file)
+        
+#         # Convert to RGBA (if not already)
+#         img = img.convert("RGBA")
+
+#         # Remove background
+#         img_no_bg = remove(img)
+
+#         # Save to memory
+#         img_io = io.BytesIO()
+#         img_no_bg.save(img_io, format="PNG")
+        
+#         return ContentFile(img_io.getvalue(), name=image_file.name)  # Preserve original filename
+
+#     except Exception as e:
+#         print(f"Error processing signature: {e}")
+#         return None
+
+
 def remove_background(image_file):
     """
-    Removes background from the uploaded image file and returns a processed image.
+    Removes white background from uploaded signature image and returns transparent PNG.
     """
     try:
         # Open the image
-        img = Image.open(image_file)
-        
-        # Convert to RGBA (if not already)
-        img = img.convert("RGBA")
+        img = Image.open(image_file).convert("RGBA")
+        datas = img.getdata()
 
-        # Remove background
-        img_no_bg = remove(img)
+        newData = []
+        for item in datas:
+            # item is (R, G, B, A)
+            if item[0] > 200 and item[1] > 200 and item[2] > 200:
+                # If pixel is "almost white" (tune threshold if needed)
+                newData.append((255, 255, 255, 0))  # Make pixel fully transparent
+            else:
+                newData.append(item)
+
+        img.putdata(newData)
 
         # Save to memory
         img_io = io.BytesIO()
-        img_no_bg.save(img_io, format="PNG")
-        
-        return ContentFile(img_io.getvalue(), name=image_file.name)  # Preserve original filename
+        img.save(img_io, format="PNG")
+
+        return ContentFile(img_io.getvalue(), name=image_file.name)
 
     except Exception as e:
         print(f"Error processing signature: {e}")
         return None
-
 
 
 def profile(request):
@@ -167,53 +198,62 @@ def profile(request):
     print("Database in use start:", connection.settings_dict['NAME'])
 
     if request.method == 'POST':
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        password = request.POST.get('password')
-        profile_picture = request.FILES.get('profile_picture')
-        sign = request.FILES.get('sign')
+        try:
+            username = request.POST.get('username')
+            email = request.POST.get('email')
+            first_name = request.POST.get('first_name')
+            last_name = request.POST.get('last_name')
+            password = request.POST.get('password')
+            profile_picture = request.FILES.get('profile_picture')
+            sign = request.FILES.get('sign')
 
-        print("POST values:")
-        print("Username: ", username)
-        print("Email: ", email)
-        print("First Name: ", first_name)
-        print("Last Name: ", last_name)
-        print("Password: ", password)
+            print("POST values:")
+            print("Username: ", username)
+            print("Email: ", email)
+            print("First Name: ", first_name)
+            print("Last Name: ", last_name)
+            print("Password: ", password)
 
-        print("Session data:", request.session.items())  # Debug session data
-        print("Using Database:", connection.settings_dict['NAME'])  # Show the database in use
+            print("Session data:", request.session.items())  # Debug session data
+            print("Using Database:", connection.settings_dict['NAME'])  # Show the database in use
 
-        usr = get_object_or_404(User, username=username)
+            usr = get_object_or_404(User, username=username)
 
-        usr.email = email
-        usr.first_name = first_name
-        usr.last_name = last_name
+            usr.email = email
+            usr.first_name = first_name
+            usr.last_name = last_name
 
-        if profile_picture:
-            usr.profile_picture = profile_picture
+            if profile_picture:
+                usr.profile_picture = profile_picture
 
-        if sign:
-            processed_sign = remove_background(sign)  # Remove background
-            if processed_sign:
-                usr.auth_sign = processed_sign
+            if sign:
+                processed_sign = remove_background(sign)  # Remove background
+                if processed_sign:
+                    usr.auth_sign = processed_sign
 
-        password_changed = False
+            password_changed = False
 
-        if password:
-            if not password.startswith(('pbkdf2_sha256$', 'bcrypt', 'sha1$', 'argon2$')):  
-                usr.set_password(password)  # Hash and set new password
-                password_changed = True  # Mark password change
-            
-        usr.save(using=request.session.get('reg_code', 'default'))  
-        messages.success(request, "Profile Updated Successfully")
+            if password:
+                if not password.startswith(('pbkdf2_sha256$', 'bcrypt', 'sha1$', 'argon2$')):  
+                    usr.set_password(password)  # Hash and set new password
+                    password_changed = True  # Mark password change
 
-        if password_changed:
-            logout(request)  # Log out user after password change
-            messages.info(request, "Password changed successfully. Please log in again.")
-            return redirect('login')  # Redirect to login page
-        
-        return redirect('profile')  # Redirect to profile if no password change
+            db_name = request.session.get('reg_code', 'default')
+            usr.save(using=db_name)
+
+            messages.success(request, "Profile Updated Successfully")
+
+            if password_changed:
+                logout(request)
+                messages.info(request, "Password changed successfully. Please log in again.")
+                return redirect('login')
+
+            return redirect('profile')
+
+        except Exception as e:
+            logger.info(f"Error while updating profile: {str(e)}")
+            print("Exception occurred:", str(e))
+            messages.error(request, "An error occurred while updating your profile.")
+            return redirect('profile')
 
     return render(request, "home/profile.html")
