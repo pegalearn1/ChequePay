@@ -1287,4 +1287,15 @@ msgstr "اسم البنك"
 msgid "Bank Report"
 msgstr "تقرير البنك"
 
+msgid "Payee Character Limit"
+msgstr "حد أحرف اسم المستفيد"
+
+msgid "This is the character limit for the payee name on the first line. Will continue on second line after the limit."
+msgstr "هذا هو حد الأحرف لاسم المستفيد في السطر الأول. سيتم المتابعة في السطر الثاني بعد تجاوز الحد."
+
+msgid "Amount In Words Character Limit"
+msgstr "حد أحرف المبلغ كتابةً"
+
+msgid "This is the character limit for the amount in words on the first line. Will continue on second line after the limit."
+msgstr "هذا هو حد الأحرف للمبلغ كتابةً في السطر الأول. سيتم المتابعة في السطر الثاني بعد تجاوز الحد."
 
