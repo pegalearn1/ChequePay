@@ -125,7 +125,8 @@
                       <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editTemplateModal"
                         data-id="{{ template.id }}" data-name="{{ template.name }}" data-width="{{ template.width }}"
                         data-height="{{ template.height }}" data-bank-id="{{ template.bank.id }}"
-                        data-currency-id="{{ template.currency.id }}" data-background_image="{{ template.background_image.url }}">
+                        data-currency-id="{{ template.currency.id }}" data-background_image="{{ template.background_image.url }}"
+                        data-payee_char="{{ template.payee_char_limit }}" data-amount_char="{{ template.amount_char_limit }}">
                         {% trans "Edit Template" %}
                       </a>
                       <a class="dropdown-item"
@@ -316,6 +317,17 @@
                         }
                     }
                 </script>
+
+                <div class="form-group mb-3">
+                  <label for="payee_char_limit" class="form-label">{% trans "Payee Character Limit" %}</label>
+                  <input type="number" class="form-control" id="payee_char_limit" name="payee_char_limit" >
+                    <small class="form-text text-muted">{% trans "This is the character limit for the payee name on the first line. " %}</small>
+              </div>
+              <div class="form-group mb-3">
+                <label for="amount_char_limit" class="form-label">{% trans "Amount In Words Character Limit" %}</label>
+                <input type="number" class="form-control" id="amount_char_limit" name="amount_char_limit" >
+                <small class="form-text text-muted">{% trans "This is the character limit for the amount in words on the first line. " %}</small>
+            </div>
             
                 <div class="modal-footer">
                     <button type="button" class="btn me-auto" data-bs-dismiss="modal">{% trans "Close" %}</button>
@@ -346,25 +358,25 @@
             {% csrf_token %}
             <input type="hidden" id="edit_template_id" name="template_id">
             <div class="form-group mb-3">
-              <label for="edit_name" class="form-label">{% trans "Cheque Template Name" %}</label>
+              <label for="edit_name" class="form-label">{% trans "Cheque Template Name" %}<span class="mandatory">*</span></label>
               <input type="text" class="form-control" id="edit_name" name="name" required>
               <small class="form-text text-muted">{% trans "Enter a unique name for this cheque template." %}</small>
             </div>
   
             <div class="form-group mb-3">
-              <label for="edit_width" class="form-label">{% trans "Cheque Width (mm)" %}</label>
+              <label for="edit_width" class="form-label">{% trans "Cheque Width (mm)" %}<span class="mandatory">*</span></label>
               <input type="text" class="form-control" id="edit_width" name="width" required>
               <small class="form-text text-muted">{% trans "Specify the width of the cheque in millimeters (mm)." %}</small>
             </div>
   
             <div class="form-group mb-3">
-              <label for="edit_height" class="form-label">{% trans "Cheque Height (mm)" %}</label>
+              <label for="edit_height" class="form-label">{% trans "Cheque Height (mm)" %}<span class="mandatory">*</span></label>
               <input type="text" class="form-control" id="edit_height" name="height" required>
               <small class="form-text text-muted">{% trans "Specify the height of the cheque in millimeters (mm)." %}</small>
             </div>
   
             <div class="form-group mb-3">
-              <label for="edit_bank" class="form-label">{% trans "Bank" %}</label>
+              <label for="edit_bank" class="form-label">{% trans "Bank" %}<span class="mandatory">*</span></label>
               <select class="form-control" name="bank" id="edit_bank"  required>
                 <option value="" disabled>{% trans "Select Bank" %}</option>
                 {% for bank in banks %}
@@ -375,7 +387,7 @@
               <small class="form-text text-muted">{% trans "Choose the bank associated with this cheque template." %}</small>
             </div>
             <div class="form-group mb-3">
-              <label for="edit_currency" class="form-label">{% trans "Currency" %}</label>
+              <label for="edit_currency" class="form-label">{% trans "Currency" %}<span class="mandatory">*</span></label>
               <select class="form-control" name="currency" id="edit_currency" required>
                 <option value="" disabled>{% trans "Select Currency" %}</option>
                 {% for curr in currencies  %}
@@ -386,7 +398,7 @@
             </div>
   
             <div class="form-group mb-3">
-              <label for="edit_background_image" class="form-label">{% trans "Cheque Background Image" %}</label>
+              <label for="edit_background_image" class="form-label">{% trans "Cheque Background Image" %}<span class="mandatory">*</span></label>
               <input 
                 type="file" 
                 name="background_image" 
@@ -428,6 +440,17 @@
           </script>
 
           <!-- image script -->
+
+          <div class="form-group mb-3">
+            <label for="edit_payee_char_limit" class="form-label">{% trans "Payee Character Limit" %}</label>
+            <input type="number" class="form-control" id="edit_payee_char_limit" name="payee_char_limit" >
+              <small class="form-text text-muted">{% trans "This is the character limit for the payee name on the first line. " %}</small>
+        </div>
+        <div class="form-group mb-3">
+          <label for="edit_amount_char_limit" class="form-label">{% trans "Amount In Words Character Limit" %}</label>
+          <input type="number" class="form-control" id="edit_amount_char_limit" name="amount_char_limit" >
+          <small class="form-text text-muted">{% trans "This is the character limit for the amount in words on the first line. " %}</small>
+      </div>
             
             
             <div class="modal-footer">
@@ -467,6 +490,8 @@ $(document).ready(function () {
     var templateBankId = button.data('bank-id');
     var templateCurrencyId = button.data('currency-id');
     var templateBackgroundImage = button.data('background_image');
+    var templatePayeeChar = button.data('payee_char');
+    var templateAmountChar = button.data('amount_char');
 
     // Populate modal fields
     var modal = $(this);
@@ -476,6 +501,8 @@ $(document).ready(function () {
     modal.find('#edit_height').val(templateHeight);
     modal.find('#edit_bank').val(templateBankId);
     modal.find('#edit_currency').val(templateCurrencyId);
+    modal.find('#edit_payee_char_limit').val(templatePayeeChar);
+    modal.find('#edit_amount_char_limit').val(templateAmountChar);
     
     // to show previous image
     if (templateBackgroundImage) {

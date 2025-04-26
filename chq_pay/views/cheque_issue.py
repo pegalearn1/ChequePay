@@ -478,7 +478,11 @@ def print_cheque(request, cheque_id):
                 issue_amount_wrd = amount_in_words(issue_amount, issue_currency, selected_language)
                 issue_amount_wrd_title = issue_amount_wrd.title()
                 ammmt = '**' + issue_amount_wrd_title + '**'
-                formatted_amount_word = split_text_preserving_words(ammmt, max_line_length=52)
+
+                if template.amount_char_limit not in [None, '']:
+                    formatted_amount_word = split_text_preserving_words(ammmt, max_line_length=template.amount_char_limit)
+                else:
+                    formatted_amount_word = split_text_preserving_words(ammmt)
 
                 return JsonResponse({
                     "success": True,
@@ -518,14 +522,26 @@ def print_cheque(request, cheque_id):
 
     issue_amount_wrd_title = issue_amount_wrd.title()
 
+    print("amount in words chars", template.amount_char_limit)
+
     ammmt = '**' + issue_amount_wrd_title + '**'
-    formatted_amount_word = split_text_preserving_words(ammmt, max_line_length=52)
+    
+    if template.amount_char_limit not in [None, '']:
+        formatted_amount_word = split_text_preserving_words(ammmt, max_line_length=template.amount_char_limit)
+    else:
+        formatted_amount_word = split_text_preserving_words(ammmt)
+
     print("Formatted Amount Word:", formatted_amount_word)
 
     #Format the payee name if the character limit exceeds
     payee_name = '*' + '*' + cheque_issue.issue_payee.payee_name + '*' + '*'
-    formatted_payee_name = split_text_preserving_words(payee_name, max_line_length=52)
+
+    if template.payee_char_limit not in [None, '']:
+        formatted_payee_name = split_text_preserving_words(payee_name, max_line_length=template.payee_char_limit)
+    else:
+        formatted_payee_name = split_text_preserving_words(payee_name)
     
+    print("Formatted Payee Name:", formatted_payee_name)    
     
     if cheque_issue.issue_sign and isapproved:
         aprvd_by = cheque_issue.issue_approv_rejectby

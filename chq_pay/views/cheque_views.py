@@ -13,6 +13,8 @@ def upload_template(request):
         bank = request.POST.get('bank')
         currency = request.POST.get('currency')
         background_image = request.FILES.get('background_image')
+        payee_char_limit = request.POST.get('payee_char_limit')
+        amount_char_limit = request.POST.get('amount_char_limit')
 
         print("POST - ", request.POST)
 
@@ -36,6 +38,16 @@ def upload_template(request):
                     modified_date = datetime.now()
 
                 )
+
+                if payee_char_limit not in [None, '']:
+                    cheque_template.payee_char_limit = payee_char_limit
+                else:
+                    cheque_template.payee_char_limit = None
+                
+                if amount_char_limit not in [None, '']:
+                    cheque_template.amount_char_limit = amount_char_limit
+                else:
+                    cheque_template.amount_char_limit = None
 
                 template_exist = ChequeTemplate.objects.filter(name=name)
                 allowed_temp_count = AppUser.objects.values('allowed_templates')[0]['allowed_templates']
@@ -120,7 +132,9 @@ def edit_template(request):
         height = request.POST.get('height')
         bank = request.POST.get('bank')
         currency = request.POST.get('currency')
-
+        payee_char_limit = request.POST.get('payee_char_limit')
+        amount_char_limit = request.POST.get('amount_char_limit')
+        
         background_image = request.FILES.get('background_image')
 
         print("image - ",background_image)
@@ -136,6 +150,7 @@ def edit_template(request):
             template.bank = get_object_or_404(Banks, id=bank)
             template.modified_by = request.user.id
             template.modified_date = datetime.now()
+            
 
             if background_image:
                 if ChequeIssue.objects.filter(issue_template=template).exists():
@@ -156,6 +171,18 @@ def edit_template(request):
                 else:
                     # No cheques have been issued; update the currency
                     template.currency = get_object_or_404(Currencies, id=currency)
+
+            if payee_char_limit not in [None, '']:
+                template.payee_char_limit = payee_char_limit
+            else:
+                template.payee_char_limit = None
+                
+            if amount_char_limit not in [None, '']:
+                template.amount_char_limit = amount_char_limit
+            else:
+                template.amount_char_limit = None
+
+                
                     
 
 

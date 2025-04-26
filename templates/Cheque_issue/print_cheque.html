@@ -161,7 +161,7 @@
     {% if positions.payee.0 is not None %}
     <!-- Payee -->
     <span class="cheque-text" style="left: {{ positions.payee.0|unlocalize }}mm; top: {{ positions.payee.1|unlocalize }}mm;">
-        {{ payee }}
+        {{ payee|linebreaksbr }}
     </span>
     {% endif %}
 
