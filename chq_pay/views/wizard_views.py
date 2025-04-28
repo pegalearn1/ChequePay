@@ -7,6 +7,10 @@ from formtools.wizard.views import SessionWizardView
 from chq_pay.forms import BankForm, CurrencyForm, PayeeForm
 from chq_pay.models import Banks, Currencies, Payee
 from datetime import datetime
+from chq_pay.views.currency_lists import currency_characters, currency_names
+
+currency_dict = dict(zip(currency_characters, currency_names))
+reverse_currency_dict = {v: k for k, v in currency_dict.items()}
 
 class AppSetupWizard(SessionWizardView):
     template_name = "wizard/wizard.html"
@@ -39,13 +43,15 @@ class AppSetupWizard(SessionWizardView):
             # messages.info(request, "All setup steps are already completed.")
             return HttpResponseRedirect(reverse("index"))
         return super().dispatch(request, *args, **kwargs)
-
+    
     def get_context_data(self, form, **kwargs):
         """
         Add step information to context.
         """
         context = super().get_context_data(form=form, **kwargs)
         context["step"] = self.steps.current
+        context["currency_mapping"] = currency_dict
+        context["reverse_currency_mapping"] = reverse_currency_dict
         return context
 
     def done(self, form_list, **kwargs):
