@@ -1,7 +1,7 @@
 #step 1
 #open in git bash and run this command to convert .py files into .pyx
 
-find ./management ./timeman -name "*.py" -not -path "./*/migrations/*" -exec sh -c 'mv "$0" "${0%.py}.pyx"' {} \;
+find ./chq_pay ./ChequePay -name "*.py" -not -path "./*/migrations/*" -exec sh -c 'mv "$0" "${0%.py}.pyx"' {} \;
 
 
 
@@ -14,7 +14,7 @@ from setuptools import setup, Extension
 from Cython.Build import cythonize
 import os
 
-excluded_folders = {"timeenv", "build", "__pycache__", "tests"}
+excluded_folders = {"env", "build", "__pycache__", "tests"}
 extensions = []
 
 for root, dirs, files in os.walk("."):
@@ -41,7 +41,9 @@ python setup.py build_ext --inplace
 #step 4
 #to delete all pyx or c files run this, change the .c to .pyx for pyx files
 
-find . -name "*.c" -type f -delete 
+find . -name "*.c" -type f -delete
+
+find . -name "*.pyx" -type f -delete
 
 
 
