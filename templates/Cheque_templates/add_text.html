@@ -56,6 +56,27 @@
                         <button type="button" onclick="window.location='{% url 'template_detail' template.id %}';" class="btn btn-danger mt-2">{% trans "Cancel" %}</button>
                         </div>
 
+                        <div id="toolbar" style="margin-bottom: 10px;">
+                            <select id="fontFamily">
+                                <option value="Arial">Arial</option>
+                                <option value="Courier New">Courier New</option>
+                                <option value="Georgia">Georgia</option>
+                                <option value="Times New Roman">Times New Roman</option>
+                                <option value="Verdana">Verdana</option>
+                            </select>
+                        
+                            <select id="fontSize">
+                                <option value="12px">12</option>
+                                <option value="14px">14</option>
+                                <option value="16px">16</option>
+                                <option value="18px">18</option>
+                            </select>
+                        
+                            <button id="boldBtn"><b>B</b></button>
+                            <button id="italicBtn"><i>I</i></button>
+                        </div>
+                        
+                        
                         <form method="post" id="chequeTextForm">
                             {% csrf_token %}
 

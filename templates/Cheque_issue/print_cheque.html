@@ -28,7 +28,20 @@
         padding: 0;
     }
 
-    .cheque-text {
+    .cheque-text-payee {
+        position: absolute;
+        font-family: "Times New Roman", serif;
+        font-size: 12pt;
+        text-align: right
+    }
+
+    .cheque-text-amount {
+        position: absolute;
+        font-family: "Times New Roman", serif;
+        font-size: 12pt;
+    }
+
+    .cheque-text-amtwrds {
         position: absolute;
         font-family: "Times New Roman", serif;
         font-size: 12pt;
@@ -160,21 +173,21 @@
 
     {% if positions.payee.0 is not None %}
     <!-- Payee -->
-    <span class="cheque-text" style="left: {{ positions.payee.0|unlocalize }}mm; top: {{ positions.payee.1|unlocalize }}mm;">
+    <span class="cheque-text-payee" style="left: {{ positions.payee.0|unlocalize }}mm; top: {{ positions.payee.1|unlocalize }}mm;">
         {{ payee|linebreaksbr }}
     </span>
     {% endif %}
 
     {% if positions.amount_word.0 is not None %}
     <!-- Amount in Words -->
-    <span class="cheque-text" data-type="amount-word" style="left: {{ positions.amount_word.0|unlocalize }}mm; top: {{ positions.amount_word.1|unlocalize }}mm;">
+    <span class="cheque-text-amtwrds" data-type="amount-word" style="left: {{ positions.amount_word.0|unlocalize }}mm; top: {{ positions.amount_word.1|unlocalize }}mm;">
         {{ amount_word|linebreaksbr }}
     </span>
     {% endif %}
 
     {% if positions.amount_num.0 is not None %}
     <!-- Amount in Numbers -->
-    <span class="cheque-text" style="left: {{ positions.amount_num.0|unlocalize }}mm; top: {{ positions.amount_num.1|unlocalize }}mm;">
+    <span class="cheque-text-amount" style="left: {{ positions.amount_num.0|unlocalize }}mm; top: {{ positions.amount_num.1|unlocalize }}mm;">
         {{ amount }}
     </span>
     {% endif %}
@@ -214,7 +227,7 @@
         console.log("DOMContentLoaded event fired");
 
         const languageDropdown = document.querySelector("select#language-dropdown");
-        const amountWordSpan = document.querySelector(".cheque-text[data-type='amount-word']");
+        const amountWordSpan = document.querySelector(".cheque-text-amtwrds");
         const chequeContainer = document.querySelector(".cheque-container"); // Your main container
 
         if (!languageDropdown || !amountWordSpan) {

@@ -205,5 +205,3 @@ def set_language(request):
             return response
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
-
-

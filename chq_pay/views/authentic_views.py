@@ -9,6 +9,22 @@ from datetime import datetime
 # Get the custom user model
 User = get_user_model()
 
+#to verify the connection to the database
+def register_runtime_database(reg_code, db_path):
+    db_config = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': db_path,
+        'ATOMIC_REQUESTS': False,
+        'AUTOCOMMIT': True,
+        'OPTIONS': {},
+        'TIME_ZONE': None,
+        'TEST': {},
+        'CONN_MAX_AGE': 0,
+        'CONN_HEALTH_CHECKS': False,
+    }
+    settings.DATABASES[reg_code] = db_config
+    connections.databases[reg_code] = db_config
+
 
 def check_table_exists(reg_code):
     """
@@ -117,7 +133,6 @@ def user_login(request):
 
         if not reg_code or len(reg_code) < 4:
             logger.info("Invalid registration code: %s", reg_code)
-            
 
         # Fetch data from the APIs
         logger.info("Preparing API calls...")
@@ -190,6 +205,15 @@ def user_login(request):
                 if expiry_dt_time >= datetime.now():
                     logger.info("License is valid.")
 
+                    #to check if the database is already created or not
+                    BASE_DIR = Path(__file__).resolve().parent.parent.parent
+                    db_path = BASE_DIR / f'chqpaydb_{registcode}.sqlite3'
+                    register_runtime_database(registcode, db_path)
+                    print(f"Database path updated on runtime: {db_path}")
+                    logger.info("db path updated on runtime.")
+
+
+                    #to create the database if it does not exist
                     user = create_user_if_needed(
                         registcode, eml, passw, nme,
                         license_key, cust_id, cntry_id, country_name,
@@ -234,7 +258,7 @@ def user_login(request):
                 messages.error(request, 'Invalid Registration Code!!')
         except Exception as e:
             logger.info("Exception during login: %s", str(e))
-            messages.error(request, "Exception during login: %s", str(e))
+            messages.error(request, f"Exception during login: {str(e)}")
             return redirect('login')
 
     return render(request, "Login/login.html",{'registration_code_url':registration_code_url})

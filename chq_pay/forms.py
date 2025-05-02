@@ -25,8 +25,8 @@ class BankForm(forms.ModelForm):
         }
 
         help_texts = {
-            'bank_char': 'Enter a unique short identifier for the bank.',
-            'bank_name_e': 'Enter the official English name of the bank.',
+            'bank_char': 'Enter a unique short identifier for the bank. Example: "BOA" for Bank of America.',
+            'bank_name_e': 'Enter the official English name of the bank. Example: "Bank of America".',
             'bank_name_l': 'Enter the local language name of the bank, if applicable.',
             'tel_no': 'Provide a contact number with country code if necessary.',
             'address': 'Enter the address of the bank.',

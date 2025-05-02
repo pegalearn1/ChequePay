@@ -183,6 +183,12 @@ def split_text_preserving_words(text: str, max_line_length: int = 52) -> str:
     return first_line + '\n' + second_line
 
 
+def convert_arabic_to_english_number(arabic_number_str):
+    arabic_to_english = str.maketrans("٠١٢٣٤٥٦٧٨٩٫", "0123456789.")
+    return arabic_number_str.translate(arabic_to_english)
+
+
+
 
 
 @login_required
@@ -202,17 +208,22 @@ def cheque_issue(request):
         else:
             issue_sign = False
 
+        issue_amount_clean = convert_arabic_to_english_number(issue_amount)
+
+        print("issue amount - ", issue_amount)
+        print("issue amount clean - ", issue_amount_clean)
+
         
         # Save the data to the database
         comapny_now = get_object_or_404(Company_Setup, is_selected = True)
         cheque_issue_temp = get_object_or_404(ChequeTemplate, id = issue_template)
         issue_currency = get_object_or_404(Currencies, id = cheque_issue_temp.currency.id)
         issue_currency_char = issue_currency.currency_char
-        issue_amount_wrd = amount_in_words(issue_amount, issue_currency_char, 'en')
+        issue_amount_wrd = amount_in_words(issue_amount_clean, issue_currency_char, 'en')
         
 
         if cheque_issue_temp.currency.currency_char != "KWD":
-            issue_amount = Decimal(issue_amount).quantize(Decimal("0.01"), rounding=ROUND_DOWN)
+            issue_amount = Decimal(issue_amount_clean).quantize(Decimal("0.01"), rounding=ROUND_DOWN)
 
 
 
@@ -226,7 +237,7 @@ def cheque_issue(request):
                 issue_cheque_date = issue_cheque_date,
                 issue_payee = (get_object_or_404(Payee, id = issue_payee)),
                 issue_bank=get_object_or_404(Banks, id = cheque_issue_temp.bank.id),
-                issue_amount = issue_amount,
+                issue_amount = issue_amount_clean,
                 issue_issue_date=date.today(),
                 issue_naration=issue_naration,
                 issue_sign=issue_sign,
@@ -477,7 +488,11 @@ def print_cheque(request, cheque_id):
                 selected_language = data.get("language", "en")
                 issue_amount_wrd = amount_in_words(issue_amount, issue_currency, selected_language)
                 issue_amount_wrd_title = issue_amount_wrd.title()
-                ammmt = '**' + issue_amount_wrd_title + '**'
+                if selected_language == "ar":
+                    # Add فقط at the beginning and لا غير at the end
+                    ammmt = '**فقط ' + issue_amount_wrd_title + ' لا غير**'
+                else:
+                    ammmt = '**' + issue_amount_wrd_title + ' Only' + '**'
 
                 if template.amount_char_limit not in [None, '']:
                     formatted_amount_word = split_text_preserving_words(ammmt, max_line_length=template.amount_char_limit)
@@ -524,7 +539,7 @@ def print_cheque(request, cheque_id):
 
     print("amount in words chars", template.amount_char_limit)
 
-    ammmt = '**' + issue_amount_wrd_title + '**'
+    ammmt = '**' + issue_amount_wrd_title + ' Only' + '**'
     
     if template.amount_char_limit not in [None, '']:
         formatted_amount_word = split_text_preserving_words(ammmt, max_line_length=template.amount_char_limit)

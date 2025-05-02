@@ -24,6 +24,10 @@ def base_temp(request):
 
 @login_required
 def index(request):
+    print(f"Language set to {datetime.now()}: ", settings.LANGUAGE_CODE)
+
+
+
 #for certain counts
     bank_count = Banks.objects.count()
     payee_count = Payee.objects.count()
