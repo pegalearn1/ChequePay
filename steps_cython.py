@@ -6,7 +6,7 @@ find ./chq_pay ./ChequePay -name "*.py" -not -path "./*/migrations/*" -exec sh -
 
 
 #step 2
-#make a setup.py file in he root directiory and remember to change database scripts in views and urls.py in timeman to change to .py again before running this.
+#make a setup.py file in he root directiory and remember to change  urls.py in ChequePay and db_config.py to change to .py again before running this.
 #run this file.
 #if any import cython error uninstall cython and install again
 
