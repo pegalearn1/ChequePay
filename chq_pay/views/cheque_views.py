@@ -229,10 +229,12 @@ def add_text_to_template(request, template_id):
     template = get_object_or_404(ChequeTemplate, id=template_id)
 
     text_fields = [
-        'date_x_position', 'date_y_position', 'payee_x_position', 'payee_y_position',
-        'amtwrds_x_position', 'amtwrds_y_position', 'amtnum_x_position', 'amtnum_y_position',
-        'sign_x_position', 'sign_y_position'
-    ]
+    'date_x_position', 'date_y_position', 'date_font', 'date_size', 'date_bold', 'date_italic',
+    'payee_x_position', 'payee_y_position', 'payee_font', 'payee_size', 'payee_bold', 'payee_italic',
+    'amtwrds_x_position', 'amtwrds_y_position', 'amtwrds_font', 'amtwrds_size', 'amtwrds_bold', 'amtwrds_italic',
+    'amtnum_x_position', 'amtnum_y_position', 'amtnum_font', 'amtnum_size', 'amtnum_bold', 'amtnum_italic',
+    'sign_x_position', 'sign_y_position', 'sign_font', 'sign_size', 'sign_bold', 'sign_italic'
+]
     
     if request.method == 'POST':
         # Prepare the dictionary for updating or creating
@@ -243,11 +245,15 @@ def add_text_to_template(request, template_id):
 
             # Only add the field to valid_data if the value is not None, empty, or invalid (like '0')
             if value not in [None, '', '0']:
-                try:
-                    valid_data[tf] = float(value)  # Convert the value to float
-                    
-                except ValueError:
-                    pass  # Ignore invalid values that cannot be converted to float
+                if tf.endswith("_position"):
+                    try:
+                        valid_data[tf] = float(value)
+                    except ValueError:
+                        pass
+                elif tf.endswith("_bold") or tf.endswith("_italic"):
+                    valid_data[tf] = value.lower() == 'true'
+                else:
+                    valid_data[tf] = value
 
         
         

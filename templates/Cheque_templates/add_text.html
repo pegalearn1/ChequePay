@@ -19,6 +19,12 @@
     .draggable:active {
         cursor: grabbing;
     }
+
+    .selected {
+            outline: 2px dashed blue;
+        }
+    
+    
 </style>
 
 
@@ -56,25 +62,25 @@
                         <button type="button" onclick="window.location='{% url 'template_detail' template.id %}';" class="btn btn-danger mt-2">{% trans "Cancel" %}</button>
                         </div>
 
-                        <div id="toolbar" style="margin-bottom: 10px;">
-                            <select id="fontFamily">
+                        <div id="styleToolbar">
+                            <select id="fontSelect">
                                 <option value="Arial">Arial</option>
-                                <option value="Courier New">Courier New</option>
-                                <option value="Georgia">Georgia</option>
                                 <option value="Times New Roman">Times New Roman</option>
+                                <option value="Courier New">Courier New</option>
                                 <option value="Verdana">Verdana</option>
                             </select>
                         
-                            <select id="fontSize">
-                                <option value="12px">12</option>
-                                <option value="14px">14</option>
-                                <option value="16px">16</option>
-                                <option value="18px">18</option>
+                            <select id="fontSizeSelect">
+                                <option value="12">12 px</option>
+                                <option value="14">14 px</option>
+                                <option value="16">16 px</option>
+                                <option value="18">18 px</option>
                             </select>
                         
-                            <button id="boldBtn"><b>B</b></button>
-                            <button id="italicBtn"><i>I</i></button>
+                            <button id="boldBtn">B</button>
+                            <button id="italicBtn">I</button>
                         </div>
+                        
                         
                         
                         <form method="post" id="chequeTextForm">
@@ -131,22 +137,67 @@
                                 value="{{ text.date_x_position}}">
                             <input type="hidden" name="date_y_position" id="date_y_position"
                                 value="{{ text.date_y_position}}">
+                            <input type="hidden" name="date_font" id="date_font"
+                                value="{{ text.date_font}}">
+                            <input type="hidden" name="date_size" id="date_size"
+                                value="{{ text.date_size}}">
+                            <input type="hidden" name="date_bold" id="date_bold"
+                                value="{{ text.date_bold}}">
+                            <input type="hidden" name="date_italic" id="date_italic"
+                                value="{{ text.date_italic}}">
+
                             <input type="hidden" name="payee_x_position" id="payee_x_position"
                                 value="{{ text.payee_x_position}}">
                             <input type="hidden" name="payee_y_position" id="payee_y_position"
                                 value="{{ text.payee_y_position}}">
+                            <input type="hidden" name="payee_font" id="payee_font"
+                                value="{{ text.payee_font}}">
+                            <input type="hidden" name="payee_size" id="payee_size"
+                                value="{{ text.payee_size}}">
+                            <input type="hidden" name="payee_bold" id="payee_bold"
+                                value="{{ text.payee_bold}}">
+                            <input type="hidden" name="payee_italic" id="payee_italic"
+                                value="{{ text.payee_italic}}">
+                            
                             <input type="hidden" name="amtwrds_x_position" id="amtWords_x_position"
                                 value="{{ text.amtwrds_x_position}}">
                             <input type="hidden" name="amtwrds_y_position" id="amtWords_y_position"
                                 value="{{ text.amtwrds_y_position}}">
+                            <input type="hidden" name="amtwrds_font" id="amtWords_font"
+                                value="{{ text.amtwrds_font}}">
+                            <input type="hidden" name="amtwrds_size" id="amtWords_size"
+                                value="{{ text.amtwrds_size}}">
+                            <input type="hidden" name="amtwrds_bold" id="amtWords_bold"
+                                value="{{ text.amtwrds_bold}}">
+                            <input type="hidden" name="amtwrds_italic" id="amtWords_italic"
+                                value="{{ text.amtwrds_italic}}">
+
                             <input type="hidden" name="amtnum_x_position" id="amtNum_x_position"
                                 value="{{ text.amtnum_x_position}}">
                             <input type="hidden" name="amtnum_y_position" id="amtNum_y_position"
                                 value="{{ text.amtnum_y_position}}">
+                            <input type="hidden" name="amtnum_font" id="amtNum_font"
+                                value="{{ text.amtnum_font}}">
+                            <input type="hidden" name="amtnum_size" id="amtNum_size"
+                                value="{{ text.amtnum_size}}">
+                            <input type="hidden" name="amtnum_bold" id="amtNum_bold"
+                                value="{{ text.amtnum_bold}}">
+                            <input type="hidden" name="amtnum_italic" id="amtNum_italic"
+                                value="{{ text.amtnum_italic}}">
+                            
+                            
                             <input type="hidden" name="sign_x_position" id="sign_x_position"
                                 value="{{ text.sign_x_position}}">
                             <input type="hidden" name="sign_y_position" id="sign_y_position"
                                 value="{{ text.sign_y_position}}">
+                            <input type="hidden" name="sign_font" id="sign_font"
+                                value="{{ text.sign_font}}">
+                            <input type="hidden" name="sign_size" id="sign_size"
+                                value="{{ text.sign_size}}">
+                            <input type="hidden" name="sign_bold" id="sign_bold"
+                                value="{{ text.sign_bold}}">
+                            <input type="hidden" name="sign_italic" id="sign_italic"
+                                value="{{ text.sign_italic}}">
 
 
                         </form>
@@ -369,6 +420,88 @@
             }
         });
     });
+
+
+    // Font and Style Change Functionality
+
+    
+        document.addEventListener("DOMContentLoaded", function () {
+            let selectedDiv = null;
+    
+            // Register click on draggable divs to apply styles
+            document.querySelectorAll(".draggable").forEach(div => {
+                div.addEventListener("click", function (e) {
+                    selectedDiv = this;
+                    document.querySelectorAll(".draggable").forEach(d => d.classList.remove("selected"));
+                    this.classList.add("selected");
+                });
+    
+                // Restore saved styles
+                const id = div.id;
+                const savedFont = localStorage.getItem(id + "_font");
+                const savedSize = localStorage.getItem(id + "_size");
+                const savedBold = localStorage.getItem(id + "_bold");
+                const savedItalic = localStorage.getItem(id + "_italic");
+    
+                if (savedFont) div.style.fontFamily = savedFont;
+                if (savedSize) div.style.fontSize = savedSize;
+                if (savedBold === "true") div.style.fontWeight = "bold";
+                if (savedItalic === "true") div.style.fontStyle = "italic";
+            });
+    
+            // Toolbar event handlers
+            document.getElementById("fontSelect").addEventListener("change", function () {
+                if (selectedDiv) {
+                    selectedDiv.style.fontFamily = this.value;
+                    localStorage.setItem(selectedDiv.id + "_font", this.value);
+
+                    const inputId = selectedDiv.id.replace("Div", "_font");
+                    const hiddenInput = document.getElementById(inputId);
+                    if (hiddenInput) hiddenInput.value = this.value;
+                }
+            });
+
+            document.getElementById("fontSizeSelect").addEventListener("change", function () {
+                if (selectedDiv) {
+                    const sizeValue = this.value + "px";
+                    selectedDiv.style.fontSize = sizeValue;
+                    localStorage.setItem(selectedDiv.id + "_size", sizeValue);
+
+                    const inputId = selectedDiv.id.replace("Div", "_size");
+                    const hiddenInput = document.getElementById(inputId);
+                    if (hiddenInput) hiddenInput.value = this.value; // Store only the number
+                }
+            });
+
+            document.getElementById("boldBtn").addEventListener("click", function () {
+                if (selectedDiv) {
+                    const isBold = selectedDiv.style.fontWeight === "bold";
+                    selectedDiv.style.fontWeight = isBold ? "normal" : "bold";
+                    const newVal = !isBold;
+                    localStorage.setItem(selectedDiv.id + "_bold", newVal);
+
+                    const inputId = selectedDiv.id.replace("Div", "_bold");
+                    const hiddenInput = document.getElementById(inputId);
+                    if (hiddenInput) hiddenInput.value = newVal;
+                }
+            });
+
+            document.getElementById("italicBtn").addEventListener("click", function () {
+                if (selectedDiv) {
+                    const isItalic = selectedDiv.style.fontStyle === "italic";
+                    selectedDiv.style.fontStyle = isItalic ? "normal" : "italic";
+                    const newVal = !isItalic;
+                    localStorage.setItem(selectedDiv.id + "_italic", newVal);
+
+                    const inputId = selectedDiv.id.replace("Div", "_italic");
+                    const hiddenInput = document.getElementById(inputId);
+                    if (hiddenInput) hiddenInput.value = newVal;
+                }
+            });
+
+        });
+    
+    
     
 
 </script>

@@ -119,20 +119,47 @@ class ChequeTemplate(models.Model):
 #to set the text on the cheque template
 class ChequeText(models.Model):
     template = models.ForeignKey(ChequeTemplate, on_delete=models.CASCADE)
+
     date_x_position = models.FloatField(null=True, blank=True)
     date_y_position = models.FloatField(null=True, blank=True)
+    date_font = models.CharField(max_length=100, null=True, blank=True)
+    date_size = models.CharField(max_length=10, null=True, blank=True)
+    date_bold = models.BooleanField(default=False)
+    date_italic = models.BooleanField(default=False)
+
     payee_x_position = models.FloatField(null=True, blank=True)
     payee_y_position = models.FloatField(null=True, blank=True)
+    payee_font = models.CharField(max_length=100, null=True, blank=True)
+    payee_size = models.CharField(max_length=10, null=True, blank=True)
+    payee_bold = models.BooleanField(default=False)
+    payee_italic = models.BooleanField(default=False)
+
     amtwrds_x_position = models.FloatField(null=True, blank=True)
     amtwrds_y_position = models.FloatField(null=True, blank=True)
+    amtwrds_font = models.CharField(max_length=100, null=True, blank=True)
+    amtwrds_size = models.CharField(max_length=10, null=True, blank=True)
+    amtwrds_bold = models.BooleanField(default=False)
+    amtwrds_italic = models.BooleanField(default=False)
+
     amtnum_x_position = models.FloatField(null=True, blank=True)
     amtnum_y_position = models.FloatField(null=True, blank=True)
+    amtnum_font = models.CharField(max_length=100, null=True, blank=True)
+    amtnum_size = models.CharField(max_length=10, null=True, blank=True)
+    amtnum_bold = models.BooleanField(default=False)
+    amtnum_italic = models.BooleanField(default=False)
+
     sign_x_position = models.FloatField(null=True, blank=True)
     sign_y_position = models.FloatField(null=True, blank=True)
+    sign_font = models.CharField(max_length=100, null=True, blank=True)
+    sign_size = models.CharField(max_length=10, null=True, blank=True)
+    sign_bold = models.BooleanField(default=False)
+    sign_italic = models.BooleanField(default=False)
+
     created_by = models.IntegerField()
     created_date = models.DateTimeField()
     modified_by = models.IntegerField()
     modified_date = models.DateTimeField()
+
 
     def __str__(self):
         return f"{self.text} on {self.template.name}"
