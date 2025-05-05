@@ -75,6 +75,10 @@
                                 <option value="14">14 px</option>
                                 <option value="16">16 px</option>
                                 <option value="18">18 px</option>
+                                <option value="20">20 px</option>
+                                <option value="22">22 px</option>
+                                <option value="24">24 px</option>
+                                <option value="26">26 px</option>
                             </select>
                         
                             <button id="boldBtn">B</button>
@@ -91,7 +95,7 @@
                                 <!-- Draggable elements -->
                                 {% if text.date_x_position and text.date_y_position %}
                                 <div id="dateDiv" contenteditable="false" class="draggable border border-dark text-primary"
-                                    style="position: absolute; left: {{ text.date_x_position|unlocalize }}mm; top: {{ text.date_y_position|unlocalize }}mm;">
+                                    style="position: absolute; left: {{ text.date_x_position|unlocalize }}mm; top: {{ text.date_y_position|unlocalize }}mm; font-family: {{ text.date_font|unlocalize }}; font-size: {{ text.date_size|unlocalize }}px; {% if text.date_bold %}font-weight: bold{% endif %}; {% if text.date_italic %}font-style: italic{% endif %};">
                                     <span style="display: inline-block; width: 4mm;">{% trans "D" %}</span>
                                     <span style="display: inline-block; width: 4mm;">{% trans "D" %}</span>
                                     <span style="display: inline-block; width: 4mm;">{% trans "M" %}</span>
@@ -105,28 +109,28 @@
 
                                 {% if text.payee_x_position and text.payee_y_position %}
                                 <div id="payeeDiv" contenteditable="false" class="draggable border border-dark text-primary"
-                                    style="position: absolute; left: {{ text.payee_x_position|unlocalize }}mm; top: {{ text.payee_y_position|unlocalize }}mm;">
+                                    style="position: absolute; left: {{ text.payee_x_position|unlocalize }}mm; top: {{ text.payee_y_position|unlocalize }}mm; font-family: {{ text.payee_font|unlocalize }}; font-size: {{ text.payee_size|unlocalize }}px; {% if text.payee_bold %}font-weight: bold{% endif %}; {% if text.payee_bold %}font-style: italic{% endif %};">
                                     {% trans "Payee" %}
                                 </div>
                                 {% endif %}
 
                                 {% if text.amtwrds_x_position and text.amtwrds_y_position %}
                                 <div id="amtWordsDiv" contenteditable="false" class="draggable border border-dark text-primary"
-                                    style="position: absolute; left: {{ text.amtwrds_x_position|unlocalize }}mm; top: {{ text.amtwrds_y_position|unlocalize }}mm;">
+                                    style="position: absolute; left: {{ text.amtwrds_x_position|unlocalize }}mm; top: {{ text.amtwrds_y_position|unlocalize }}mm; font-family: {{ text.amtwrds_font|unlocalize }}; font-size: {{ text.amtwrds_size|unlocalize }}px; {% if text.amtwrds_bold %}font-weight: bold{% endif %}; {% if text.amtwrds_italic %}font-style: italic{% endif %};">
                                     {% trans "Amount In Words" %}
                                 </div>
                                 {% endif %}
 
                                 {% if text.amtnum_x_position and text.amtnum_y_position %}
                                 <div id="amtNumDiv" contenteditable="false" class="draggable border border-dark text-primary"
-                                    style="position: absolute; left: {{ text.amtnum_x_position|unlocalize }}mm; top: {{ text.amtnum_y_position|unlocalize }}mm;">
+                                    style="position: absolute; left: {{ text.amtnum_x_position|unlocalize }}mm; top: {{ text.amtnum_y_position|unlocalize }}mm; font-family: {{ text.amtnum_font|unlocalize }}; font-size: {{ text.amtnum_size|unlocalize }}px; {% if text.amtnum_bold %}font-weight: bold{% endif %}; {% if text.amtnum_italic %}font-style: italic{% endif %};">
                                     {% trans "Amount" %}
                                 </div>
                                 {% endif %}
 
                                 {% if text.sign_x_position and text.sign_y_position %}
                                 <div id="signDiv" contenteditable="false" class="draggable border border-dark text-primary"
-                                    style="position: absolute; left: {{ text.sign_x_position|unlocalize }}mm; top: {{ text.sign_y_position|unlocalize }}mm;">
+                                    style="position: absolute; left: {{ text.sign_x_position|unlocalize }}mm; top: {{ text.sign_y_position|unlocalize }}mm; font-family: {{ text.sign_font|unlocalize }}; font-size: {{ text.sign_size|unlocalize }}px; {% if text.sign_bold %}font-weight: bold{% endif %}; {% if text.sign_italic %}font-style: italic{% endif %};">
                                     {% trans "Signature" %}
                                 </div>
                                 {% endif %}
