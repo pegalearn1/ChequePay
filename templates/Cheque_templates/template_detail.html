@@ -63,7 +63,7 @@
                   <div class = "text-primary" style="position: absolute;{% if texts.amtnum_x_position is not None and texts.amtnum_y_position is not None %}left: {{ texts.amtnum_x_position|unlocalize }}mm; top: {{ texts.amtnum_y_position|unlocalize }}mm; font-family: {{ texts.amtnum_font|unlocalize }}; font-size: {{ texts.amtnum_size|unlocalize }}px; {% if texts.amtnum_bold %}font-weight: bold{% endif %}; {% if texts.amtnum_italic %}font-style: italic{% endif %}; {% else %}display: none;{% endif %}">
                     {% trans "Amount" %}
                   </div>
-                  <div class = "text-primary" style="position: absolute;{% if texts.sign_x_position is not None and texts.sign_y_position is not None %} left: {{ texts.sign_x_position|unlocalize }}mm; top: {{ texts.sign_y_position|unlocalize }}mm; font-family: {{ texts.sign_font|unlocalize }}; font-size: {{ texts.sign_size|unlocalize }}px; {% if texts.sign_bold %}font-weight: bold{% endif %}; {% if texts.sign_italic %}font-style: italic{% endif %}; {% else %}display: none;{% endif %}">
+                  <div class = "text-primary" style="position: absolute;{% if texts.sign_x_position is not None and texts.sign_y_position is not None %} left: {{ texts.sign_x_position|unlocalize }}mm; top: {{ texts.sign_y_position|unlocalize }}mm; {% else %}display: none;{% endif %}">
                     {% trans "Signature" %}
                   </div>
           

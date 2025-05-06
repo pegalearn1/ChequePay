@@ -175,7 +175,7 @@
 
                                 {% if text.sign_x_position and text.sign_y_position %}
                                 <div id="signDiv" contenteditable="false" class="draggable border border-dark text-primary"
-                                    style="position: absolute; left: {{ text.sign_x_position|unlocalize }}mm; top: {{ text.sign_y_position|unlocalize }}mm; font-family: {{ text.sign_font|unlocalize }}; font-size: {{ text.sign_size|unlocalize }}px; {% if text.sign_bold %}font-weight: bold{% endif %}; {% if text.sign_italic %}font-style: italic{% endif %};">
+                                    style="position: absolute; left: {{ text.sign_x_position|unlocalize }}mm; top: {{ text.sign_y_position|unlocalize }}mm;">
                                     {% trans "Signature" %}
                                 </div>
                                 {% endif %}
@@ -239,14 +239,7 @@
                                 value="{{ text.sign_x_position}}">
                             <input type="hidden" name="sign_y_position" id="sign_y_position"
                                 value="{{ text.sign_y_position}}">
-                            <input type="hidden" name="sign_font" id="sign_font"
-                                value="{{ text.sign_font}}">
-                            <input type="hidden" name="sign_size" id="sign_size"
-                                value="{{ text.sign_size}}">
-                            <input type="hidden" name="sign_bold" id="sign_bold"
-                                value="{{ text.sign_bold}}">
-                            <input type="hidden" name="sign_italic" id="sign_italic"
-                                value="{{ text.sign_italic}}">
+                            
 
 
                         </form>
@@ -397,20 +390,25 @@ document.addEventListener("DOMContentLoaded", function () {
             e.dataTransfer.setData("offsetY", offsetY);
         });
 
-        // Restore styles
         const id = el.id;
-        const savedFont = localStorage.getItem(id + "_font");
-        const savedSize = localStorage.getItem(id + "_size");
-        const savedBold = localStorage.getItem(id + "_bold");
-        const savedItalic = localStorage.getItem(id + "_italic");
 
-        if (savedFont) el.style.fontFamily = savedFont;
-        if (savedSize) el.style.fontSize = savedSize;
-        if (savedBold === "true") el.style.fontWeight = "bold";
-        if (savedItalic === "true") el.style.fontStyle = "italic";
+        // Skip restoring style for signDiv
+        if (id !== "signDiv") {
+            const savedFont = localStorage.getItem(id + "_font");
+            const savedSize = localStorage.getItem(id + "_size");
+            const savedBold = localStorage.getItem(id + "_bold");
+            const savedItalic = localStorage.getItem(id + "_italic");
+
+            if (savedFont) el.style.fontFamily = savedFont;
+            if (savedSize) el.style.fontSize = savedSize;
+            if (savedBold === "true") el.style.fontWeight = "bold";
+            if (savedItalic === "true") el.style.fontStyle = "italic";
+        }
 
         // Click to select div and sync toolbar
         el.addEventListener("click", function () {
+            if (this.id === "signDiv") return;
+
             selectedDiv = this;
             document.querySelectorAll(".draggable").forEach(d => d.classList.remove("selected"));
             this.classList.add("selected");
@@ -475,7 +473,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Toolbar Style Controls
     document.getElementById("fontSelect").addEventListener("change", function () {
-        if (selectedDiv) {
+        if (selectedDiv && selectedDiv.id !== "signDiv") {
             selectedDiv.style.fontFamily = this.value;
             localStorage.setItem(selectedDiv.id + "_font", this.value);
 
@@ -486,7 +484,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     document.getElementById("fontSizeSelect").addEventListener("change", function () {
-        if (selectedDiv) {
+        if (selectedDiv && selectedDiv.id !== "signDiv") {
             const sizeValue = this.value + "px";
             selectedDiv.style.fontSize = sizeValue;
             localStorage.setItem(selectedDiv.id + "_size", sizeValue);
@@ -498,7 +496,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     document.getElementById("boldBtn").addEventListener("click", function () {
-        if (selectedDiv) {
+        if (selectedDiv && selectedDiv.id !== "signDiv") {
             const isBold = selectedDiv.style.fontWeight === "bold";
             selectedDiv.style.fontWeight = isBold ? "normal" : "bold";
             const newVal = !isBold;
@@ -513,7 +511,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     document.getElementById("italicBtn").addEventListener("click", function () {
-        if (selectedDiv) {
+        if (selectedDiv && selectedDiv.id !== "signDiv") {
             const isItalic = selectedDiv.style.fontStyle === "italic";
             selectedDiv.style.fontStyle = isItalic ? "normal" : "italic";
             const newVal = !isItalic;
@@ -529,3 +527,4 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 {% endblock scripts %}
+

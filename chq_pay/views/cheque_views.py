@@ -233,7 +233,7 @@ def add_text_to_template(request, template_id):
     'payee_x_position', 'payee_y_position', 'payee_font', 'payee_size', 'payee_bold', 'payee_italic',
     'amtwrds_x_position', 'amtwrds_y_position', 'amtwrds_font', 'amtwrds_size', 'amtwrds_bold', 'amtwrds_italic',
     'amtnum_x_position', 'amtnum_y_position', 'amtnum_font', 'amtnum_size', 'amtnum_bold', 'amtnum_italic',
-    'sign_x_position', 'sign_y_position', 'sign_font', 'sign_size', 'sign_bold', 'sign_italic'
+    'sign_x_position', 'sign_y_position'
 ]
     
     if request.method == 'POST':

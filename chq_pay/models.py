@@ -150,10 +150,7 @@ class ChequeText(models.Model):
 
     sign_x_position = models.FloatField(null=True, blank=True)
     sign_y_position = models.FloatField(null=True, blank=True)
-    sign_font = models.CharField(max_length=100, null=True, blank=True)
-    sign_size = models.CharField(max_length=10, null=True, blank=True)
-    sign_bold = models.BooleanField(default=False)
-    sign_italic = models.BooleanField(default=False)
+    
 
     created_by = models.IntegerField()
     created_date = models.DateTimeField()
