@@ -23,6 +23,50 @@
     .selected {
             outline: 2px dashed blue;
         }
+
+    #styleToolbar {
+        display: inline-flex;
+        gap: 10px;
+        align-items: center;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        margin-bottom: 15px;
+        font-family: sans-serif;
+        max-width: fit-content;
+    }
+    
+    #styleToolbar select,
+    #styleToolbar button {
+        padding: 6px 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 14px;
+        background-color: white;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    #styleToolbar select:focus,
+    #styleToolbar button:focus {
+        outline: none;
+        border-color: #007bff;
+        box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+    }
+    
+    #styleToolbar button:hover {
+        background-color:rgb(207, 212, 216);
+    }
+    
+    #styleToolbar button.active {
+        background-color: #007bff;
+        color: white;
+        font-weight: bold;
+    }
+    
+        
     
     
 </style>
@@ -84,6 +128,7 @@
                             <button id="boldBtn">B</button>
                             <button id="italicBtn">I</button>
                         </div>
+                        
                         
                         
                         
@@ -262,253 +307,225 @@
 
 
 {% block scripts %}
-
-
-
 <script>
+document.addEventListener("DOMContentLoaded", function () {
+    const chequeTemplate = document.getElementById("chequeTemplate");
+    let selectedDiv = null;
 
-    document.addEventListener("DOMContentLoaded", function () {
-        const chequeTemplate = document.getElementById("chequeTemplate");
-    
-        function makeDraggable(elementId, inputX, inputY) {
-            const element = document.getElementById(elementId);
-            const inputXField = document.getElementById(inputX);
-            const inputYField = document.getElementById(inputY);
-    
-            let isDragging = false, offsetX = 0, offsetY = 0;
-    
-            if (!element || !chequeTemplate) return; // Prevent errors if elements are missing
-    
-            // Restore saved position only if inside chequeTemplate
-            if (chequeTemplate.contains(element)) {
-                if (localStorage.getItem(elementId + "_left")) {
-                    element.style.left = localStorage.getItem(elementId + "_left");
-                }
-                if (localStorage.getItem(elementId + "_top")) {
-                    element.style.top = localStorage.getItem(elementId + "_top");
-                }
+    function makeDraggable(elementId, inputX, inputY) {
+        const element = document.getElementById(elementId);
+        const inputXField = document.getElementById(inputX);
+        const inputYField = document.getElementById(inputY);
+        let isDragging = false, offsetX = 0, offsetY = 0;
+
+        if (!element || !chequeTemplate) return;
+
+        // Restore saved position
+        if (chequeTemplate.contains(element)) {
+            if (localStorage.getItem(elementId + "_left")) {
+                element.style.left = localStorage.getItem(elementId + "_left");
             }
-    
-            element.addEventListener("mousedown", (e) => {
-                if (!chequeTemplate.contains(element)) return; // Ignore elements outside chequeTemplate
-    
-                isDragging = true;
-                offsetX = e.clientX - element.getBoundingClientRect().left;
-                offsetY = e.clientY - element.getBoundingClientRect().top;
-                element.style.cursor = "grabbing";
-            });
-    
-            document.addEventListener("mousemove", (e) => {
-                if (!isDragging) return;
-    
-                const parent = chequeTemplate.getBoundingClientRect();
-    
-                let left = e.clientX - parent.left - offsetX;
-                let top = e.clientY - parent.top - offsetY;
-    
-                // Prevent dragging outside chequeTemplate
-                left = Math.max(0, Math.min(left, parent.width - element.offsetWidth));
-                top = Math.max(0, Math.min(top, parent.height - element.offsetHeight));
-    
-                element.style.left = left + "px";
-                element.style.top = top + "px";
-    
-                // Convert pixel values to mm
-                const widthRatio = parent.width / parseFloat("{{ template.width|unlocalize }}");
-                const heightRatio = parent.height / parseFloat("{{ template.height|unlocalize }}");
-    
-                let leftMM = (left / widthRatio).toFixed(2);
-                let topMM = (top / heightRatio).toFixed(2);
-    
-                // Update hidden input fields only for elements inside chequeTemplate
-                if (chequeTemplate.contains(element)) {
-                    inputXField.value = leftMM;
-                    inputYField.value = topMM;
-                    localStorage.setItem(elementId + "_left", left + "px");
-                    localStorage.setItem(elementId + "_top", top + "px");
-                }
-            });
-    
-            document.addEventListener("mouseup", () => {
-                isDragging = false;
-                element.style.cursor = "grab";
-            });
+            if (localStorage.getItem(elementId + "_top")) {
+                element.style.top = localStorage.getItem(elementId + "_top");
+            }
         }
-    
-        // Apply the function to draggable elements inside chequeTemplate
-        makeDraggable("dateDiv", "date_x_position", "date_y_position");
-        makeDraggable("payeeDiv", "payee_x_position", "payee_y_position");
-        makeDraggable("amtWordsDiv", "amtwrds_x_position", "amtwrds_y_position");
-        makeDraggable("amtNumDiv", "amtnum_x_position", "amtnum_y_position");
-        makeDraggable("signDiv", "sign_x_position", "sign_y_position");
-    
-        document.getElementById("chequeTextForm").addEventListener("submit", function () {
-            localStorage.clear();
-        });
-    
-        // Drag and Drop Functionality for Toolbar Elements
-        document.querySelectorAll(".draggable").forEach((el) => {
-            el.setAttribute("draggable", true);
-            el.addEventListener("dragstart", function (e) {
-                e.dataTransfer.setData("text/plain", el.id);
-    
-                // Capture the offset of the mouse within the element
-                const rect = el.getBoundingClientRect();
-                const offsetX = e.clientX - rect.left;
-                const offsetY = e.clientY - rect.top;
-    
-                e.dataTransfer.setData("offsetX", offsetX);
-                e.dataTransfer.setData("offsetY", offsetY);
-    
-                console.log(`Dragging: ${el.id}, OffsetX: ${offsetX}, OffsetY: ${offsetY}`);
-            });
-        });
-    
-        chequeTemplate.addEventListener("dragover", function (e) {
-            e.preventDefault(); // Allow drop
-        });
-    
-        chequeTemplate.addEventListener("drop", function (e) {
-            e.preventDefault();
-    
-            const elementId = e.dataTransfer.getData("text/plain");
-            const draggedElement = document.getElementById(elementId);
-    
-            if (draggedElement) {
-                // Get the offset values
-                const offsetX = parseFloat(e.dataTransfer.getData("offsetX")) || 0;
-                const offsetY = parseFloat(e.dataTransfer.getData("offsetY")) || 0;
-                console.log(`Dropped: ${elementId}, OffsetX: ${offsetX}, OffsetY: ${offsetY}`);
-    
-                const parentRect = chequeTemplate.getBoundingClientRect();
-                let left = e.clientX - parentRect.left - offsetX;
-                let top = e.clientY - parentRect.top - offsetY;
-    
-                // Prevent dragging outside
-                left = Math.max(0, Math.min(left, parentRect.width - draggedElement.offsetWidth));
-                top = Math.max(0, Math.min(top, parentRect.height - draggedElement.offsetHeight));
-    
-                draggedElement.style.position = "absolute";
-                draggedElement.style.left = left + "px";
-                draggedElement.style.top = top + "px";
-    
-                // Append to chequeTemplate if it's not already inside
-                if (!chequeTemplate.contains(draggedElement)) {
-                    chequeTemplate.appendChild(draggedElement);
-                }
-    
-                // Convert to mm
-                const widthRatio = parentRect.width / parseFloat("{{ template.width|unlocalize }}");
-                const heightRatio = parentRect.height / parseFloat("{{ template.height|unlocalize }}");
-    
-                let leftMM = (left / widthRatio).toFixed(2);
-                let topMM = (top / heightRatio).toFixed(2);
-    
-                // Update hidden input fields immediately on first drop
-                let inputXField = document.getElementById(elementId.replace("Div", "") + "_x_position");
-                let inputYField = document.getElementById(elementId.replace("Div", "") + "_y_position");
 
-                
-                console.log(`fields - ${inputXField} and ${inputYField} `);
-    
-                if (inputXField && inputYField) {
-                    inputXField.value = leftMM;
-                    inputYField.value = topMM;
-                    console.log(`Updated Position on Drop - ${elementId}: X = ${leftMM}mm, Y = ${topMM}mm`);
-                } else {
-                    console.warn(`Hidden input fields not found for ${elementId}`);
-                }
-    
-                // Ensure makeDraggable is applied so it works on future moves
-                makeDraggable(elementId, elementId + "_x_position", elementId + "_y_position");
+        element.addEventListener("mousedown", (e) => {
+            if (!chequeTemplate.contains(element)) return;
+
+            isDragging = true;
+            offsetX = e.clientX - element.getBoundingClientRect().left;
+            offsetY = e.clientY - element.getBoundingClientRect().top;
+            element.style.cursor = "grabbing";
+        });
+
+        document.addEventListener("mousemove", (e) => {
+            if (!isDragging) return;
+
+            const parent = chequeTemplate.getBoundingClientRect();
+            let left = e.clientX - parent.left - offsetX;
+            let top = e.clientY - parent.top - offsetY;
+
+            // Boundaries
+            left = Math.max(0, Math.min(left, parent.width - element.offsetWidth));
+            top = Math.max(0, Math.min(top, parent.height - element.offsetHeight));
+
+            element.style.left = left + "px";
+            element.style.top = top + "px";
+
+            // Convert px to mm
+            const widthRatio = parent.width / parseFloat("{{ template.width|unlocalize }}");
+            const heightRatio = parent.height / parseFloat("{{ template.height|unlocalize }}");
+            let leftMM = (left / widthRatio).toFixed(2);
+            let topMM = (top / heightRatio).toFixed(2);
+
+            if (chequeTemplate.contains(element)) {
+                inputXField.value = leftMM;
+                inputYField.value = topMM;
+                localStorage.setItem(elementId + "_left", left + "px");
+                localStorage.setItem(elementId + "_top", top + "px");
             }
+        });
+
+        document.addEventListener("mouseup", () => {
+            isDragging = false;
+            element.style.cursor = "grab";
+        });
+    }
+
+    // Initialize draggable elements
+    makeDraggable("dateDiv", "date_x_position", "date_y_position");
+    makeDraggable("payeeDiv", "payee_x_position", "payee_y_position");
+    makeDraggable("amtWordsDiv", "amtwrds_x_position", "amtwrds_y_position");
+    makeDraggable("amtNumDiv", "amtnum_x_position", "amtnum_y_position");
+    makeDraggable("signDiv", "sign_x_position", "sign_y_position");
+
+    document.getElementById("chequeTextForm").addEventListener("submit", function () {
+        localStorage.clear();
+    });
+
+    // Drag and Drop from Toolbar
+    document.querySelectorAll(".draggable").forEach((el) => {
+        el.setAttribute("draggable", true);
+
+        el.addEventListener("dragstart", function (e) {
+            e.dataTransfer.setData("text/plain", el.id);
+            const rect = el.getBoundingClientRect();
+            const offsetX = e.clientX - rect.left;
+            const offsetY = e.clientY - rect.top;
+            e.dataTransfer.setData("offsetX", offsetX);
+            e.dataTransfer.setData("offsetY", offsetY);
+        });
+
+        // Restore styles
+        const id = el.id;
+        const savedFont = localStorage.getItem(id + "_font");
+        const savedSize = localStorage.getItem(id + "_size");
+        const savedBold = localStorage.getItem(id + "_bold");
+        const savedItalic = localStorage.getItem(id + "_italic");
+
+        if (savedFont) el.style.fontFamily = savedFont;
+        if (savedSize) el.style.fontSize = savedSize;
+        if (savedBold === "true") el.style.fontWeight = "bold";
+        if (savedItalic === "true") el.style.fontStyle = "italic";
+
+        // Click to select div and sync toolbar
+        el.addEventListener("click", function () {
+            selectedDiv = this;
+            document.querySelectorAll(".draggable").forEach(d => d.classList.remove("selected"));
+            this.classList.add("selected");
+
+            const computed = window.getComputedStyle(this);
+
+            document.getElementById("fontSelect").value = computed.fontFamily.replace(/["']/g, '');
+            document.getElementById("fontSizeSelect").value = parseInt(computed.fontSize);
+
+            const isBold = computed.fontWeight === "700" || computed.fontWeight === "bold";
+            const isItalic = computed.fontStyle === "italic";
+
+            document.getElementById("boldBtn").classList.toggle("active", isBold);
+            document.getElementById("italicBtn").classList.toggle("active", isItalic);
         });
     });
 
+    chequeTemplate.addEventListener("dragover", function (e) {
+        e.preventDefault();
+    });
 
-    // Font and Style Change Functionality
+    chequeTemplate.addEventListener("drop", function (e) {
+        e.preventDefault();
+        const elementId = e.dataTransfer.getData("text/plain");
+        const draggedElement = document.getElementById(elementId);
 
-    
-        document.addEventListener("DOMContentLoaded", function () {
-            let selectedDiv = null;
-    
-            // Register click on draggable divs to apply styles
-            document.querySelectorAll(".draggable").forEach(div => {
-                div.addEventListener("click", function (e) {
-                    selectedDiv = this;
-                    document.querySelectorAll(".draggable").forEach(d => d.classList.remove("selected"));
-                    this.classList.add("selected");
-                });
-    
-                // Restore saved styles
-                const id = div.id;
-                const savedFont = localStorage.getItem(id + "_font");
-                const savedSize = localStorage.getItem(id + "_size");
-                const savedBold = localStorage.getItem(id + "_bold");
-                const savedItalic = localStorage.getItem(id + "_italic");
-    
-                if (savedFont) div.style.fontFamily = savedFont;
-                if (savedSize) div.style.fontSize = savedSize;
-                if (savedBold === "true") div.style.fontWeight = "bold";
-                if (savedItalic === "true") div.style.fontStyle = "italic";
-            });
-    
-            // Toolbar event handlers
-            document.getElementById("fontSelect").addEventListener("change", function () {
-                if (selectedDiv) {
-                    selectedDiv.style.fontFamily = this.value;
-                    localStorage.setItem(selectedDiv.id + "_font", this.value);
+        if (draggedElement) {
+            const offsetX = parseFloat(e.dataTransfer.getData("offsetX")) || 0;
+            const offsetY = parseFloat(e.dataTransfer.getData("offsetY")) || 0;
 
-                    const inputId = selectedDiv.id.replace("Div", "_font");
-                    const hiddenInput = document.getElementById(inputId);
-                    if (hiddenInput) hiddenInput.value = this.value;
-                }
-            });
+            const parentRect = chequeTemplate.getBoundingClientRect();
+            let left = e.clientX - parentRect.left - offsetX;
+            let top = e.clientY - parentRect.top - offsetY;
 
-            document.getElementById("fontSizeSelect").addEventListener("change", function () {
-                if (selectedDiv) {
-                    const sizeValue = this.value + "px";
-                    selectedDiv.style.fontSize = sizeValue;
-                    localStorage.setItem(selectedDiv.id + "_size", sizeValue);
+            left = Math.max(0, Math.min(left, parentRect.width - draggedElement.offsetWidth));
+            top = Math.max(0, Math.min(top, parentRect.height - draggedElement.offsetHeight));
 
-                    const inputId = selectedDiv.id.replace("Div", "_size");
-                    const hiddenInput = document.getElementById(inputId);
-                    if (hiddenInput) hiddenInput.value = this.value; // Store only the number
-                }
-            });
+            draggedElement.style.position = "absolute";
+            draggedElement.style.left = left + "px";
+            draggedElement.style.top = top + "px";
 
-            document.getElementById("boldBtn").addEventListener("click", function () {
-                if (selectedDiv) {
-                    const isBold = selectedDiv.style.fontWeight === "bold";
-                    selectedDiv.style.fontWeight = isBold ? "normal" : "bold";
-                    const newVal = !isBold;
-                    localStorage.setItem(selectedDiv.id + "_bold", newVal);
+            if (!chequeTemplate.contains(draggedElement)) {
+                chequeTemplate.appendChild(draggedElement);
+            }
 
-                    const inputId = selectedDiv.id.replace("Div", "_bold");
-                    const hiddenInput = document.getElementById(inputId);
-                    if (hiddenInput) hiddenInput.value = newVal;
-                }
-            });
+            const widthRatio = parentRect.width / parseFloat("{{ template.width|unlocalize }}");
+            const heightRatio = parentRect.height / parseFloat("{{ template.height|unlocalize }}");
+            let leftMM = (left / widthRatio).toFixed(2);
+            let topMM = (top / heightRatio).toFixed(2);
 
-            document.getElementById("italicBtn").addEventListener("click", function () {
-                if (selectedDiv) {
-                    const isItalic = selectedDiv.style.fontStyle === "italic";
-                    selectedDiv.style.fontStyle = isItalic ? "normal" : "italic";
-                    const newVal = !isItalic;
-                    localStorage.setItem(selectedDiv.id + "_italic", newVal);
+            let inputXField = document.getElementById(elementId.replace("Div", "") + "_x_position");
+            let inputYField = document.getElementById(elementId.replace("Div", "") + "_y_position");
 
-                    const inputId = selectedDiv.id.replace("Div", "_italic");
-                    const hiddenInput = document.getElementById(inputId);
-                    if (hiddenInput) hiddenInput.value = newVal;
-                }
-            });
+            if (inputXField && inputYField) {
+                inputXField.value = leftMM;
+                inputYField.value = topMM;
+            }
 
-        });
-    
-    
-    
+            makeDraggable(elementId, elementId + "_x_position", elementId + "_y_position");
+        }
+    });
 
+    // Toolbar Style Controls
+    document.getElementById("fontSelect").addEventListener("change", function () {
+        if (selectedDiv) {
+            selectedDiv.style.fontFamily = this.value;
+            localStorage.setItem(selectedDiv.id + "_font", this.value);
+
+            const inputId = selectedDiv.id.replace("Div", "_font");
+            const hiddenInput = document.getElementById(inputId);
+            if (hiddenInput) hiddenInput.value = this.value;
+        }
+    });
+
+    document.getElementById("fontSizeSelect").addEventListener("change", function () {
+        if (selectedDiv) {
+            const sizeValue = this.value + "px";
+            selectedDiv.style.fontSize = sizeValue;
+            localStorage.setItem(selectedDiv.id + "_size", sizeValue);
+
+            const inputId = selectedDiv.id.replace("Div", "_size");
+            const hiddenInput = document.getElementById(inputId);
+            if (hiddenInput) hiddenInput.value = this.value;
+        }
+    });
+
+    document.getElementById("boldBtn").addEventListener("click", function () {
+        if (selectedDiv) {
+            const isBold = selectedDiv.style.fontWeight === "bold";
+            selectedDiv.style.fontWeight = isBold ? "normal" : "bold";
+            const newVal = !isBold;
+            localStorage.setItem(selectedDiv.id + "_bold", newVal);
+
+            const inputId = selectedDiv.id.replace("Div", "_bold");
+            const hiddenInput = document.getElementById(inputId);
+            if (hiddenInput) hiddenInput.value = newVal;
+
+            this.classList.toggle("active", newVal);
+        }
+    });
+
+    document.getElementById("italicBtn").addEventListener("click", function () {
+        if (selectedDiv) {
+            const isItalic = selectedDiv.style.fontStyle === "italic";
+            selectedDiv.style.fontStyle = isItalic ? "normal" : "italic";
+            const newVal = !isItalic;
+            localStorage.setItem(selectedDiv.id + "_italic", newVal);
+
+            const inputId = selectedDiv.id.replace("Div", "_italic");
+            const hiddenInput = document.getElementById(inputId);
+            if (hiddenInput) hiddenInput.value = newVal;
+
+            this.classList.toggle("active", newVal);
+        }
+    });
+});
 </script>
-
-
 {% endblock scripts %}
