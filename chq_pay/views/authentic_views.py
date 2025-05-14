@@ -133,6 +133,8 @@ def user_login(request):
 
         if not reg_code or len(reg_code) < 4:
             logger.info("Invalid registration code: %s", reg_code)
+            messages.error(request, 'Registration Code should atleast be of 4 characters!!')
+            return redirect('login')
 
         # Fetch data from the APIs
         logger.info("Preparing API calls...")
@@ -177,12 +179,14 @@ def user_login(request):
             currency = res1['result']['currency_symbol']
             country_name = res1['result']['country']
             passw = res1['result']['password']
+        
+        else:
+            messages.error(request, 'Invalid Registration Code!!')
 
         if res2['status'] is True:
             logger.info("API status is True for res2. Extracting data...")
 
             templates_api = res2['result'][0]['param_value']
-
 
         try:
             logger.info("Saving registration code to session.")

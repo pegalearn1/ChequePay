@@ -43,14 +43,8 @@ CURRENCY_CHAR_CHOICES = [(char, char) for char in currency_characters]
 CURRENCY_NAME_CHOICES = [(name, name) for name in currency_names]
 
 class CurrencyForm(forms.ModelForm):
-    currency_char = forms.ChoiceField(
-        choices=CURRENCY_CHAR_CHOICES,
-        label="Currency Characters",
-        help_text="Select the short code for the currency (e.g., USD, EUR, INR).",
-        widget=forms.Select(attrs={"class": "form-control"})
-    )
     currency_name = forms.ChoiceField(
-        choices=CURRENCY_NAME_CHOICES,
+        choices=[(name, name) for name in currency_names],
         label="Currency Name",
         help_text="Select the full name of the currency (e.g., US Dollar, Euro, Indian Rupee).",
         widget=forms.Select(attrs={"class": "form-control"})
@@ -58,15 +52,29 @@ class CurrencyForm(forms.ModelForm):
 
     class Meta:
         model = Currencies
-        fields = ['currency_char', 'currency_name']  # Must be included
-        labels = {
-            'currency_char': 'Currency Characters',
-            'currency_name': 'Currency Name',
-        }
-        help_texts = {
-            'currency_char': 'Enter the short code for the currency (e.g., USD, EUR, INR).',
-            'currency_name': 'Enter the full name of the currency (e.g., US Dollar, Euro, Indian Rupee).',
-        }
+        fields = ['currency_name']  # Only expose currency_name in the form
+
+    def clean(self):
+        cleaned_data = super().clean()
+        selected_name = cleaned_data.get("currency_name")
+
+        # Find corresponding currency_char
+        if selected_name in currency_names:
+            index = currency_names.index(selected_name)
+            currency_char = currency_characters[index]
+            cleaned_data["currency_char"] = currency_char  # Inject char into cleaned_data
+        else:
+            raise forms.ValidationError("Selected currency name is invalid.")
+
+        return cleaned_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance.currency_char = self.cleaned_data["currency_char"]
+        if commit:
+            instance.save()
+        return instance
+
 
 
 class PayeeForm(forms.ModelForm):
