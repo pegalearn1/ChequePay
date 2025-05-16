@@ -89,6 +89,9 @@ def edit_user(request):
             # Save to the database
             try:
                 edit_usr = get_object_or_404(User, id = user_id)
+                
+                before_perm = edit_usr.is_superuser
+                
 
                 edit_usr.first_name = first_name
                 edit_usr.last_name = last_name
@@ -115,7 +118,7 @@ def edit_user(request):
                 print("given user id -  ",user_id )
                 
                 
-                if request.user.id == int(user_id):
+                if request.user.id == edit_usr.id and before_perm != edit_usr.is_superuser:
                     request.session.flush()
                     logout(request)
                 

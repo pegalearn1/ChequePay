@@ -110,11 +110,43 @@ def create_user_if_needed(reg_code, email, password, name, license_key, cust_id,
     else:
         print("Table already exists. Skipping creation.")
         try:
+            # Update AppUser if it already exists
+            app_user = AppUser.objects.using(connection.alias).filter(reg_code=reg_code).first()
+            updated = False
+
+            if app_user:
+                if app_user.expiry_date != expiry_date:
+                    app_user.expiry_date = expiry_date
+                    updated = True
+
+                if app_user.allowed_templates != int(allowed_templates):
+                    app_user.allowed_templates = int(allowed_templates)
+                    updated = True
+
+                if app_user.name != name:
+                    app_user.name = name
+                    updated = True
+
+                if app_user.email != email:
+                    app_user.email = email
+                    updated = True
+
+                if updated:
+                    app_user.save()
+                    print("AppUser updated with latest license data.")
+
+            # Check and return user
             user = User.objects.using(connection.alias).get(username=email)
             return user
+
         except User.DoesNotExist:
             print("User does not exist, but table exists. You might want to create it.")
             return None
+
+        except Exception as e:
+            print(f"Error updating AppUser or retrieving user: {str(e)}")
+            return None
+
 
 
 

@@ -196,35 +196,47 @@ def validate_excel_payee(request):
 
             results = []
             valid_rows = []
+            seen_mobiles = set()
 
             # Iterate through rows to validate data
             for _, row in df.iterrows():
                 try:
-                    payee_name = row['PAYEE NAME*']
-                    mobile_no = row['MOBILE NUMBER'] if not pd.isna(row['MOBILE NUMBER']) else ""
-                    email = row['EMAIL'] if not pd.isna(row['EMAIL']) else ""
-                    address = row['ADDRESS'] if not pd.isna(row['ADDRESS']) else ""
+                    payee_name = str(row['PAYEE NAME*']).strip() if not pd.isna(row['PAYEE NAME*']) else ""
+                    mobile_no = str(row['MOBILE NUMBER']).strip() if not pd.isna(row['MOBILE NUMBER']) else ""
+                    email = str(row['EMAIL']).strip() if not pd.isna(row['EMAIL']) else ""
+                    address = str(row['ADDRESS']).strip() if not pd.isna(row['ADDRESS']) else ""
 
-                    # Check if the mandatory field (payee_name) is missing
-                    if pd.isna(payee_name) or not str(payee_name).strip():
+                    # Validate required fields
+                    if not payee_name:
                         results.append({
-                            'payee_name': "" if pd.isna(payee_name) else payee_name,
+                            'payee_name': payee_name,
                             'mobile_no': mobile_no,
                             'email': email,
                             'address': address,
                             'status': 'Invalid',
                             'error_message': 'Missing required field.',
                         })
-                    
-                    elif Payee.objects.filter(payee_name=payee_name).exists():
+
+                    elif mobile_no in seen_mobiles:
+                        results.append({
+                            'payee_name': payee_name,
+                            'mobile_no': mobile_no,
+                            'email': email,
+                            'address': address,
+                            'status': 'Duplicate',
+                            'error_message': 'Duplicate mobile number in file',
+                        })
+
+                    elif Payee.objects.filter(mobile_no=mobile_no).exists():
                         results.append({
                             'payee_name': payee_name,
                             'mobile_no': mobile_no,
                             'email': email,
                             'address': address,
                             'status': 'Exists',
-                            'error_message': 'Payee already exists',
+                            'error_message': 'Mobile number already exists in database',
                         })
+
                     else:
                         valid_row = {
                             'payee_name': payee_name,
@@ -238,9 +250,9 @@ def validate_excel_payee(request):
                             'error_message': 'Uploading',
                         })
                         valid_rows.append(valid_row)
-                
+                        seen_mobiles.add(mobile_no)
+
                 except KeyError as e:
-                    # If a specific field is missing in the row, capture the error
                     results.append({
                         'payee_name': row.get('PAYEE NAME*', None),
                         'mobile_no': row.get('MOBILE NUMBER', None),
@@ -255,10 +267,10 @@ def validate_excel_payee(request):
 
             return JsonResponse({'results': results, 'has_valid': len(valid_rows) > 0})
         except Exception as e:
-            # Log the exception and return a detailed error message
             print(f"Error processing file: {str(e)}")
             return JsonResponse({'error': f"Error processing file: {str(e)}"}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
 
 
 
@@ -329,10 +341,10 @@ def download_sample_payee(request):
 
     # data
     banks = [{'payee_name': 'Hussain','mobile_no':'123456','email':'hu@mail.com','address': 'Udaipur'},
-             {'payee_name': 'Hassan','mobile_no':'123456','email':'ha@mail.com','address': 'Udaipur'},
-             {'payee_name': 'Ali','mobile_no':'123456','email':'a@mail.com','address': 'Udaipur'},
-             {'payee_name': 'Abbas','mobile_no':'123456','email':'a@mail.com','address': 'Udaipur'},
-             {'payee_name': 'Faraz','mobile_no':'123456','email':'f@mail.com','address': 'Udaipur'},
+             {'payee_name': 'Hassan','mobile_no':'968789','email':'ha@mail.com','address': 'Udaipur'},
+             {'payee_name': 'Ali','mobile_no':'123698','email':'a@mail.com','address': 'Udaipur'},
+             {'payee_name': 'Abbas','mobile_no':'456312','email':'a@mail.com','address': 'Udaipur'},
+             {'payee_name': 'Faraz','mobile_no':'874369','email':'f@mail.com','address': 'Udaipur'},
              
              ]
     
