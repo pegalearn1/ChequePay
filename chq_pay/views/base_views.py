@@ -196,7 +196,7 @@ def remove_background(image_file):
         print(f"Error processing signature: {e}")
         return None
 
-
+@login_required
 def profile(request):
     from django.db import connection
     print("Database in use start:", connection.settings_dict['NAME'])
