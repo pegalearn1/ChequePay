@@ -217,7 +217,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     
                     <div class="mb-3">
                       <label class="form-label">Registration Code</label>
-                      <input type="text" class="form-control" placeholder="Your Code" id="regCodeInput" name="login_reg_code" autocomplete="off" required>
+                      <input type="text" class="form-control" placeholder="Your Code" value = "{{ entered_reg_code|default:'' }}" id="regCodeInput" name="login_reg_code" autocomplete="off" required>
                     </div>
 
 
@@ -279,7 +279,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     
                     <div class="mb-2">
                       <label class="form-label">Email address</label>
-                      <input type="email" class="form-control" placeholder="your@email.com" name="login_email" autocomplete="on" required>
+                      <input type="email" class="form-control" placeholder="your@email.com" name="login_email" value = "{{ entered_email|default:'' }}" autocomplete="on" required>
                     </div>
                     <div class="mb-2">
                       <label class="form-label">

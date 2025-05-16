@@ -134,7 +134,10 @@ def user_login(request):
         if not reg_code or len(reg_code) < 4:
             logger.info("Invalid registration code: %s", reg_code)
             messages.error(request, 'Registration Code should atleast be of 4 characters!!')
-            return redirect('login')
+            return render(request, "Login/login.html", {
+                'entered_email': username,
+                'entered_reg_code': reg_code
+            })
 
         # Fetch data from the APIs
         logger.info("Preparing API calls...")
@@ -182,6 +185,9 @@ def user_login(request):
         
         else:
             messages.error(request, 'Invalid Registration Code!!')
+            return render(request, "Login/login.html", {
+                'entered_reg_code': reg_code
+            })
 
         if res2['status'] is True:
             logger.info("API status is True for res2. Extracting data...")
@@ -249,21 +255,36 @@ def user_login(request):
                         else:
                             logger.info("Invalid login credentials: Incorrect password!!")
                             messages.error(request, 'Invalid login credentials: Incorrect password!!')
+                            return render(request, "Login/login.html", {
+                                'entered_email': username,
+                                'entered_reg_code': reg_code
+                            })
 
                     except User.DoesNotExist:
                         logger.info("Invalid login credentials: User does not exist!!")
                         messages.error(request, 'Invalid login credentials: User does not exist!!')
+                        return render(request, "Login/login.html", {
+                            'entered_email': username,
+                            'entered_reg_code': reg_code
+                        })
                     
                 else:
                     logger.info("License expired.")
                     messages.error(request, 'License expired, please renew or upgrade the license.')
+                    return render(request, "Login/login.html", {
+                            'entered_email': username,
+                            'entered_reg_code': reg_code
+                        })
             else:
                 logger.info("Invalid registration code.")
                 messages.error(request, 'Invalid Registration Code!!')
         except Exception as e:
             logger.info("Exception during login: %s", str(e))
             messages.error(request, f"Exception during login: {str(e)}")
-            return redirect('login')
+            return render(request, "Login/login.html", {
+                            'entered_email': username,
+                            'entered_reg_code': reg_code
+                        })
 
     return render(request, "Login/login.html",{'registration_code_url':registration_code_url})
 
