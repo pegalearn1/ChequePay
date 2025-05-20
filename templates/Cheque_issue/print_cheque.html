@@ -166,28 +166,28 @@
     
     {% if positions.date.0 is not None %}
     <!-- Date -->
-    <span class="cheque-text cheque-date" data-type='format-date' style="left: {{ positions.date.0|unlocalize }}mm; top: {{ positions.date.1|unlocalize }}mm; font-family: {{ positions.date.2|unlocalize }}; font-size: {{ positions.date.3|unlocalize }}px; {% if positions.date.4 %}font-weight: bold{% endif %}; {% if positions.date.5 %}font-style: italic{% endif %};">
+    <span class="cheque-text cheque-date" data-type='format-date' style="left: {{ positions.date.0|unlocalize }}mm; top: {{ positions.date.1|unlocalize }}mm; {% if positions.date.2 and positions.date.2 != "" %} font-family: {{ positions.date.2|unlocalize }}; {% endif %} {% if positions.date.3 and positions.date.3 != "" %} font-size: {{ positions.date.3|unlocalize }}px; {% endif %} {% if positions.date.4 %}font-weight: bold{% endif %}; {% if positions.date.5 %}font-style: italic{% endif %};">
         {{ date }}
     </span>
     {% endif %}
 
     {% if positions.payee.0 is not None %}
     <!-- Payee -->
-    <span class="cheque-text-payee" style="left: {{ positions.payee.0|unlocalize }}mm; top: {{ positions.payee.1|unlocalize }}mm; font-family: {{ positions.payee.2|unlocalize }}; font-size: {{ positions.payee.3|unlocalize }}px; {% if positions.payee.4 %}font-weight: bold{% endif %}; {% if positions.payee.5 %}font-style: italic{% endif %};">
+    <span class="cheque-text-payee" style="left: {{ positions.payee.0|unlocalize }}mm; top: {{ positions.payee.1|unlocalize }}mm; {% if positions.payee.2 and positions.payee.2 != "" %} font-family: {{ positions.payee.2|unlocalize }}; {% endif %}  {% if positions.payee.3 and positions.payee.3 != "" %}font-size: {{ positions.payee.3|unlocalize }}px; {% endif %} {% if positions.payee.4 %}font-weight: bold{% endif %}; {% if positions.payee.5 %}font-style: italic{% endif %};">
         {{ payee|linebreaksbr }}
     </span>
     {% endif %}
 
     {% if positions.amount_word.0 is not None %}
     <!-- Amount in Words -->
-    <span class="cheque-text-amtwrds" data-type="amount-word" style="left: {{ positions.amount_word.0|unlocalize }}mm; top: {{ positions.amount_word.1|unlocalize }}mm; font-family: {{ positions.amount_word.2|unlocalize }}; font-size: {{ positions.amount_word.3|unlocalize }}px; {% if positions.amount_word.4 %}font-weight: bold{% endif %}; {% if positions.amount_word.5 %}font-style: italic{% endif %};">
+    <span class="cheque-text-amtwrds" data-type="amount-word" style="left: {{ positions.amount_word.0|unlocalize }}mm; top: {{ positions.amount_word.1|unlocalize }}mm; {% if positions.amount_word.2 and positions.amount_word.2 != "" %} font-family: {{ positions.amount_word.2|unlocalize }}; {% endif %} {% if positions.amount_word.3 and positions.amount_word.3 != "" %} font-size: {{ positions.amount_word.3|unlocalize }}px; {% endif %} {% if positions.amount_word.4 %}font-weight: bold{% endif %}; {% if positions.amount_word.5 %}font-style: italic{% endif %};">
         {{ amount_word|linebreaksbr }}
     </span>
     {% endif %}
 
     {% if positions.amount_num.0 is not None %}
     <!-- Amount in Numbers -->
-    <span class="cheque-text-amount" style="left: {{ positions.amount_num.0|unlocalize }}mm; top: {{ positions.amount_num.1|unlocalize }}mm; font-family: {{ positions.amount_num.2|unlocalize }}; font-size: {{ positions.amount_num.3|unlocalize }}px; {% if positions.amount_num.4 %}font-weight: bold{% endif %}; {% if positions.amount_num.5 %}font-style: italic{% endif %};">
+    <span class="cheque-text-amount" style="left: {{ positions.amount_num.0|unlocalize }}mm; top: {{ positions.amount_num.1|unlocalize }}mm; {% if positions.amount_num.2 and positions.amount_num.2 != "" %} font-family: {{ positions.amount_num.2|unlocalize }}; {% endif %} {% if positions.amount_num.3 and positions.amount_num.3 != "" %} font-size: {{ positions.amount_num.3|unlocalize }}px; {% endif %} {% if positions.amount_num.4 %}font-weight: bold{% endif %}; {% if positions.amount_num.5 %}font-style: italic{% endif %};">
         {{ amount }}
     </span>
     {% endif %}
@@ -195,7 +195,7 @@
     {% if positions.sign.0 is not None %}
     <!-- Signature -->
     {% if sign_url %}
-    <span class="cheque-sign" style="position: absolute; left: {{ positions.sign.0|unlocalize }}mm; top: {{ positions.sign.1|unlocalize }}mm; font-family: {{ positions.sign.2|unlocalize }}; font-size: {{ positions.sign.3|unlocalize }}px; {% if positions.sign.4 %}font-weight: bold{% endif %}; {% if positions.sign.5 %}font-style: italic{% endif %};">
+    <span class="cheque-sign" style="position: absolute; left: {{ positions.sign.0|unlocalize }}mm; top: {{ positions.sign.1|unlocalize }}mm;">
         <img src="{{ sign_url }}"  alt="Signature">
         
     </span>

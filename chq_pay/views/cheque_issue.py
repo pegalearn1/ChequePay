@@ -353,10 +353,14 @@ def cheque_issue_list(request):
 
 @login_required
 def delete_chequeissue(request, chequeissue_id):
+    
+    # Get the previous URL from the request
+    previous_url = request.META.get('HTTP_REFERER', '/')
+
     cheque_issue = get_object_or_404(ChequeIssue, id=chequeissue_id)
     cheque_issue.delete()
     messages.success(request,('Cheque Issued Deleted Successfully!!'))
-    return redirect('cheque_issue_list')
+    return redirect(previous_url)
 
 
 
@@ -583,7 +587,7 @@ def print_cheque(request, cheque_id):
             'payee': (cheque_text.payee_x_position, cheque_text.payee_y_position, cheque_text.payee_font, cheque_text.payee_size, cheque_text.payee_bold, cheque_text.payee_italic),
             'amount_word': (cheque_text.amtwrds_x_position, cheque_text.amtwrds_y_position, cheque_text.amtwrds_font, cheque_text.amtwrds_size, cheque_text.amtwrds_bold, cheque_text.amtwrds_italic),
             'amount_num': (cheque_text.amtnum_x_position, cheque_text.amtnum_y_position, cheque_text.amtnum_font, cheque_text.amtnum_size, cheque_text.amtnum_bold, cheque_text.amtnum_italic),
-            'sign': (cheque_text.sign_x_position, cheque_text.sign_y_position, cheque_text.sign_font, cheque_text.sign_size, cheque_text.sign_bold, cheque_text.sign_italic),
+            'sign': (cheque_text.sign_x_position, cheque_text.sign_y_position),
         },
         'sign_url': sign_url,
         'cheque_id': cheque_id,
