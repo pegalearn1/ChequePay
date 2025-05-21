@@ -314,8 +314,11 @@
     let buttonText = document.getElementById("filterButtonText");
     let toggleButton = document.getElementById("toggleFilters");
 
+    // Use a unique localStorage key
+    let filterKey = "filtersVisible_" + window.location.pathname;
+
     // Check localStorage for filter state
-    if (localStorage.getItem("filtersVisible") === "true") {
+    if (localStorage.getItem(filterKey) === "true") {
       filterSection.style.display = "block";
       buttonText.innerText = "{% trans 'Hide Filters' %}";
     }
@@ -325,11 +328,11 @@
       if (filterSection.style.display === "none" || filterSection.style.display === "") {
         filterSection.style.display = "block";
         buttonText.innerText = "{% trans 'Hide Filters' %}";
-        localStorage.setItem("filtersVisible", "true");
+        localStorage.setItem(filterKey, "true");
       } else {
         filterSection.style.display = "none";
         buttonText.innerText = "{% trans 'Show Filters' %}";
-        localStorage.setItem("filtersVisible", "false");
+        localStorage.setItem(filterKey, "false");
       }
     });
   });
