@@ -7,33 +7,35 @@ from chq_pay.models import Banks, Company_Setup, ChequeIssue, ChequeTemplate
 @login_required
 def add_bank(request):
     if request.method == "POST":
-        bank_char = request.POST.get("bank_char")
-        bank_name_e = request.POST.get("bank_name_e")
-        bank_name_l = request.POST.get("bank_name_l")
-        tel_no = request.POST.get("tel_no")
-        address = request.POST.get("address")
+        try:
+            bank_char = request.POST.get("bank_char")
+            bank_name_e = request.POST.get("bank_name_e")
+            bank_name_l = request.POST.get("bank_name_l")
+            tel_no = request.POST.get("tel_no")
+            address = request.POST.get("address")
 
-        bank_exist = Banks.objects.filter(Q(bank_name_e=bank_name_e) | Q(bank_char=bank_char))
-       
+            bank_exist = Banks.objects.filter(Q(bank_name_e=bank_name_e) | Q(bank_char=bank_char))
 
-        if bank_exist:
-            messages.warning(request,('Bank Already Exits!!'))
-        else:
-            # Save to the database
-            bank = Banks.objects.create(
-                bank_char=bank_char.upper(),
-                bank_name_e=bank_name_e.title(),
-                bank_name_l=bank_name_l.title(),
-                tel_no=tel_no,
-                address=address,
-                created_by = request.user.id,
-                created_date = datetime.now(),
-                modified_by = request.user.id,
-                modified_date = datetime.now()
-
-            )
-            messages.success(request,('Bank Created Successfully!!!'))
-            return JsonResponse({"success": True})
+            if bank_exist.exists():
+                messages.warning(request, 'Bank Already Exists!!')
+            else:
+                # Save to the database
+                Banks.objects.create(
+                    bank_char=bank_char.upper(),
+                    bank_name_e=bank_name_e.title(),
+                    bank_name_l=bank_name_l.title(),
+                    tel_no=tel_no,
+                    address=address,
+                    created_by=request.user.id,
+                    created_date=datetime.now(),
+                    modified_by=request.user.id,
+                    modified_date=datetime.now()
+                )
+                messages.success(request, 'Bank Created Successfully!!!')
+                return JsonResponse({"success": True})
+        except Exception as e:
+            logger.info(f"Error while adding bank: {e}")
+            messages.error(request, "An unexpected error occurred while adding the bank.")
     return JsonResponse({"success": False})
 
 @login_required
