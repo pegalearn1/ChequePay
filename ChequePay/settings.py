@@ -36,6 +36,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+CSRF_TRUSTED_ORIGINS = os.getenv('CSRF', '').split(',')
+
 
 # Application definition
 
@@ -196,7 +198,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'developer.pegasus@gmail.com'
-EMAIL_HOST_PASSWORD = str(os.getenv('GMAIL_PASS'))
+EMAIL_HOST_PASSWORD = str(os.getenv('GP'))
 
 
 DEFAULT_FROM_EMAIL = 'developer.pegasus@gmail.com'
