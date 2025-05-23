@@ -22,7 +22,7 @@ class SessionDatabaseRouter:
         db_key = request.session.get('reg_code', 'default')
         if db_key in settings.DATABASES:
             logger.info(f"Routing read operation to database: {db_key}")
-            print(f"Routing read operation to database: {db_key}")
+            # print(f"Routing read operation to database: {db_key}")
             return db_key
 
         logger.warning(f"Invalid db_key '{db_key}' in session; defaulting to 'default' database.")
@@ -41,7 +41,7 @@ class SessionDatabaseRouter:
         db_key = request.session.get('reg_code', 'default')
         if db_key in settings.DATABASES:
             logger.info(f"Routing write operation to database: {db_key}")
-            print(f"Routing write operation to database: {db_key}")
+            # print(f"Routing write operation to database: {db_key}")
             return db_key
 
         logger.info(f"Invalid db_key '{db_key}' in session; defaulting to 'default' database.")

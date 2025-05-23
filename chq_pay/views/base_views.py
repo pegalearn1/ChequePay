@@ -24,7 +24,16 @@ def base_temp(request):
 
 @login_required
 def index(request):
-    print(f"Language set to {datetime.now()}: ", settings.LANGUAGE_CODE)
+    
+    # Check if the csrf_origin updated 
+    current_host = 'http://' + request.get_host()
+    csrf_origins = settings.CSRF_TRUSTED_ORIGINS
+    if current_host not in csrf_origins:
+        # Add the current host to the CSRF_TRUSTED_ORIGINS
+        csrf_origins.append(current_host)
+        settings.CSRF_TRUSTED_ORIGINS = csrf_origins
+        print("Updated CSRF_TRUSTED_ORIGINS:", settings.CSRF_TRUSTED_ORIGINS)
+    
 
 
 
