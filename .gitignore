@@ -1,9 +1,12 @@
 # Python files
 __pycache__/
+*.pyc
 
 # Django-specific
 *.sqlite3
 *.log
+
+
 
 # VS Code
 .vscode/
@@ -11,3 +14,4 @@ __pycache__/
 # Ignore media and staticfiles directories
 /media/
 /staticfiles/
+
