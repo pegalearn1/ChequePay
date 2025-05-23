@@ -38,10 +38,10 @@ ALLOWED_HOSTS = ['*']
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:8000",
-    "http://127.0.1:8000",
-    "http://127.0.1:90",
+    "http://127.0.0.1:8000",
+    "http://127.0.0.1:90",
     "http://localhost:90",
-    "http://127.0.1:91",
+    "http://127.0.0.1:91",
     "http://localhost:91"
 ]
 
